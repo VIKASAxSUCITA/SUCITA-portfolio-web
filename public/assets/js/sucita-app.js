@@ -1,9 +1,16 @@
 "use strict";
 
 (function ($) {
-  $(window).on("ready", function () {
-    $("#preloader").delay(200).fadeOut("fade");
-  });
+  // Hide preloader if still visible (backup for non-React paths)
+  function hidePreloader() {
+    $("#preloader").delay(200).fadeOut(400);
+  }
+
+  if (document.readyState === "loading") {
+    $(hidePreloader);
+  } else {
+    hidePreloader();
+  }
 
   // Sticky header on scroll
   $(window).on("scroll", function () {

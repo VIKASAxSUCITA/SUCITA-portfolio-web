@@ -47,6 +47,42 @@
 .sucita-header {
   background-color: #ffffff !important;
   box-shadow: 0 2px 16px rgba(8, 61, 54, 0.08);
+  height: 80px;
+  min-height: 80px;
+}
+
+.sucita-header .container {
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.sucita-header .header-nav {
+  height: 80px;
+  width: 100%;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  --bs-navbar-padding-y: 0;
+}
+
+.sucita-header .navbar-brand {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  height: 80px;
+  padding: 0 !important;
+  margin: 0;
+  margin-right: 1rem;
+  line-height: 0;
+}
+
+.sucita-header .navbar-brand img {
+  max-height: 58px;
+  width: auto;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .sucita-header.affix {
@@ -56,23 +92,70 @@
 
 .sucita-header .custom-nav-link {
   color: #083d36 !important;
+  font-size: 1.125rem !important;
+  font-weight: 500 !important;
+  padding: 0.55rem 1rem !important;
 }
 
 .sucita-header .custom-nav-link:hover {
   color: #188a6d !important;
 }
 
+.sucita-header .main-navbar-nav {
+  gap: 0.25rem;
+}
+
+.sucita-header .main-navbar-nav .nav-item {
+  margin-left: 0.15rem;
+  margin-right: 0.15rem;
+}
+
 .sucita-header .navbar-toggler.btn {
   color: #083d36 !important;
+  font-size: 1.35rem;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Mobile sidebar navigation — larger size */
+.sucita-offcanvas {
+  width: min(88vw, 360px) !important;
+}
+
+.sucita-offcanvas-header {
+  padding: 1.5rem 1.75rem !important;
+}
+
+.sucita-offcanvas-logo {
+  max-height: 56px !important;
+  width: auto;
+}
+
+.sucita-offcanvas-close {
+  transform: scale(1.25);
+}
+
+.sucita-offcanvas-body {
+  padding: 1rem 1.75rem 2rem !important;
+}
+
+.sucita-offcanvas-nav .nav-item {
+  border-bottom: 1px solid #e8eeed;
+}
+
+.sucita-offcanvas-link {
+  font-size: 1.25rem !important;
+  font-weight: 500 !important;
+  color: #083d36 !important;
+  padding: 1.1rem 0.25rem !important;
+}
+
+.sucita-offcanvas-link:hover,
+.sucita-offcanvas-link:focus {
+  color: #188a6d !important;
 }
 
 .main-header-menu-wrap.affix {
   background-color: #ffffff !important;
-}
-
-.navbar-brand img {
-  max-height: 52px;
-  width: auto;
 }
 
 .footer-1 .navbar-brand img,
