@@ -1,0 +1,122 @@
+/* Sucita & Partners brand overrides on Kohost template */
+:root {
+  --bs-primary: #083d36;
+  --bs-secondary: #188a6d;
+}
+
+.primary-bg {
+  background-color: #083d36 !important;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #083d36 0%, #188a6d 100%) !important;
+}
+
+.color-primary {
+  color: #083d36 !important;
+}
+
+.accent-bg {
+  background-color: #188a6d !important;
+}
+
+.btn-primary {
+  background-color: #188a6d !important;
+  border-color: #188a6d !important;
+}
+
+.btn-primary:hover {
+  background-color: #083d36 !important;
+  border-color: #083d36 !important;
+}
+
+.btn-tertiary {
+  background-color: #188a6d !important;
+  border-color: #188a6d !important;
+}
+
+.btn-tertiary:hover {
+  background-color: #147a60 !important;
+}
+
+.scroll-top.primary-bg {
+  background-color: #188a6d !important;
+}
+
+/* Header — white background for dark-text logo visibility */
+.sucita-header {
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 16px rgba(8, 61, 54, 0.08);
+}
+
+.sucita-header.affix {
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(8, 61, 54, 0.12);
+}
+
+.sucita-header .custom-nav-link {
+  color: #083d36 !important;
+}
+
+.sucita-header .custom-nav-link:hover {
+  color: #188a6d !important;
+}
+
+.sucita-header .navbar-toggler.btn {
+  color: #083d36 !important;
+}
+
+.main-header-menu-wrap.affix {
+  background-color: #ffffff !important;
+}
+
+.navbar-brand img {
+  max-height: 52px;
+  width: auto;
+}
+
+.footer-1 .navbar-brand img,
+.footer-1 a.d-block img {
+  max-height: 48px;
+  width: auto;
+}
+
+/* Preloader — Sucita brand colors */
+#preloader .preloader-wrap .preloader i:nth-child(1) {
+  background: #083d36 !important;
+}
+
+#preloader .preloader-wrap .preloader i:nth-child(2) {
+  background: #188a6d !important;
+}
+
+#preloader .preloader-wrap .preloader i:nth-child(3) {
+  background: #94a1a0 !important;
+}
+
+/* Footer — light background for dark-text logo visibility */
+.sucita-footer {
+  background: #f8fafa !important;
+  border-top: 4px solid #188a6d;
+}
+
+.sucita-footer p,
+.sucita-footer h6,
+.sucita-footer .h6 {
+  color: #083d36 !important;
+  opacity: 1 !important;
+}
+
+.sucita-footer ul li a {
+  color: #4a5c5a !important;
+  opacity: 1 !important;
+}
+
+.sucita-footer ul li a:hover {
+  color: #188a6d !important;
+  opacity: 1 !important;
+}
+
+.sucita-footer .small {
+  color: #94a1a0 !important;
+}
