@@ -1,0 +1,46 @@
+import Link from "next/link";
+import Image from "next/image";
+import ScrollReveal from "@/components/template/ScrollReveal";
+import MoveRightIcon from "@/components/icons/MoveRightIcon";
+
+export default function HomeWhoWeServe() {
+  return (
+    <section className="sucita-layer sucita-layer-serve ptb-100">
+      <div className="container">
+        <div className="row align-items-center justify-content-between">
+          <div className="col-md-6 col-lg-6 order-2 order-md-1">
+            <ScrollReveal className="sucita-reveal-left">
+              <div className="img-wrap">
+                <Image
+                  src="/assets/img/cta-new.svg"
+                  alt="Who Sucita & Partners serves"
+                  width={600}
+                  height={480}
+                  className="img-fluid"
+                />
+              </div>
+            </ScrollReveal>
+          </div>
+          <div className="col-md-6 col-lg-5 order-1 order-md-2">
+            <ScrollReveal className="sucita-reveal-right" delay={120}>
+              <div className="feature-contents">
+                <h2>Who we serve</h2>
+                <p>
+                  SMEs and growing businesses that need reliable accounting and tax
+                  compliance. Startups requiring setup, licensing, and structured
+                  financial systems. Companies facing tax audits, VAT matters, or
+                  statutory audit requirements — and organizations seeking outsourced
+                  financial control and corporate secretary support.
+                </p>
+                <Link href="/about" className="read-more-link mt-3 d-inline-flex align-items-center gap-2">
+                  Know more about us
+                  <MoveRightIcon className="sucita-link-arrow" />
+                </Link>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

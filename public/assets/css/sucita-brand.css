@@ -2,6 +2,9 @@
 :root {
   --bs-primary: #083d36;
   --bs-secondary: #188a6d;
+  --bs-primary-rgb: 8, 61, 54;
+  --bs-link-color: #188a6d;
+  --bs-link-hover-color: #083d36;
 }
 
 .primary-bg {
@@ -202,4 +205,148 @@
 
 .sucita-footer .small {
   color: #94a1a0 !important;
+}
+
+/* Service promo cards — brand hover instead of template purple */
+.single-promo-card.single-promo-hover:before {
+  background-color: #188a6d !important;
+}
+
+.single-promo-card.single-promo-hover:hover:before {
+  background-color: #083d36 !important;
+}
+
+.single-promo-card.single-promo-hover:hover {
+  color: #fff !important;
+}
+
+.single-promo-card.single-promo-hover:hover span,
+.single-promo-card.single-promo-hover:hover h5,
+.single-promo-card.single-promo-hover:hover .h5,
+.single-promo-card.single-promo-hover:hover p,
+.single-promo-card.single-promo-hover:hover a {
+  color: #fff !important;
+}
+
+.single-promo-card.single-promo-hover-2:hover {
+  background-color: #083d36 !important;
+  color: #fff !important;
+}
+
+.single-promo-card.single-promo-hover-2:hover span,
+.single-promo-card.single-promo-hover-2:hover h5,
+.single-promo-card.single-promo-hover-2:hover .h5 {
+  color: #fff !important;
+}
+
+.read-more-link {
+  color: #188a6d !important;
+}
+
+.read-more-link:hover {
+  color: #083d36 !important;
+}
+
+.read-more-link .sucita-link-arrow {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.read-more-link:hover .sucita-link-arrow {
+  transform: translateX(4px);
+}
+
+.single-promo-card.single-promo-hover:hover .read-more-link {
+  color: #fff !important;
+}
+
+/* Hero — full laptop viewport height */
+.sucita-hero {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding-top: 80px;
+  padding-bottom: 4rem;
+}
+
+.sucita-hero-row {
+  min-height: calc(100vh - 80px - 4rem);
+  min-height: calc(100dvh - 80px - 4rem);
+}
+
+@media (max-width: 767.98px) {
+  .sucita-hero {
+    min-height: auto;
+    padding-top: 100px;
+    padding-bottom: 3rem;
+  }
+
+  .sucita-hero-row {
+    min-height: auto;
+  }
+
+  .sucita-hero .img-wrap {
+    margin-top: 2rem;
+  }
+}
+
+/* Homepage layers — What we do / Who we serve / Strategy CTA */
+.sucita-layer .feature-contents h2 {
+  color: #083d36;
+  margin-bottom: 1.25rem;
+}
+
+.sucita-layer .feature-contents p {
+  color: #5a6b69;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 0;
+}
+
+.sucita-layer-cta {
+  padding: 5rem 0;
+}
+
+.sucita-layer-cta .opacity-90 {
+  opacity: 0.9;
+}
+
+/* Scroll reveal — replays on scroll up and down */
+.sucita-reveal {
+  opacity: 0;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+  will-change: opacity, transform;
+}
+
+.sucita-reveal-up {
+  transform: translateY(36px);
+}
+
+.sucita-reveal-left {
+  transform: translateX(-40px);
+}
+
+.sucita-reveal-right {
+  transform: translateX(40px);
+}
+
+.sucita-reveal.is-visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sucita-reveal,
+  .sucita-reveal-up,
+  .sucita-reveal-left,
+  .sucita-reveal-right {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
