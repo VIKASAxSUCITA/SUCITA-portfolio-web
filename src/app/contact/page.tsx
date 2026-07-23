@@ -4,7 +4,7 @@ import { FormEvent, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import { siteConfig } from "@/data/site";
-import { serviceCategories } from "@/data/services";
+import { getServiceLabels, serviceCategories } from "@/data/services";
 
 function ContactContent() {
   const searchParams = useSearchParams();
@@ -66,19 +66,11 @@ function ContactContent() {
                     <input type="tel" className="form-control" id="phone" />
                   </div>
                   <div className="form-group mb-3">
-                    <label htmlFor="intent">I want to</label>
-                    <select className="form-control" id="intent" defaultValue={defaultIntent}>
-                      <option value="strategy-call">Book Strategy Call / Consultation</option>
-                      <option value="proposal">Request Proposal</option>
-                      <option value="general">General Inquiry</option>
-                    </select>
-                  </div>
-                  <div className="form-group mb-3">
                     <label htmlFor="service">Service of Interest</label>
                     <select className="form-control" id="service">
                       {serviceCategories.map((cat) => (
                         <optgroup key={cat.id} label={cat.title}>
-                          {cat.items.map((item) => (
+                          {getServiceLabels(cat).map((item) => (
                             <option key={item} value={item}>{item}</option>
                           ))}
                         </optgroup>

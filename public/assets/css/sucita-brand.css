@@ -76,6 +76,31 @@
   background-color: #188a6d !important;
 }
 
+/* Offset for fixed header when scrolling to sections */
+#home,
+#about,
+#services,
+#insights,
+#events,
+#contact,
+#home-audit-assurance,
+#home-accounting-tax,
+#home-transformative-strategy {
+  scroll-margin-top: 84px;
+}
+
+/* Homepage sections — tighter top so nav scroll sits closer to content */
+#about,
+#services,
+#insights,
+#events,
+#contact {
+  min-height: calc(100svh - 80px);
+  padding-top: 2.5rem !important;
+  padding-bottom: 4rem !important;
+  box-sizing: border-box;
+}
+
 /* Header — white background for dark-text logo visibility */
 .sucita-header {
   background-color: #ffffff !important;
@@ -242,7 +267,7 @@
 
 .sucita-footer-contact li {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.7rem;
   color: #4a5c5a;
   font-size: 0.95rem;
@@ -254,9 +279,10 @@
 }
 
 .sucita-footer-contact i {
-  margin-top: 0.2rem;
+  flex-shrink: 0;
   color: #188a6d;
   width: 1rem;
+  line-height: 1;
   text-align: center;
 }
 
@@ -292,12 +318,32 @@
   color: #083d36;
 }
 
-.sucita-contact-info {
+.sucita-contact-reveal {
+  display: flex;
+  width: 100%;
   height: 100%;
-  padding: 2rem 1.75rem;
-  background: #083d36;
+}
+
+.sucita-contact-info,
+.sucita-contact-form-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  padding: 2rem;
   border-radius: 1.15rem;
+  box-sizing: border-box;
+}
+
+.sucita-contact-info {
+  background: #083d36;
+  border: 1px solid #083d36;
   color: #fff;
+}
+
+.sucita-contact-info-main {
+  flex: 1 1 auto;
 }
 
 .sucita-contact-info-title {
@@ -313,7 +359,7 @@
 
 .sucita-contact-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.9rem;
 }
 
@@ -355,6 +401,8 @@ a.sucita-contact-item-value:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
+  margin-top: auto;
+  padding-top: 1.75rem;
 }
 
 .sucita-contact-channel {
@@ -375,11 +423,14 @@ a.sucita-contact-item-value:hover {
 }
 
 .sucita-contact-form-wrap {
-  height: 100%;
-  padding: 2rem 1.75rem;
   background: #f8fafa;
   border: 1px solid #e4ecea;
-  border-radius: 1.15rem;
+}
+
+.sucita-contact-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .sucita-contact-form .form-label {
@@ -400,7 +451,20 @@ a.sucita-contact-item-value:hover {
   border-color: #188a6d !important;
 }
 
+.sucita-contact-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.75rem;
+}
+
 .sucita-contact-success {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
   padding: 2rem 1rem;
   text-align: center;
 }
@@ -515,6 +579,92 @@ a.sucita-contact-item-value:hover {
 
   .sucita-hero-row {
     min-height: auto;
+  }
+}
+
+/* Mobile gutters — keep content clear of screen edges */
+@media (max-width: 991.98px) {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl,
+  .container-xxl {
+    --bs-gutter-x: 2.5rem;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .sucita-header .container {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl,
+  .container-xxl {
+    --bs-gutter-x: 2rem;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .sucita-header .container {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .sucita-hero .hero-slider-content h1 {
+    font-size: clamp(1.7rem, 7.5vw, 2.15rem);
+    line-height: 1.25;
+    padding-right: 0.25rem;
+  }
+
+  .sucita-hero .hero-slider-content .lead {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .sucita-hero .action-btns {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .sucita-hero .action-btns .btn {
+    margin: 0 !important;
+    width: 100%;
+    text-align: center;
+  }
+
+  .sucita-photo-frame {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .sucita-layer .feature-contents h2 {
+    font-size: 1.75rem;
+  }
+
+  .sucita-layer .feature-contents p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .sucita-footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .sucita-contact-info,
+  .sucita-contact-form-wrap {
+    padding: 1.5rem 1.25rem;
   }
 }
 
@@ -1088,17 +1238,25 @@ a.sucita-contact-item-value:hover {
 .sucita-service-list {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.7rem;
   flex: 1 1 auto;
 }
 
-.sucita-service-list li {
+.sucita-service-list > .sucita-service-item {
+  display: block;
+}
+
+.sucita-service-item-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.7rem;
-  color: #3f524f;
-  font-size: 0.9rem;
-  line-height: 1.4;
+}
+
+.sucita-service-item-label {
+  color: #083d36;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .sucita-service-check {
@@ -1108,11 +1266,48 @@ a.sucita-contact-item-value:hover {
   justify-content: center;
   width: 1.15rem;
   height: 1.15rem;
-  margin-top: 0.12rem;
   border-radius: 50%;
   background: #188a6d;
   color: #fff;
   font-size: 0.5rem;
+}
+
+/* Nested Assurance group — clean inset block */
+.sucita-service-item.has-children .sucita-service-sublist {
+  margin: 0.55rem 0 0 0.55rem;
+  padding: 0.6rem 0.85rem 0.65rem 0.95rem;
+  border-left: 2px solid #c5ddd5;
+  background: #f6faf8;
+  border-radius: 0 0.55rem 0.55rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sucita-service-sublist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  color: #5a6b69;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.sucita-service-submark {
+  flex-shrink: 0;
+  color: #94a1a0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  width: 0.7rem;
+}
+
+.sucita-service-page-sublist {
+  margin-left: 1.5rem;
+  padding: 0.55rem 0.85rem;
+  border-left: 2px solid #c5ddd5;
+  background: #f6faf8;
+  border-radius: 0 0.5rem 0.5rem 0;
 }
 
 .sucita-service-card-footer {
@@ -1143,6 +1338,8 @@ a.sucita-contact-item-value:hover {
 .sucita-insights {
   background: #fff;
   overflow: hidden;
+  padding-top: 2.5rem !important;
+  padding-bottom: 3.5rem !important;
 }
 
 .sucita-insights-title {
@@ -1154,7 +1351,7 @@ a.sucita-contact-item-value:hover {
   align-items: flex-end;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .sucita-insights-controls {
@@ -1233,7 +1430,7 @@ a.sucita-contact-item-value:hover {
 .sucita-insight-card-media {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   background: #e8eeed;
 }
 
@@ -1265,7 +1462,7 @@ a.sucita-contact-item-value:hover {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  padding: 1.2rem 1.25rem 1.35rem;
+  padding: 1rem 1.15rem 1.15rem;
 }
 
 .sucita-insight-card-meta {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import KohostCTA from "@/components/template/KohostCTA";
-import { serviceCategories } from "@/data/services";
+import { countServiceItems, serviceCategories } from "@/data/services";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -29,9 +29,19 @@ export default function ServicesPage() {
                 <p className="lead">{service.description}</p>
                 <ul className="list-unstyled content-feature-list">
                   {service.items.map((item) => (
-                    <li key={item}>
+                    <li key={item.label}>
                       <i className="fas fa-check-circle text-success pe-2" />
-                      {item}
+                      {item.label}
+                      {item.children?.length ? (
+                        <ul className="list-unstyled mt-2 mb-0 sucita-service-page-sublist">
+                          {item.children.map((child) => (
+                            <li key={child} className="mb-1">
+                              <span className="text-muted me-2">–</span>
+                              {child}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
@@ -44,7 +54,7 @@ export default function ServicesPage() {
                   </h4>
                   <p className="mb-0 mt-3">{service.description}</p>
                   <p className="mt-3 mb-0 small text-muted">
-                    {service.items.length} services available
+                    {countServiceItems(service)} services available
                   </p>
                 </div>
               </div>

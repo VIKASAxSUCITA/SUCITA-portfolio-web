@@ -1,19 +1,46 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { MouseEvent } from "react";
 import {
   siteConfig,
   navLinks,
   footerServiceLinks,
 } from "@/data/site";
+import { scrollToSection } from "@/lib/scrollToSection";
 
 export default function KohostFooter() {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const handleHashClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!href.startsWith("/#")) return;
+
+    const hash = href.slice(1);
+
+    if (pathname === "/") {
+      event.preventDefault();
+      scrollToSection(hash);
+      return;
+    }
+
+    event.preventDefault();
+    router.push(href);
+  };
+
   return (
     <>
       <footer className="footer-1 ptb-60 sucita-footer">
         <div className="container">
           <div className="row gy-4">
             <div className="col-lg-4">
-              <Link href="/" className="d-inline-block mb-3">
+              <Link
+                href="/#home"
+                className="d-inline-block mb-3"
+                onClick={(e) => handleHashClick(e, "/#home")}
+              >
                 <Image
                   src="/images/sucita_logo.png"
                   alt="Sucita & Partners"
@@ -34,7 +61,12 @@ export default function KohostFooter() {
               <ul className="sucita-footer-list list-unstyled mb-0">
                 {navLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href}>{link.label}</Link>
+                    <Link
+                      href={link.href}
+                      onClick={(e) => handleHashClick(e, link.href)}
+                    >
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -45,7 +77,12 @@ export default function KohostFooter() {
               <ul className="sucita-footer-list list-unstyled mb-0">
                 {footerServiceLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href}>{link.label}</Link>
+                    <Link
+                      href={link.href}
+                      onClick={(e) => handleHashClick(e, link.href)}
+                    >
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -80,21 +117,9 @@ export default function KohostFooter() {
 
       <div className="footer-bottom py-3 sucita-footer-bottom">
         <div className="container">
-          <div className="row align-items-center">
-            <div className="col-md-7">
-              <p className="mb-0 small">
-                &copy; {new Date().getFullYear()} Sucita. All rights reserved.
-              </p>
-            </div>
-            <div className="col-md-5 text-md-end mt-2 mt-md-0">
-              <Link className="small me-3" href="/terms">
-                Terms & Conditions
-              </Link>
-              <Link className="small" href="/privacy-policy">
-                Privacy Policy
-              </Link>
-            </div>
-          </div>
+          <p className="mb-0 small text-center text-md-start">
+            &copy; {new Date().getFullYear()} Sucita. All rights reserved.
+          </p>
         </div>
       </div>
     </>

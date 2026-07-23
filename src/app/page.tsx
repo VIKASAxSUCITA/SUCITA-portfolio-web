@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ScrollReveal from "@/components/template/ScrollReveal";
+import HashScroll from "@/components/template/HashScroll";
 import HomeWhatWeDo from "@/components/home/HomeWhatWeDo";
 import HomeWhoWeServe from "@/components/home/HomeWhoWeServe";
 import HomeAbout from "@/components/home/HomeAbout";
@@ -12,8 +13,10 @@ import HomeStrategyCTA from "@/components/home/HomeStrategyCTA";
 export default function HomePage() {
   return (
     <>
+      <HashScroll />
+
       {/* 1. Clear value proposition */}
-      <section className="sucita-hero overflow-hidden">
+      <section id="home" className="sucita-hero overflow-hidden">
         <div className="sucita-hero-media" aria-hidden="true" />
         <div className="sucita-hero-overlay" aria-hidden="true" />
         <div className="container position-relative">
@@ -28,10 +31,10 @@ export default function HomePage() {
                     Audit, accounting, tax, and strategy — delivered with integrity.
                   </p>
                   <div className="action-btns mt-4">
-                    <Link href="/about" className="btn btn-tertiary btn-lg me-2">
+                    <Link href="/#about" className="btn btn-tertiary btn-lg me-2">
                       About Us
                     </Link>
-                    <Link href="/services" className="btn btn-outline-light btn-lg">
+                    <Link href="/#services" className="btn btn-outline-light btn-lg">
                       Explore Services
                     </Link>
                   </div>

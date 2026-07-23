@@ -22,7 +22,7 @@ export default function HomeAbout() {
   return (
     <>
       {/* About — Firm story + Vision / Mission */}
-      <section className="sucita-about-intro ptb-100">
+      <section id="about" className="sucita-about-intro ptb-100">
         <div className="container">
           <div className="row align-items-center justify-content-between mb-5 mb-lg-6">
             <div className="col-lg-5 mb-5 mb-lg-0">

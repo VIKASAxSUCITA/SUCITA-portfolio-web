@@ -33,7 +33,7 @@ export default function HomeInsights() {
   };
 
   return (
-    <section className="sucita-insights ptb-100">
+    <section id="insights" className="sucita-insights ptb-100">
       <div className="container">
         <div className="sucita-insights-head">
           <div>
@@ -101,7 +101,7 @@ export default function HomeInsights() {
         </div>
       </div>
 
-      <div className="container mt-4 text-center">
+      <div className="container mt-3 text-center">
         <Link href="/insights" className="btn btn-outline-primary sucita-insights-all">
           View all insights
         </Link>

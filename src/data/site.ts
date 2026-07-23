@@ -10,16 +10,16 @@ export const siteConfig = {
 };
 
 export const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/services", label: "Services" },
-  { href: "/insights", label: "Insights" },
-  { href: "/events", label: "Events" },
-  { href: "/contact", label: "Contact" },
+  { href: "/#home", label: "Home" },
+  { href: "/#about", label: "About Us" },
+  { href: "/#services", label: "Services" },
+  { href: "/#insights", label: "Insights" },
+  { href: "/#events", label: "Events" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export const footerServiceLinks = [
-  { href: "/services#audit-assurance", label: "Audit & Assurance" },
-  { href: "/services#accounting-tax", label: "Accounting & Tax" },
-  { href: "/services#transformative-strategy", label: "Transformative Strategy" },
+  { href: "/#home-audit-assurance", label: "Audit & Assurance" },
+  { href: "/#home-accounting-tax", label: "Accounting & Tax" },
+  { href: "/#home-transformative-strategy", label: "Transformative Strategy" },
 ];

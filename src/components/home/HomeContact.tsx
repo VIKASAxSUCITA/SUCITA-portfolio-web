@@ -24,11 +24,6 @@ const contactItems = [
     value: siteConfig.phone,
     href: `tel:${siteConfig.phone.replace(/\s/g, "")}`,
   },
-  {
-    icon: "fas fa-clock",
-    label: "Office hours",
-    value: siteConfig.officeHours,
-  },
 ];
 
 export default function HomeContact() {
@@ -40,7 +35,7 @@ export default function HomeContact() {
   }
 
   return (
-    <section className="sucita-contact ptb-100">
+    <section id="contact" className="sucita-contact ptb-100">
       <div className="container">
         <div className="row justify-content-center mb-5">
           <div className="col-lg-7 text-center">
@@ -51,34 +46,36 @@ export default function HomeContact() {
           </div>
         </div>
 
-        <div className="row g-4 align-items-stretch">
-          <div className="col-lg-5">
-            <ScrollReveal className="sucita-reveal-left">
+        <div className="row g-4 align-items-stretch sucita-contact-grid">
+          <div className="col-lg-5 d-flex">
+            <ScrollReveal className="sucita-reveal-left sucita-contact-reveal">
               <div className="sucita-contact-info">
-                <h3 className="sucita-contact-info-title">Contact info</h3>
-                <p className="sucita-contact-info-copy">
-                  Reach Sucita & Partners directly, or send a message using the form.
-                </p>
+                <div className="sucita-contact-info-main">
+                  <h3 className="sucita-contact-info-title">Contact info</h3>
+                  <p className="sucita-contact-info-copy">
+                    Reach Sucita & Partners directly, or send a message using the form.
+                  </p>
 
-                <ul className="sucita-contact-list list-unstyled mb-4">
-                  {contactItems.map((item) => (
-                    <li key={item.label} className="sucita-contact-item">
-                      <span className="sucita-contact-icon" aria-hidden="true">
-                        <i className={item.icon} />
-                      </span>
-                      <div>
-                        <p className="sucita-contact-item-label mb-1">{item.label}</p>
-                        {item.href ? (
-                          <a href={item.href} className="sucita-contact-item-value">
-                            {item.value}
-                          </a>
-                        ) : (
-                          <p className="sucita-contact-item-value mb-0">{item.value}</p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                  <ul className="sucita-contact-list list-unstyled mb-0">
+                    {contactItems.map((item) => (
+                      <li key={item.label} className="sucita-contact-item">
+                        <span className="sucita-contact-icon" aria-hidden="true">
+                          <i className={item.icon} />
+                        </span>
+                        <div>
+                          <p className="sucita-contact-item-label mb-1">{item.label}</p>
+                          {item.href ? (
+                            <a href={item.href} className="sucita-contact-item-value">
+                              {item.value}
+                            </a>
+                          ) : (
+                            <p className="sucita-contact-item-value mb-0">{item.value}</p>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 <div className="sucita-contact-channels">
                   <a
@@ -104,8 +101,8 @@ export default function HomeContact() {
             </ScrollReveal>
           </div>
 
-          <div className="col-lg-7">
-            <ScrollReveal className="sucita-reveal-right" delay={100}>
+          <div className="col-lg-7 d-flex">
+            <ScrollReveal className="sucita-reveal-right sucita-contact-reveal">
               <div className="sucita-contact-form-wrap">
                 {submitted ? (
                   <div className="sucita-contact-success">
@@ -139,7 +136,7 @@ export default function HomeContact() {
                           required
                         />
                       </div>
-                      <div className="col-sm-6">
+                      <div className="col-12">
                         <label htmlFor="home-phone" className="form-label">
                           Phone / WhatsApp
                         </label>
@@ -149,20 +146,6 @@ export default function HomeContact() {
                           className="form-control sucita-contact-input"
                         />
                       </div>
-                      <div className="col-sm-6">
-                        <label htmlFor="home-intent" className="form-label">
-                          I want to
-                        </label>
-                        <select
-                          id="home-intent"
-                          className="form-control sucita-contact-input"
-                          defaultValue="strategy-call"
-                        >
-                          <option value="strategy-call">Book Strategy Call</option>
-                          <option value="proposal">Request Proposal</option>
-                          <option value="general">General Inquiry</option>
-                        </select>
-                      </div>
                       <div className="col-12">
                         <label htmlFor="home-message" className="form-label">
                           Message
@@ -170,13 +153,13 @@ export default function HomeContact() {
                         <textarea
                           id="home-message"
                           className="form-control sucita-contact-input"
-                          rows={4}
+                          rows={5}
                           required
                         />
                       </div>
                     </div>
 
-                    <div className="d-flex flex-wrap align-items-center gap-3 mt-4">
+                    <div className="sucita-contact-form-actions">
                       <button
                         type="submit"
                         className="btn btn-tertiary btn-lg d-inline-flex align-items-center gap-2"

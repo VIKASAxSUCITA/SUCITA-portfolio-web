@@ -1,9 +1,9 @@
 import ScrollReveal from "@/components/template/ScrollReveal";
-import { serviceCategories } from "@/data/services";
+import { countServiceItems, serviceCategories } from "@/data/services";
 
 export default function HomeServices() {
   return (
-    <section className="sucita-services ptb-100">
+    <section id="services" className="sucita-services ptb-100">
       <div className="container">
         <div className="row justify-content-center mb-5">
           <div className="col-lg-7 text-center">
@@ -43,16 +43,37 @@ export default function HomeServices() {
                 </header>
                 <ul className="sucita-service-list list-unstyled mb-0">
                   {category.items.map((item) => (
-                    <li key={item}>
-                      <span className="sucita-service-check" aria-hidden="true">
-                        <i className="fas fa-check" />
-                      </span>
-                      <span>{item}</span>
+                    <li
+                      key={item.label}
+                      className={
+                        item.children?.length
+                          ? "sucita-service-item has-children"
+                          : "sucita-service-item"
+                      }
+                    >
+                      <div className="sucita-service-item-row">
+                        <span className="sucita-service-check" aria-hidden="true">
+                          <i className="fas fa-check" />
+                        </span>
+                        <span className="sucita-service-item-label">{item.label}</span>
+                      </div>
+                      {item.children?.length ? (
+                        <ul className="sucita-service-sublist list-unstyled mb-0">
+                          {item.children.map((child) => (
+                            <li key={child}>
+                              <span className="sucita-service-submark" aria-hidden="true">
+                                –
+                              </span>
+                              <span>{child}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
                     </li>
                   ))}
                 </ul>
                 <footer className="sucita-service-card-footer">
-                  {category.items.length} services
+                  {countServiceItems(category)} services
                 </footer>
               </article>
             </ScrollReveal>

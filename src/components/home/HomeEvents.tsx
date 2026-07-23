@@ -19,7 +19,7 @@ const latestEvents = [...events]
 
 export default function HomeEvents() {
   return (
-    <section className="sucita-events ptb-100">
+    <section id="events" className="sucita-events ptb-100">
       <div className="container">
         <div className="row justify-content-center mb-5">
           <div className="col-lg-7 text-center">
