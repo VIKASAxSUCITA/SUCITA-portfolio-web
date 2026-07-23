@@ -17,7 +17,10 @@ export default function HomeWhatWeDo() {
                   internal audit, SOP development, start-up packages, and corporate
                   secretary services — delivered with integrity and independence.
                 </p>
-                <Link href="/services" className="read-more-link mt-3 d-inline-flex align-items-center gap-2">
+                <Link
+                  href="/services"
+                  className="read-more-link mt-3 d-inline-flex align-items-center gap-2"
+                >
                   Know more about us
                   <MoveRightIcon className="sucita-link-arrow" />
                 </Link>
@@ -26,14 +29,20 @@ export default function HomeWhatWeDo() {
           </div>
           <div className="col-md-6 col-lg-6">
             <ScrollReveal className="sucita-reveal-right" delay={120}>
-              <div className="img-wrap">
-                <Image
-                  src="/assets/img/hero-home.svg"
-                  alt="What Sucita & Partners does"
-                  width={600}
-                  height={480}
-                  className="img-fluid"
-                />
+              <div className="sucita-photo-frame sucita-photo-frame--do">
+                <span className="sucita-photo-accent" aria-hidden="true" />
+                <span className="sucita-photo-ring" aria-hidden="true" />
+                <span className="sucita-photo-dot sucita-photo-dot--1" aria-hidden="true" />
+                <span className="sucita-photo-dot sucita-photo-dot--2" aria-hidden="true" />
+                <div className="sucita-photo-clip">
+                  <Image
+                    src="/assets/img/whatwedo.png"
+                    alt="Reviewing financial reports and charts"
+                    width={800}
+                    height={640}
+                    className="sucita-photo-img"
+                  />
+                </div>
               </div>
             </ScrollReveal>
           </div>

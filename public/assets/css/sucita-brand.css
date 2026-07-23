@@ -262,14 +262,37 @@
   color: #fff !important;
 }
 
-/* Hero — full laptop viewport height */
+/* Hero — full laptop viewport height with banner image */
 .sucita-hero {
+  position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   align-items: center;
   padding-top: 80px;
   padding-bottom: 4rem;
+  background-color: #083d36;
+}
+
+.sucita-hero-media {
+  position: absolute;
+  inset: 0;
+  background-image: url("/assets/img/homepage_banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.sucita-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(8, 61, 54, 0.75);
+  z-index: 1;
+}
+
+.sucita-hero .container {
+  z-index: 2;
 }
 
 .sucita-hero-row {
@@ -287,10 +310,6 @@
   .sucita-hero-row {
     min-height: auto;
   }
-
-  .sucita-hero .img-wrap {
-    margin-top: 2rem;
-  }
 }
 
 /* Homepage layers — What we do / Who we serve / Strategy CTA */
@@ -304,6 +323,142 @@
   font-size: 1.05rem;
   line-height: 1.75;
   margin-bottom: 0;
+}
+
+/* Styled organic photo frames — blob shape + brand accents */
+.sucita-photo-frame {
+  position: relative;
+  max-width: 540px;
+  margin-inline: auto;
+  padding: 1.75rem;
+}
+
+.sucita-photo-accent {
+  position: absolute;
+  z-index: 0;
+  background: linear-gradient(150deg, #188a6d 0%, #083d36 85%);
+}
+
+.sucita-photo-ring {
+  position: absolute;
+  z-index: 0;
+  border: 2px solid rgba(24, 138, 109, 0.45);
+  pointer-events: none;
+}
+
+.sucita-photo-dot {
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  background: #188a6d;
+  pointer-events: none;
+}
+
+.sucita-photo-dot--1 {
+  width: 14px;
+  height: 14px;
+}
+
+.sucita-photo-dot--2 {
+  width: 22px;
+  height: 22px;
+  background: #083d36;
+}
+
+/* What we do — flowing blob, accent bottom-right */
+.sucita-photo-frame--do .sucita-photo-accent {
+  inset: 12% 2% 2% 14%;
+  border-radius: 67% 33% 56% 44% / 40% 62% 38% 60%;
+  transform: rotate(-8deg);
+}
+
+.sucita-photo-frame--do .sucita-photo-ring {
+  inset: 4% 10% 14% 2%;
+  border-radius: 48% 52% 38% 62% / 58% 36% 64% 42%;
+  transform: rotate(5deg);
+}
+
+.sucita-photo-frame--do .sucita-photo-clip {
+  border-radius: 64% 36% 52% 48% / 42% 58% 42% 58%;
+  box-shadow: 0 28px 50px rgba(8, 61, 54, 0.18);
+}
+
+.sucita-photo-frame--do .sucita-photo-dot--1 {
+  top: 10%;
+  right: 8%;
+}
+
+.sucita-photo-frame--do .sucita-photo-dot--2 {
+  bottom: 14%;
+  left: 4%;
+  opacity: 0.85;
+}
+
+/* Who we serve — mirrored blob, accent top-left */
+.sucita-photo-frame--serve .sucita-photo-accent {
+  inset: 2% 14% 12% 2%;
+  border-radius: 38% 62% 44% 56% / 62% 40% 60% 38%;
+  transform: rotate(9deg);
+}
+
+.sucita-photo-frame--serve .sucita-photo-ring {
+  inset: 14% 2% 4% 10%;
+  border-radius: 55% 45% 62% 38% / 40% 58% 42% 60%;
+  transform: rotate(-6deg);
+}
+
+.sucita-photo-frame--serve .sucita-photo-clip {
+  border-radius: 40% 60% 48% 52% / 58% 42% 58% 42%;
+  box-shadow: 0 28px 50px rgba(8, 61, 54, 0.18);
+}
+
+.sucita-photo-frame--serve .sucita-photo-dot--1 {
+  top: 8%;
+  left: 10%;
+}
+
+.sucita-photo-frame--serve .sucita-photo-dot--2 {
+  bottom: 10%;
+  right: 6%;
+  opacity: 0.85;
+}
+
+.sucita-photo-clip {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sucita-photo-clip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.18), transparent 42%),
+    linear-gradient(160deg, transparent 55%, rgba(8, 61, 54, 0.22) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.sucita-photo-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.7s ease;
+}
+
+.sucita-photo-frame:hover .sucita-photo-img {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sucita-photo-frame:hover .sucita-photo-img {
+    transform: none;
+  }
 }
 
 .sucita-layer-cta {

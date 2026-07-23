@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import HomeWhatWeDo from "@/components/home/HomeWhatWeDo";
 import HomeWhoWeServe from "@/components/home/HomeWhoWeServe";
@@ -9,10 +8,12 @@ export default function HomePage() {
   return (
     <>
       {/* 1. Clear value proposition */}
-      <section className="sucita-hero overflow-hidden primary-bg">
-        <div className="container">
-          <div className="row align-items-center justify-content-lg-between sucita-hero-row">
-            <div className="col-md-12 col-lg-5">
+      <section className="sucita-hero overflow-hidden">
+        <div className="sucita-hero-media" aria-hidden="true" />
+        <div className="sucita-hero-overlay" aria-hidden="true" />
+        <div className="container position-relative">
+          <div className="row align-items-center sucita-hero-row">
+            <div className="col-lg-8 col-xl-7">
               <ScrollReveal className="sucita-reveal-left">
                 <div className="hero-slider-content text-white">
                   <h1 className="text-white">
@@ -29,20 +30,6 @@ export default function HomePage() {
                       Explore Services
                     </Link>
                   </div>
-                </div>
-              </ScrollReveal>
-            </div>
-            <div className="col-md-6 col-sm-12 col-lg-6">
-              <ScrollReveal className="sucita-reveal-right" delay={150}>
-                <div className="img-wrap">
-                  <Image
-                    src="/assets/img/hero-home.svg"
-                    alt="Sucita & Partners"
-                    width={600}
-                    height={500}
-                    className="img-fluid"
-                    priority
-                  />
                 </div>
               </ScrollReveal>
             </div>

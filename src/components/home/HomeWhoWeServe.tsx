@@ -10,14 +10,20 @@ export default function HomeWhoWeServe() {
         <div className="row align-items-center justify-content-between">
           <div className="col-md-6 col-lg-6 order-2 order-md-1">
             <ScrollReveal className="sucita-reveal-left">
-              <div className="img-wrap">
-                <Image
-                  src="/assets/img/cta-new.svg"
-                  alt="Who Sucita & Partners serves"
-                  width={600}
-                  height={480}
-                  className="img-fluid"
-                />
+              <div className="sucita-photo-frame sucita-photo-frame--serve">
+                <span className="sucita-photo-accent" aria-hidden="true" />
+                <span className="sucita-photo-ring" aria-hidden="true" />
+                <span className="sucita-photo-dot sucita-photo-dot--1" aria-hidden="true" />
+                <span className="sucita-photo-dot sucita-photo-dot--2" aria-hidden="true" />
+                <div className="sucita-photo-clip">
+                  <Image
+                    src="/assets/img/whatweserve.png"
+                    alt="Collaborating on financial analysis"
+                    width={800}
+                    height={640}
+                    className="sucita-photo-img"
+                  />
+                </div>
               </div>
             </ScrollReveal>
           </div>
@@ -32,7 +38,10 @@ export default function HomeWhoWeServe() {
                   statutory audit requirements — and organizations seeking outsourced
                   financial control and corporate secretary support.
                 </p>
-                <Link href="/about" className="read-more-link mt-3 d-inline-flex align-items-center gap-2">
+                <Link
+                  href="/about"
+                  className="read-more-link mt-3 d-inline-flex align-items-center gap-2"
+                >
                   Know more about us
                   <MoveRightIcon className="sucita-link-arrow" />
                 </Link>
