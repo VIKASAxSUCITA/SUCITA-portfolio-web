@@ -28,7 +28,7 @@ export default function HomeWhoWeServe() {
           <div className="col-md-6 col-lg-5 order-1 order-md-2">
             <ScrollReveal className="sucita-reveal-right" delay={120}>
               <div className="feature-contents">
-                <h2>Who we serve</h2>
+                <h2>Who We Serve</h2>
                 <p>
                   SMEs and growing businesses that need reliable accounting and tax
                   compliance. Startups requiring setup, licensing, and structured

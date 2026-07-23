@@ -9,7 +9,7 @@ export default function HomeWhatWeDo() {
           <div className="col-md-6 col-lg-5">
             <ScrollReveal className="sucita-reveal-left">
               <div className="feature-contents">
-                <h2>What we do</h2>
+                <h2>What We Do</h2>
                 <p>
                   Statutory audits, monthly bookkeeping, tax filing, VAT refund support,
                   internal audit, SOP development, start-up packages, and corporate

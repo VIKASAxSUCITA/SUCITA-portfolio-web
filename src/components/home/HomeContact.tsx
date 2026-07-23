@@ -167,9 +167,6 @@ export default function HomeContact() {
                         Send message
                         <MoveRightIcon className="sucita-link-arrow" />
                       </button>
-                      <Link href="/contact" className="read-more-link">
-                        Open full contact page
-                      </Link>
                     </div>
                   </form>
                 )}
