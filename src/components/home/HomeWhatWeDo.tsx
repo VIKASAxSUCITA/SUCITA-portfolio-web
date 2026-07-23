@@ -1,7 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
-import MoveRightIcon from "@/components/icons/MoveRightIcon";
 
 export default function HomeWhatWeDo() {
   return (
@@ -17,13 +15,6 @@ export default function HomeWhatWeDo() {
                   internal audit, SOP development, start-up packages, and corporate
                   secretary services — delivered with integrity and independence.
                 </p>
-                <Link
-                  href="/services"
-                  className="read-more-link mt-3 d-inline-flex align-items-center gap-2"
-                >
-                  Know more about us
-                  <MoveRightIcon className="sucita-link-arrow" />
-                </Link>
               </div>
             </ScrollReveal>
           </div>

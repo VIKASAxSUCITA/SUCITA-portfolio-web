@@ -1,7 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
-import MoveRightIcon from "@/components/icons/MoveRightIcon";
 
 export default function HomeWhoWeServe() {
   return (
@@ -38,13 +36,6 @@ export default function HomeWhoWeServe() {
                   statutory audit requirements — and organizations seeking outsourced
                   financial control and corporate secretary support.
                 </p>
-                <Link
-                  href="/about"
-                  className="read-more-link mt-3 d-inline-flex align-items-center gap-2"
-                >
-                  Know more about us
-                  <MoveRightIcon className="sucita-link-arrow" />
-                </Link>
               </div>
             </ScrollReveal>
           </div>

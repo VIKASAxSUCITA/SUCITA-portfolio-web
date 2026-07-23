@@ -2,6 +2,8 @@ import Link from "next/link";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import HomeWhatWeDo from "@/components/home/HomeWhatWeDo";
 import HomeWhoWeServe from "@/components/home/HomeWhoWeServe";
+import HomeAbout from "@/components/home/HomeAbout";
+import HomeServices from "@/components/home/HomeServices";
 import HomeStrategyCTA from "@/components/home/HomeStrategyCTA";
 
 export default function HomePage() {
@@ -37,14 +39,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2a. What we do — own layer */}
+      {/* 2. What we do */}
       <HomeWhatWeDo />
 
-      {/* 2b. Who we serve — own layer */}
+      {/* 3. Who we serve */}
       <HomeWhoWeServe />
 
-      {/* 3. Call-to-action — Book Strategy Call → contact */}
+      {/* 4. Call-to-action — Book Strategy Call → contact */}
       <HomeStrategyCTA />
+
+      {/* 5. About Us — story, vision/mission, core values */}
+      <HomeAbout />
+
+      {/* 6. Services — A / B / C practice areas */}
+      <HomeServices />
     </>
   );
 }

@@ -469,6 +469,470 @@
   opacity: 0.9;
 }
 
+/* Book Strategy Call — dedicated homepage CTA layer */
+.sucita-strategy-cta {
+  position: relative;
+  overflow: hidden;
+  padding: 5.5rem 0;
+  background-color: #083d36;
+}
+
+.sucita-strategy-cta-media {
+  position: absolute;
+  inset: 0;
+  background-image: url("/assets/img/homepage_banner.png");
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.sucita-strategy-cta-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(8, 61, 54, 0.94) 0%,
+    rgba(8, 61, 54, 0.88) 48%,
+    rgba(24, 138, 109, 0.72) 100%
+  );
+  z-index: 1;
+}
+
+.sucita-strategy-cta .container {
+  z-index: 2;
+}
+
+.sucita-strategy-cta-row {
+  position: relative;
+}
+
+.sucita-strategy-cta-label {
+  display: inline-block;
+  color: #a8d4c8;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sucita-strategy-cta h2 {
+  font-size: clamp(1.85rem, 3.2vw, 2.6rem);
+  line-height: 1.2;
+}
+
+.sucita-strategy-cta-copy {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 34rem;
+}
+
+.sucita-strategy-cta-panel {
+  padding: 2rem 2.1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1.25rem 2.5rem 1.25rem 2.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.sucita-strategy-cta-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  color: #fff;
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+.sucita-strategy-cta-list li + li {
+  margin-top: 0.95rem;
+}
+
+.sucita-strategy-cta-check {
+  flex-shrink: 0;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 50%;
+  background: #188a6d;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  margin-top: 0.1rem;
+}
+
+.sucita-strategy-cta-btn .sucita-link-arrow {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.sucita-strategy-cta-btn:hover .sucita-link-arrow {
+  transform: translateX(4px);
+}
+
+@media (max-width: 767.98px) {
+  .sucita-strategy-cta {
+    padding: 4rem 0;
+  }
+
+  .sucita-strategy-cta-panel {
+    padding: 1.5rem 1.35rem;
+    border-radius: 1.1rem 1.75rem 1.1rem 1.75rem;
+  }
+}
+
+/* Homepage About Us — story / vision-mission / values */
+.sucita-about-label {
+  display: inline-block;
+  color: #188a6d;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sucita-about-intro {
+  background: #fff;
+}
+
+.sucita-about-title,
+.sucita-about-values h2 {
+  color: #083d36;
+}
+
+.sucita-about-body {
+  color: #5a6b69;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.sucita-about-visual {
+  position: relative;
+  max-width: 520px;
+  margin-inline: auto;
+  padding: 1.5rem;
+}
+
+.sucita-about-visual::before {
+  content: "";
+  position: absolute;
+  inset: 10% 4% 4% 12%;
+  background: linear-gradient(145deg, #188a6d, #083d36);
+  border-radius: 58% 42% 55% 45% / 48% 52% 48% 52%;
+  transform: rotate(-7deg);
+  z-index: 0;
+}
+
+.sucita-about-visual::after {
+  content: "";
+  position: absolute;
+  inset: 2% 10% 14% 2%;
+  border: 2px solid rgba(24, 138, 109, 0.4);
+  border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+  transform: rotate(5deg);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.sucita-about-visual-frame {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 54% 46% 52% 48% / 46% 54% 46% 54%;
+  box-shadow: 0 24px 48px rgba(8, 61, 54, 0.16);
+  aspect-ratio: 1 / 1.05;
+}
+
+.sucita-about-visual-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sucita-vm-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 4rem;
+}
+
+.sucita-vm-card {
+  padding: 2rem 2rem 2.1rem;
+  background: #f8fafa;
+  border-radius: 1.25rem;
+  border-left: 4px solid #188a6d;
+  height: 100%;
+}
+
+.sucita-vm-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.sucita-vm-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.75rem;
+  background: rgba(24, 138, 109, 0.12);
+  color: #188a6d;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.sucita-vm-heading {
+  color: #083d36;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.sucita-vm-text {
+  color: #5a6b69;
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.sucita-about-values {
+  background: #f8fafa;
+}
+
+.sucita-values-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.sucita-value-item {
+  text-align: center;
+  padding: 0.25rem 0.35rem;
+  background: transparent;
+  border: 0;
+}
+
+.sucita-value-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  color: #188a6d;
+  background: rgba(24, 138, 109, 0.1);
+}
+
+.sucita-value-icon svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.sucita-value-title {
+  color: #083d36;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.55rem;
+}
+
+.sucita-value-desc {
+  color: #5a6b69;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 991.98px) {
+  .sucita-vm-grid {
+    grid-template-columns: 1fr;
+    margin-top: 2.5rem;
+  }
+
+  .sucita-values-row {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.75rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sucita-values-row > * {
+    flex: 0 0 min(72vw, 240px);
+    scroll-snap-align: start;
+  }
+
+  .sucita-value-item {
+    text-align: left;
+  }
+}
+
+/* Homepage Services — professional cards */
+.sucita-services {
+  background: #f8fafa;
+}
+
+.sucita-services-title {
+  color: #083d36;
+}
+
+.sucita-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.sucita-services-grid > .sucita-reveal {
+  display: flex;
+  height: 100%;
+}
+
+.sucita-services-grid .sucita-service-card {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.sucita-service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e4ecea;
+  border-radius: 1.1rem;
+  padding: 1.65rem 1.45rem 1.25rem;
+  box-shadow: 0 10px 28px rgba(8, 61, 54, 0.045);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.sucita-service-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #083d36 0%, #188a6d 100%);
+}
+
+.sucita-service-card:hover {
+  border-color: rgba(24, 138, 109, 0.3);
+  box-shadow: 0 16px 36px rgba(8, 61, 54, 0.09);
+  transform: translateY(-4px);
+}
+
+.sucita-service-card-header {
+  margin-bottom: 1.2rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid #eef3f2;
+}
+
+.sucita-service-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.sucita-service-letter {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.7rem;
+  background: linear-gradient(145deg, #0a4a41, #083d36);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(8, 61, 54, 0.18);
+}
+
+.sucita-service-practice {
+  color: #188a6d;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sucita-service-col-title {
+  color: #083d36;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.sucita-service-card-desc {
+  color: #6b7c7a;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.sucita-service-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex: 1 1 auto;
+}
+
+.sucita-service-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: #3f524f;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.sucita-service-check {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.12rem;
+  border-radius: 50%;
+  background: #188a6d;
+  color: #fff;
+  font-size: 0.5rem;
+}
+
+.sucita-service-card-footer {
+  margin-top: 1.15rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid #eef3f2;
+  color: #94a1a0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 991.98px) {
+  .sucita-services-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin-inline: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sucita-service-card:hover {
+    transform: none;
+  }
+}
+
 /* Scroll reveal — replays on scroll up and down */
 .sucita-reveal {
   opacity: 0;
