@@ -7,6 +7,7 @@ export type ServiceCategory = {
   id: string;
   letter: string;
   title: string;
+  description: string;
   items: ServiceItem[];
 };
 
@@ -15,6 +16,8 @@ export const serviceCategories: ServiceCategory[] = [
     id: "audit-assurance",
     letter: "A",
     title: "Audit & Assurance",
+    description:
+      "Independent audit and assurance services that strengthen stakeholder confidence and meet regulatory requirements.",
     items: [
       { label: "Audit" },
       {
@@ -31,6 +34,8 @@ export const serviceCategories: ServiceCategory[] = [
     id: "accounting-tax",
     letter: "B",
     title: "Accounting & Tax",
+    description:
+      "End-to-end accounting and tax support — from monthly bookkeeping to complex VAT and tax compliance matters.",
     items: [
       { label: "Monthly Bookkeeping" },
       { label: "Monthly/Annual Tax Filling" },
@@ -46,6 +51,8 @@ export const serviceCategories: ServiceCategory[] = [
     id: "transformative-strategy",
     letter: "C",
     title: "Transformative Strategy",
+    description:
+      "Strategic advisory and operational support to help your business scale with strong systems, compliance, and structure.",
     items: [
       { label: "Financial Controlling & Outsourcing Service" },
       { label: "SOP Development" },
