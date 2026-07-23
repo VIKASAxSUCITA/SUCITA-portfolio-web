@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import KohostCTA from "@/components/template/KohostCTA";
 import { insights, getInsightBySlug } from "@/data/insights";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -115,8 +114,6 @@ export default async function InsightDetailPage({ params }: Props) {
           </div>
         </div>
       </section>
-
-      <KohostCTA />
     </>
   );
 }

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
-import KohostCTA from "@/components/template/KohostCTA";
 import { getUpcomingEvents, getPastEvents } from "@/data/events";
 
 export const metadata: Metadata = {
@@ -106,8 +105,6 @@ export default function EventsPage() {
           )}
         </div>
       </section>
-
-      <KohostCTA />
     </>
   );
 }

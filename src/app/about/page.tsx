@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
-import KohostCTA from "@/components/template/KohostCTA";
 import { firmStory, vision, mission, coreValues } from "@/data/about";
 
 export const metadata: Metadata = {
@@ -71,8 +70,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      <KohostCTA />
     </>
   );
 }

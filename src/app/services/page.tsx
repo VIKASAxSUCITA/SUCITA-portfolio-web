@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
-import KohostCTA from "@/components/template/KohostCTA";
 import { countServiceItems, serviceCategories } from "@/data/services";
 
 export const metadata: Metadata = {
@@ -62,8 +61,6 @@ export default function ServicesPage() {
           ))}
         </div>
       </section>
-
-      <KohostCTA />
     </>
   );
 }

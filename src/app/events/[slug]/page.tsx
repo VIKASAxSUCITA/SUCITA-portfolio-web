@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import KohostCTA from "@/components/template/KohostCTA";
 import { events, getEventBySlug } from "@/data/events";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -90,8 +89,6 @@ export default async function EventDetailPage({ params }: Props) {
           </div>
         </div>
       </section>
-
-      <KohostCTA />
     </>
   );
 }
