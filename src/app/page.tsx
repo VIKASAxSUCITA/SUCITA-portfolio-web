@@ -4,6 +4,9 @@ import HomeWhatWeDo from "@/components/home/HomeWhatWeDo";
 import HomeWhoWeServe from "@/components/home/HomeWhoWeServe";
 import HomeAbout from "@/components/home/HomeAbout";
 import HomeServices from "@/components/home/HomeServices";
+import HomeInsights from "@/components/home/HomeInsights";
+import HomeEvents from "@/components/home/HomeEvents";
+import HomeContact from "@/components/home/HomeContact";
 import HomeStrategyCTA from "@/components/home/HomeStrategyCTA";
 
 export default function HomePage() {
@@ -53,6 +56,15 @@ export default function HomePage() {
 
       {/* 6. Services — A / B / C practice areas */}
       <HomeServices />
+
+      {/* 7. Insights — articles & projects, horizontal scroll */}
+      <HomeInsights />
+
+      {/* 8. Events — latest 3, one row each */}
+      <HomeEvents />
+
+      {/* 9. Contact */}
+      <HomeContact />
     </>
   );
 }

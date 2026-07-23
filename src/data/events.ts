@@ -10,6 +10,7 @@ export type EventItem = {
   time?: string;
   location?: string;
   isUpcoming: boolean;
+  coverImage: string;
 };
 
 export const events: EventItem[] = [
@@ -28,6 +29,7 @@ export const events: EventItem[] = [
     time: "2:00 PM – 5:00 PM",
     location: "Sucita & Partners Office, Phnom Penh",
     isUpcoming: true,
+    coverImage: "/assets/img/events/tax-workshop.png",
   },
   {
     slug: "new-vat-advisory-service",
@@ -42,6 +44,7 @@ export const events: EventItem[] = [
     ],
     date: "2026-07-01",
     isUpcoming: true,
+    coverImage: "/assets/img/events/vat-advisory.png",
   },
   {
     slug: "audit-season-reminder-2026",
@@ -56,6 +59,7 @@ export const events: EventItem[] = [
     ],
     date: "2026-06-20",
     isUpcoming: true,
+    coverImage: "/assets/img/events/audit-season.png",
   },
   {
     slug: "startup-package-launch",
@@ -71,6 +75,7 @@ export const events: EventItem[] = [
     time: "10:00 AM – 12:00 PM",
     location: "Online (Zoom)",
     isUpcoming: false,
+    coverImage: "/assets/img/events/startup-session.png",
   },
 ];
 

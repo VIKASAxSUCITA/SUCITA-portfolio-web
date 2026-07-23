@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import KohostCTA from "@/components/template/KohostCTA";
-import { events, getUpcomingEvents, getPastEvents } from "@/data/events";
+import { getUpcomingEvents, getPastEvents } from "@/data/events";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
@@ -29,19 +33,34 @@ export default function EventsPage() {
         <div className="container">
           {upcoming.length > 0 && (
             <div className="mb-5">
-              <h3 className="mb-4">Upcoming</h3>
+              <h3 className="mb-4" style={{ color: "#083d36" }}>
+                Upcoming
+              </h3>
               <div className="row">
                 {upcoming.map((event) => (
                   <div key={event.slug} className="col-md-6 mb-4">
                     <Link href={`/events/${event.slug}`} className="text-decoration-none">
-                      <div className="card single-promo-card p-4 h-100">
-                        <span className={`badge mb-2 ${event.type === "event" ? "bg-primary" : "bg-secondary"}`}>
-                          {event.type === "event" ? "Event" : "Announcement"}
-                        </span>
-                        <small className="text-muted d-block">{formatDate(event.date)}</small>
-                        <h5 className="mt-2">{event.title}</h5>
-                        <p className="mb-0 small">{event.excerpt}</p>
-                      </div>
+                      <article className="sucita-insight-list-card h-100">
+                        <div className="sucita-insight-list-media">
+                          <Image
+                            src={event.coverImage}
+                            alt={event.title}
+                            width={640}
+                            height={400}
+                            className="sucita-insight-list-img"
+                          />
+                          <span className="sucita-insight-type sucita-insight-type--overlay is-project">
+                            {event.type === "event" ? "Event" : "Announcement"}
+                          </span>
+                        </div>
+                        <div className="sucita-insight-list-body">
+                          <small className="sucita-insight-date d-block mb-2">
+                            {formatDate(event.date)}
+                          </small>
+                          <h5 className="sucita-insight-list-title">{event.title}</h5>
+                          <p className="sucita-insight-list-excerpt mb-0">{event.excerpt}</p>
+                        </div>
+                      </article>
                     </Link>
                   </div>
                 ))}
@@ -51,17 +70,34 @@ export default function EventsPage() {
 
           {past.length > 0 && (
             <div>
-              <h3 className="mb-4">Past</h3>
+              <h3 className="mb-4" style={{ color: "#083d36" }}>
+                Past
+              </h3>
               <div className="row">
                 {past.map((event) => (
                   <div key={event.slug} className="col-md-6 mb-4">
                     <Link href={`/events/${event.slug}`} className="text-decoration-none">
-                      <div className="card single-promo-card p-4 h-100 opacity-75">
-                        <span className="badge bg-secondary mb-2">{event.type}</span>
-                        <small className="text-muted d-block">{formatDate(event.date)}</small>
-                        <h5 className="mt-2">{event.title}</h5>
-                        <p className="mb-0 small">{event.excerpt}</p>
-                      </div>
+                      <article className="sucita-insight-list-card h-100">
+                        <div className="sucita-insight-list-media">
+                          <Image
+                            src={event.coverImage}
+                            alt={event.title}
+                            width={640}
+                            height={400}
+                            className="sucita-insight-list-img"
+                          />
+                          <span className="sucita-insight-type sucita-insight-type--overlay is-article">
+                            {event.type === "event" ? "Event" : "Announcement"}
+                          </span>
+                        </div>
+                        <div className="sucita-insight-list-body">
+                          <small className="sucita-insight-date d-block mb-2">
+                            {formatDate(event.date)}
+                          </small>
+                          <h5 className="sucita-insight-list-title">{event.title}</h5>
+                          <p className="sucita-insight-list-excerpt mb-0">{event.excerpt}</p>
+                        </div>
+                      </article>
                     </Link>
                   </div>
                 ))}

@@ -3,6 +3,8 @@
   --bs-primary: #083d36;
   --bs-secondary: #188a6d;
   --bs-primary-rgb: 8, 61, 54;
+  --bs-success: #188a6d;
+  --bs-success-rgb: 24, 138, 109;
   --bs-link-color: #188a6d;
   --bs-link-hover-color: #083d36;
 }
@@ -40,6 +42,34 @@
 
 .btn-tertiary:hover {
   background-color: #147a60 !important;
+}
+
+.bg-primary {
+  background-color: #083d36 !important;
+}
+
+.bg-success {
+  background-color: #188a6d !important;
+}
+
+.badge.bg-primary,
+.badge.bg-success {
+  color: #fff !important;
+}
+
+.text-success {
+  color: #188a6d !important;
+}
+
+.btn-outline-primary {
+  color: #083d36 !important;
+  border-color: #083d36 !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #083d36 !important;
+  border-color: #083d36 !important;
+  color: #fff !important;
 }
 
 .scroll-top.primary-bg {
@@ -180,34 +210,210 @@
   background: #94a1a0 !important;
 }
 
-/* Footer — light background for dark-text logo visibility */
+/* Footer — Quick Link / Services / Contact Info */
 .sucita-footer {
   background: #f8fafa !important;
   border-top: 4px solid #188a6d;
 }
 
-.sucita-footer p,
-.sucita-footer h6,
-.sucita-footer .h6 {
+.sucita-footer-copy {
+  color: #5a6b69;
+  max-width: 28rem;
+}
+
+.sucita-footer-heading {
   color: #083d36 !important;
-  opacity: 1 !important;
+  font-weight: 600 !important;
+  margin-bottom: 1rem !important;
 }
 
-.sucita-footer ul li a {
+.sucita-footer-list li + li {
+  margin-top: 0.55rem;
+}
+
+.sucita-footer-list a {
   color: #4a5c5a !important;
-  opacity: 1 !important;
+  text-decoration: none;
 }
 
-.sucita-footer ul li a:hover {
+.sucita-footer-list a:hover {
   color: #188a6d !important;
-  opacity: 1 !important;
 }
 
-.sucita-footer .small {
-  color: #94a1a0 !important;
+.sucita-footer-contact li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: #4a5c5a;
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
-/* Service promo cards — brand hover instead of template purple */
+.sucita-footer-contact li + li {
+  margin-top: 0.75rem;
+}
+
+.sucita-footer-contact i {
+  margin-top: 0.2rem;
+  color: #188a6d;
+  width: 1rem;
+  text-align: center;
+}
+
+.sucita-footer-contact a {
+  color: #4a5c5a !important;
+  text-decoration: none;
+}
+
+.sucita-footer-contact a:hover {
+  color: #188a6d !important;
+}
+
+.sucita-footer-bottom {
+  background: #f1f5f4 !important;
+  border-top: 1px solid #e4ecea;
+}
+
+.sucita-footer-bottom,
+.sucita-footer-bottom a {
+  color: #6b7c7a !important;
+}
+
+.sucita-footer-bottom a:hover {
+  color: #188a6d !important;
+}
+
+/* Homepage Contact */
+.sucita-contact {
+  background: #fff;
+}
+
+.sucita-contact-title {
+  color: #083d36;
+}
+
+.sucita-contact-info {
+  height: 100%;
+  padding: 2rem 1.75rem;
+  background: #083d36;
+  border-radius: 1.15rem;
+  color: #fff;
+}
+
+.sucita-contact-info-title {
+  color: #fff;
+  font-size: 1.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.sucita-contact-info-copy {
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 1.75rem;
+}
+
+.sucita-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.sucita-contact-item + .sucita-contact-item {
+  margin-top: 1.15rem;
+}
+
+.sucita-contact-icon {
+  flex-shrink: 0;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #a8d4c8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sucita-contact-item-label {
+  color: #a8d4c8;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sucita-contact-item-value {
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 0.98rem;
+}
+
+a.sucita-contact-item-value:hover {
+  color: #a8d4c8 !important;
+}
+
+.sucita-contact-channels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.sucita-contact-channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff !important;
+  text-decoration: none !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.sucita-contact-channel:hover {
+  background: #188a6d;
+}
+
+.sucita-contact-form-wrap {
+  height: 100%;
+  padding: 2rem 1.75rem;
+  background: #f8fafa;
+  border: 1px solid #e4ecea;
+  border-radius: 1.15rem;
+}
+
+.sucita-contact-form .form-label {
+  color: #083d36;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.sucita-contact-input {
+  border: 1px solid #d7e2df !important;
+  border-radius: 0.65rem !important;
+  padding: 0.7rem 0.9rem !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+
+.sucita-contact-input:focus {
+  border-color: #188a6d !important;
+}
+
+.sucita-contact-success {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.sucita-contact-success h3 {
+  color: #083d36;
+}
+
+.sucita-contact-success p {
+  color: #5a6b69;
+}
+
+/* Scroll reveal — replays on scroll up and down */
 .single-promo-card.single-promo-hover:before {
   background-color: #188a6d !important;
 }
@@ -929,6 +1135,585 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sucita-service-card:hover {
+    transform: none;
+  }
+}
+
+/* Homepage Insights — horizontal scroll (shows ~3.5 cards) */
+.sucita-insights {
+  background: #fff;
+  overflow: hidden;
+}
+
+.sucita-insights-title {
+  color: #083d36;
+}
+
+.sucita-insights-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.sucita-insights-controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.sucita-insights-nav {
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid #d7e2df;
+  border-radius: 0.7rem;
+  background: #fff;
+  color: #083d36;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.sucita-insights-nav:hover {
+  background: #083d36;
+  border-color: #083d36;
+  color: #fff;
+}
+
+.sucita-insights-track {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 0;
+  padding-bottom: 0.75rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #188a6d transparent;
+}
+
+.sucita-insights-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.sucita-insights-track::-webkit-scrollbar-thumb {
+  background: #188a6d;
+  border-radius: 999px;
+}
+
+.sucita-insight-card {
+  flex: 0 0 calc((100% - 3.75rem) / 3.5);
+  min-width: 260px;
+  max-width: 360px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e4ecea;
+  border-radius: 1.1rem;
+  padding: 0;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.sucita-insight-card:hover {
+  border-color: rgba(24, 138, 109, 0.35);
+  box-shadow: 0 14px 30px rgba(8, 61, 54, 0.08);
+  transform: translateY(-3px);
+}
+
+.sucita-insight-card-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: #e8eeed;
+}
+
+.sucita-insight-card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.sucita-insight-card:hover .sucita-insight-card-img {
+  transform: scale(1.04);
+}
+
+.sucita-insight-type--overlay {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  z-index: 1;
+  max-width: calc(100% - 1.7rem);
+  box-shadow: 0 4px 12px rgba(8, 61, 54, 0.12);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sucita-insight-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 1.2rem 1.25rem 1.35rem;
+}
+
+.sucita-insight-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.sucita-insight-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.65rem;
+  border-radius: 0.45rem;
+  background: rgba(24, 138, 109, 0.12);
+  color: #188a6d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sucita-insight-date {
+  color: #94a1a0;
+  font-size: 0.8rem;
+}
+
+.sucita-insight-category {
+  color: #083d36;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sucita-insight-card-title {
+  color: #083d36;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 0.65rem;
+}
+
+.sucita-insight-excerpt {
+  color: #5a6b69;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin-bottom: 0.75rem;
+  flex: 1 1 auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sucita-insight-client {
+  color: #94a1a0;
+  font-size: 0.8rem;
+  min-height: 1.2em;
+}
+
+.sucita-insights-all {
+  color: #083d36 !important;
+  border-color: #083d36 !important;
+}
+
+.sucita-insights-all:hover {
+  background: #083d36 !important;
+  color: #fff !important;
+}
+
+/* Insight detail + listing images */
+.sucita-insight-main-media {
+  overflow: hidden;
+  border-radius: 1.15rem;
+  box-shadow: 0 16px 40px rgba(8, 61, 54, 0.1);
+}
+
+.sucita-insight-main-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.sucita-insight-detail-meta {
+  padding: 1rem 1.15rem;
+  background: #f8fafa;
+  border-left: 3px solid #188a6d;
+  border-radius: 0.5rem;
+  color: #3f524f;
+}
+
+.sucita-insight-gallery-title {
+  color: #083d36;
+}
+
+.sucita-insight-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.sucita-insight-gallery-item {
+  overflow: hidden;
+  border-radius: 0.9rem;
+  border: 1px solid #e4ecea;
+  background: #f8fafa;
+}
+
+.sucita-insight-gallery-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.sucita-insight-gallery-item:hover .sucita-insight-gallery-img {
+  transform: scale(1.03);
+}
+
+.sucita-insight-list-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: #e8eeed;
+}
+
+.sucita-insight-list-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.sucita-insight-list-card {
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e4ecea;
+  border-radius: 1.1rem;
+  box-shadow: 0 8px 24px rgba(8, 61, 54, 0.04);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.sucita-insight-list-card:hover {
+  border-color: rgba(24, 138, 109, 0.35);
+  box-shadow: 0 14px 32px rgba(8, 61, 54, 0.09);
+  transform: translateY(-3px);
+}
+
+.sucita-insight-list-card:hover .sucita-insight-list-img {
+  transform: scale(1.04);
+}
+
+.sucita-insight-list-body {
+  padding: 1.15rem 1.2rem 1.3rem;
+}
+
+.sucita-insight-list-title {
+  color: #083d36;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 0.55rem;
+}
+
+.sucita-insight-list-excerpt {
+  color: #5a6b69;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.sucita-insight-type.is-article {
+  background: #083d36;
+  color: #fff;
+}
+
+.sucita-insight-type.is-project {
+  background: #188a6d;
+  color: #fff;
+}
+
+.sucita-insight-type.is-article-light,
+.sucita-insight-type.is-project-light {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.sucita-insights-page h5,
+.sucita-insights-page .card h5 {
+  color: #083d36;
+}
+
+.sucita-insights-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.sucita-insights-filter {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  border: 1px solid #d7e2df;
+  border-radius: 0.65rem;
+  background: #fff;
+  color: #083d36 !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.sucita-insights-filter:hover {
+  border-color: #188a6d;
+  color: #188a6d !important;
+}
+
+.sucita-insights-filter.is-active {
+  background: #083d36;
+  border-color: #083d36;
+  color: #fff !important;
+}
+
+/* Homepage Events — latest 3, one row each */
+.sucita-events {
+  background: #f8fafa;
+}
+
+.sucita-events-title {
+  color: #083d36;
+}
+
+.sucita-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 980px;
+  margin-inline: auto;
+}
+
+.sucita-events-list > .sucita-reveal {
+  width: 100%;
+}
+
+.sucita-event-row {
+  display: grid;
+  grid-template-columns: 260px 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e4ecea;
+  border-radius: 1rem;
+  box-shadow: 0 8px 22px rgba(8, 61, 54, 0.04);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.sucita-event-row:hover {
+  border-color: rgba(24, 138, 109, 0.35);
+  box-shadow: 0 12px 28px rgba(8, 61, 54, 0.08);
+  transform: translateY(-2px);
+}
+
+.sucita-event-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  aspect-ratio: 16 / 9;
+  background: #e8eeed;
+}
+
+.sucita-event-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.sucita-event-row:hover .sucita-event-img {
+  transform: scale(1.04);
+}
+
+.sucita-event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.sucita-event-type,
+.sucita-event-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.55rem;
+  border-radius: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sucita-event-type {
+  background: rgba(24, 138, 109, 0.12);
+  color: #188a6d;
+}
+
+.sucita-event-status {
+  background: #eef3f2;
+  color: #6b7c7a;
+}
+
+.sucita-event-status.is-upcoming {
+  background: rgba(8, 61, 54, 0.1);
+  color: #083d36;
+}
+
+.sucita-event-date-inline {
+  color: #94a1a0;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.sucita-event-title {
+  color: #083d36;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 0.45rem;
+}
+
+.sucita-event-excerpt {
+  color: #5a6b69;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin-bottom: 0.45rem !important;
+}
+
+.sucita-event-info {
+  color: #94a1a0;
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+.sucita-event-btn {
+  white-space: nowrap;
+}
+
+.sucita-event-btn .sucita-link-arrow {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+@media (max-width: 991.98px) {
+  .sucita-event-row {
+    grid-template-columns: 210px 1fr;
+    gap: 1.1rem;
+  }
+
+  .sucita-event-action {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .sucita-event-row {
+    grid-template-columns: 1fr;
+    padding: 0.85rem;
+  }
+
+  .sucita-event-media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .sucita-event-action {
+    grid-column: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sucita-event-row:hover {
+    transform: none;
+  }
+
+  .sucita-event-row:hover .sucita-event-img {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sucita-insight-list-card:hover {
+    transform: none;
+  }
+
+  .sucita-insight-list-card:hover .sucita-insight-list-img {
+    transform: none;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .sucita-insight-card {
+    flex-basis: calc((100% - 1.25rem) / 2.3);
+  }
+
+  .sucita-insight-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sucita-insights-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sucita-insight-card {
+    flex-basis: 82%;
+    max-width: none;
+  }
+
+  .sucita-insight-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sucita-insight-card:hover {
+    transform: none;
+  }
+
+  .sucita-insight-card:hover .sucita-insight-card-img,
+  .sucita-insight-gallery-item:hover .sucita-insight-gallery-img {
     transform: none;
   }
 }

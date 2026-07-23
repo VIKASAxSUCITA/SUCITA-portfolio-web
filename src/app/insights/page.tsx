@@ -1,24 +1,43 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
-import { insights, getInsightsByType } from "@/data/insights";
+import {
+  insights,
+  insightCategories,
+  getInsightsByCategory,
+  type InsightCategory,
+} from "@/data/insights";
 
 export const metadata: Metadata = {
   title: "Insights",
 };
 
-type Props = { searchParams: Promise<{ type?: string }> };
+type Props = { searchParams: Promise<{ category?: string }> };
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  return new Date(d).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function isInsightCategory(value?: string): value is InsightCategory {
+  return !!value && insightCategories.includes(value as InsightCategory);
 }
 
 export default async function InsightsPage({ searchParams }: Props) {
-  const { type } = await searchParams;
-  const articles = getInsightsByType("article");
-  const projects = getInsightsByType("project");
-  const showArticles = !type || type === "article";
-  const showProjects = !type || type === "project";
+  const { category } = await searchParams;
+  const activeCategory = isInsightCategory(category) ? category : null;
+
+  const filtered = activeCategory
+    ? getInsightsByCategory(activeCategory)
+    : insights;
+
+  const sortedInsights = [...filtered].sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
 
   return (
     <>
@@ -27,57 +46,64 @@ export default async function InsightsPage({ searchParams }: Props) {
         subtitle="Articles, project highlights, and practical guidance from our team."
       />
 
-      <section className="ptb-100">
+      <section className="ptb-100 sucita-insights-page">
         <div className="container">
-          <div className="mb-5">
-            <Link href="/insights" className={`btn btn-sm me-2 ${!type ? "btn-primary" : "btn-outline-primary"}`}>
+          <div className="sucita-insights-filters mb-5">
+            <Link
+              href="/insights"
+              className={`sucita-insights-filter ${!activeCategory ? "is-active" : ""}`}
+            >
               All ({insights.length})
             </Link>
-            <Link href="/insights?type=article" className={`btn btn-sm me-2 ${type === "article" ? "btn-primary" : "btn-outline-primary"}`}>
-              Articles ({articles.length})
-            </Link>
-            <Link href="/insights?type=project" className={`btn btn-sm ${type === "project" ? "btn-primary" : "btn-outline-primary"}`}>
-              Projects ({projects.length})
-            </Link>
+            {insightCategories.map((cat) => {
+              const count = getInsightsByCategory(cat).length;
+              return (
+                <Link
+                  key={cat}
+                  href={`/insights?category=${encodeURIComponent(cat)}`}
+                  className={`sucita-insights-filter ${
+                    activeCategory === cat ? "is-active" : ""
+                  }`}
+                >
+                  {cat} ({count})
+                </Link>
+              );
+            })}
           </div>
 
-          {showArticles && (
-            <div className="mb-5">
-              <h3 className="mb-4">Articles</h3>
-              <div className="row">
-                {articles.map((item) => (
-                  <div key={item.slug} className="col-md-6 col-lg-4 mb-4">
-                    <Link href={`/insights/${item.slug}`} className="text-decoration-none">
-                      <div className="card single-promo-card h-100 p-3">
-                        <span className="badge bg-primary mb-2">Article</span>
-                        <small className="text-muted d-block mb-2">{formatDate(item.publishedAt)}</small>
-                        <h5>{item.title}</h5>
-                        <p className="mb-0 small">{item.excerpt}</p>
+          {sortedInsights.length === 0 ? (
+            <p className="sucita-about-body text-center mb-0">
+              No insights in this category yet.
+            </p>
+          ) : (
+            <div className="row">
+              {sortedInsights.map((item) => (
+                <div key={item.slug} className="col-md-6 col-lg-4 mb-4">
+                  <Link href={`/insights/${item.slug}`} className="text-decoration-none">
+                    <article className="sucita-insight-list-card h-100">
+                      <div className="sucita-insight-list-media">
+                        <Image
+                          src={item.coverImage}
+                          alt={item.title}
+                          width={640}
+                          height={400}
+                          className="sucita-insight-list-img"
+                        />
+                        <span className="sucita-insight-type sucita-insight-type--overlay is-article">
+                          {item.category}
+                        </span>
                       </div>
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {showProjects && (
-            <div>
-              <h3 className="mb-4">Projects & Client Work</h3>
-              <div className="row">
-                {projects.map((item) => (
-                  <div key={item.slug} className="col-md-6 col-lg-4 mb-4">
-                    <Link href={`/insights/${item.slug}`} className="text-decoration-none">
-                      <div className="card single-promo-card h-100 p-3">
-                        <span className="badge bg-success mb-2">Project</span>
-                        <small className="text-muted d-block mb-2">{formatDate(item.publishedAt)}</small>
-                        <h5>{item.title}</h5>
-                        <p className="mb-0 small">{item.excerpt}</p>
+                      <div className="sucita-insight-list-body">
+                        <small className="sucita-insight-date d-block mb-2">
+                          {formatDate(item.publishedAt)}
+                        </small>
+                        <h5 className="sucita-insight-list-title">{item.title}</h5>
+                        <p className="sucita-insight-list-excerpt mb-0">{item.excerpt}</p>
                       </div>
-                    </Link>
-                  </div>
-                ))}
-              </div>
+                    </article>
+                  </Link>
+                </div>
+              ))}
             </div>
           )}
         </div>
