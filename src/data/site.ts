@@ -7,6 +7,8 @@ export const siteConfig = {
   telegram: "https://t.me/sucitapartners",
   officeHours: "Mon – Fri: 8:00 AM – 5:00 PM",
   address: "Phnom Penh, Cambodia",
+  footerCopy:
+    "We simplify financial complexity and protect client interests through accountable accounting, tax, audit, and compliance services.",
 };
 
 export const navLinks = [

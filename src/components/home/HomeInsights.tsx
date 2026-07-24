@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { insights } from "@/data/insights";
+import type { Insight } from "@/data/insights";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
 
 function formatDate(value: string) {
@@ -14,12 +14,13 @@ function formatDate(value: string) {
   });
 }
 
-const latestInsights = [...insights].sort(
-  (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-);
+type Props = { items: Insight[] };
 
-export default function HomeInsights() {
+export default function HomeInsights({ items }: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const latestInsights = [...items].sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
 
   const scrollByCard = (direction: "prev" | "next") => {
     const track = trackRef.current;

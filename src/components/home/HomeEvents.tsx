@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
-import { events } from "@/data/events";
+import type { EventItem } from "@/data/events";
 
 function formatEventDate(value: string) {
   const date = new Date(value);
@@ -13,11 +13,13 @@ function formatEventDate(value: string) {
   };
 }
 
-const latestEvents = [...events]
-  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  .slice(0, 3);
+type Props = { items: EventItem[] };
 
-export default function HomeEvents() {
+export default function HomeEvents({ items }: Props) {
+  const latestEvents = [...items]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 3);
+
   return (
     <section id="events" className="sucita-events ptb-100">
       <div className="container">

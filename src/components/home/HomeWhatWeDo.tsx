@@ -1,7 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
+import EditableText from "@/components/admin/EditableText";
+import EditableImage from "@/components/admin/EditableImage";
+import type { HomeSplitContent } from "@/lib/content/homeTypes";
+import { defaultHomeContent } from "@/lib/content/homeDefaults";
 
-export default function HomeWhatWeDo() {
+type Props = {
+  content?: HomeSplitContent;
+  edit?: {
+    onChange: (updater: (prev: HomeSplitContent) => HomeSplitContent) => void;
+  };
+};
+
+export default function HomeWhatWeDo({
+  content = defaultHomeContent.whatWeDo,
+  edit,
+}: Props) {
   return (
     <section className="sucita-layer sucita-layer-do ptb-100">
       <div className="container">
@@ -9,12 +25,32 @@ export default function HomeWhatWeDo() {
           <div className="col-md-6 col-lg-5">
             <ScrollReveal className="sucita-reveal-left">
               <div className="feature-contents">
-                <h2>What We Do</h2>
-                <p>
-                  Statutory audits, monthly bookkeeping, tax filing, VAT refund support,
-                  internal audit, SOP development, start-up packages, and corporate
-                  secretary services — delivered with integrity and independence.
-                </p>
+                {edit ? (
+                  <>
+                    <EditableText
+                      className="h2-like mb-3"
+                      value={content.title}
+                      label="What we do title"
+                      onChange={(title) =>
+                        edit.onChange((prev) => ({ ...prev, title }))
+                      }
+                    />
+                    <EditableText
+                      className="lead"
+                      multiline
+                      value={content.text}
+                      label="What we do text"
+                      onChange={(text) =>
+                        edit.onChange((prev) => ({ ...prev, text }))
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h2>{content.title}</h2>
+                    <p>{content.text}</p>
+                  </>
+                )}
               </div>
             </ScrollReveal>
           </div>
@@ -26,13 +62,24 @@ export default function HomeWhatWeDo() {
                 <span className="sucita-photo-dot sucita-photo-dot--1" aria-hidden="true" />
                 <span className="sucita-photo-dot sucita-photo-dot--2" aria-hidden="true" />
                 <div className="sucita-photo-clip">
-                  <Image
-                    src="/assets/img/whatwedo.png"
-                    alt="Reviewing financial reports and charts"
-                    width={800}
-                    height={640}
-                    className="sucita-photo-img"
-                  />
+                  {edit ? (
+                    <EditableImage
+                      src={content.image}
+                      alt={content.imageAlt}
+                      className="sucita-photo-img"
+                      onChange={(image) =>
+                        edit.onChange((prev) => ({ ...prev, image }))
+                      }
+                    />
+                  ) : (
+                    <Image
+                      src={content.image}
+                      alt={content.imageAlt}
+                      width={800}
+                      height={640}
+                      className="sucita-photo-img"
+                    />
+                  )}
                 </div>
               </div>
             </ScrollReveal>

@@ -3,15 +3,16 @@ import Link from "next/link";
 import Image from "next/image";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import {
-  insights,
   insightCategories,
-  getInsightsByCategory,
   type InsightCategory,
 } from "@/data/insights";
+import { getPublicInsights } from "@/lib/content/insightsStore";
 
 export const metadata: Metadata = {
   title: "Insights",
 };
+
+export const dynamic = "force-dynamic";
 
 type Props = { searchParams: Promise<{ category?: string }> };
 
@@ -30,9 +31,10 @@ function isInsightCategory(value?: string): value is InsightCategory {
 export default async function InsightsPage({ searchParams }: Props) {
   const { category } = await searchParams;
   const activeCategory = isInsightCategory(category) ? category : null;
+  const insights = await getPublicInsights();
 
   const filtered = activeCategory
-    ? getInsightsByCategory(activeCategory)
+    ? insights.filter((item) => item.category === activeCategory)
     : insights;
 
   const sortedInsights = [...filtered].sort(
@@ -56,7 +58,7 @@ export default async function InsightsPage({ searchParams }: Props) {
               All ({insights.length})
             </Link>
             {insightCategories.map((cat) => {
-              const count = getInsightsByCategory(cat).length;
+              const count = insights.filter((item) => item.category === cat).length;
               return (
                 <Link
                   key={cat}

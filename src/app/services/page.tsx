@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
-import { countServiceItems, serviceCategories } from "@/data/services";
+import { countServiceItems } from "@/data/services";
+import { getServiceCategories } from "@/lib/content/servicesStore";
 
 export const metadata: Metadata = {
   title: "Services",
 };
 
-export default function ServicesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ServicesPage() {
+  const serviceCategories = await getServiceCategories();
+
   return (
     <>
       <KohostPageHeader
@@ -48,7 +53,9 @@ export default function ServicesPage() {
               <div className="col-lg-6">
                 <div className="single-service p-5 rounded border gray-light-bg">
                   <h4>
-                    <span className="h5 text-uppercase d-block color-primary">Practice Area</span>
+                    <span className="h5 text-uppercase d-block color-primary">
+                      Practice Area
+                    </span>
                     {service.title}
                   </h4>
                   <p className="mb-0 mt-3">{service.description}</p>

@@ -2,23 +2,29 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { events, getEventBySlug } from "@/data/events";
+import {
+  getPublicEventBySlug,
+  getPublicEvents,
+} from "@/lib/content/eventsStore";
+
+export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
+  const events = await getPublicEvents();
   return events.map((e) => ({ slug: e.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getPublicEventBySlug(slug);
   return { title: event?.title ?? "Not Found" };
 }
 
 export default async function EventDetailPage({ params }: Props) {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  const event = await getPublicEventBySlug(slug);
   if (!event) notFound();
 
   return (
@@ -81,7 +87,7 @@ export default async function EventDetailPage({ params }: Props) {
               ))}
 
               {event.isUpcoming ? (
-                <Link href="/contact?intent=strategy-call" className="btn btn-primary mt-3">
+                <Link href="/#contact" className="btn btn-primary mt-3">
                   Register / Contact Us
                 </Link>
               ) : null}

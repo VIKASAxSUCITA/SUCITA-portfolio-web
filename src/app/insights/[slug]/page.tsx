@@ -2,17 +2,23 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { insights, getInsightBySlug } from "@/data/insights";
+import {
+  getPublicInsightBySlug,
+  getPublicInsights,
+} from "@/lib/content/insightsStore";
+
+export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
+  const insights = await getPublicInsights();
   return insights.map((i) => ({ slug: i.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const item = getInsightBySlug(slug);
+  const item = await getPublicInsightBySlug(slug);
   return { title: item?.title ?? "Not Found" };
 }
 
@@ -26,7 +32,7 @@ function formatDate(value: string) {
 
 export default async function InsightDetailPage({ params }: Props) {
   const { slug } = await params;
-  const item = getInsightBySlug(slug);
+  const item = await getPublicInsightBySlug(slug);
   if (!item) notFound();
 
   const gallery = item.galleryImages ?? [];
@@ -93,7 +99,8 @@ export default async function InsightDetailPage({ params }: Props) {
                     {item.type === "project" ? "Project evidence" : "Related visuals"}
                   </h3>
                   <p className="sucita-about-body mb-4">
-                    Supporting images from this {item.type === "project" ? "engagement" : "topic"}.
+                    Supporting images from this{" "}
+                    {item.type === "project" ? "engagement" : "topic"}.
                   </p>
                   <div className="sucita-insight-gallery-grid">
                     {gallery.map((src, index) => (

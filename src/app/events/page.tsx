@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
-import { getUpcomingEvents, getPastEvents } from "@/data/events";
+import { getPublicEvents } from "@/lib/content/eventsStore";
 
 export const metadata: Metadata = {
   title: "Events",
 };
+
+export const dynamic = "force-dynamic";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", {
@@ -17,9 +19,10 @@ function formatDate(d: string) {
   });
 }
 
-export default function EventsPage() {
-  const upcoming = getUpcomingEvents();
-  const past = getPastEvents();
+export default async function EventsPage() {
+  const events = await getPublicEvents();
+  const upcoming = events.filter((item) => item.isUpcoming);
+  const past = events.filter((item) => !item.isUpcoming);
 
   return (
     <>

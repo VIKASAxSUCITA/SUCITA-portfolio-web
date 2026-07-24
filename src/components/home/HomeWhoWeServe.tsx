@@ -1,7 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
+import EditableText from "@/components/admin/EditableText";
+import EditableImage from "@/components/admin/EditableImage";
+import type { HomeSplitContent } from "@/lib/content/homeTypes";
+import { defaultHomeContent } from "@/lib/content/homeDefaults";
 
-export default function HomeWhoWeServe() {
+type Props = {
+  content?: HomeSplitContent;
+  edit?: {
+    onChange: (updater: (prev: HomeSplitContent) => HomeSplitContent) => void;
+  };
+};
+
+export default function HomeWhoWeServe({
+  content = defaultHomeContent.whoWeServe,
+  edit,
+}: Props) {
   return (
     <section className="sucita-layer sucita-layer-serve ptb-100">
       <div className="container">
@@ -14,13 +30,24 @@ export default function HomeWhoWeServe() {
                 <span className="sucita-photo-dot sucita-photo-dot--1" aria-hidden="true" />
                 <span className="sucita-photo-dot sucita-photo-dot--2" aria-hidden="true" />
                 <div className="sucita-photo-clip">
-                  <Image
-                    src="/assets/img/whatweserve.png"
-                    alt="Collaborating on financial analysis"
-                    width={800}
-                    height={640}
-                    className="sucita-photo-img"
-                  />
+                  {edit ? (
+                    <EditableImage
+                      src={content.image}
+                      alt={content.imageAlt}
+                      className="sucita-photo-img"
+                      onChange={(image) =>
+                        edit.onChange((prev) => ({ ...prev, image }))
+                      }
+                    />
+                  ) : (
+                    <Image
+                      src={content.image}
+                      alt={content.imageAlt}
+                      width={800}
+                      height={640}
+                      className="sucita-photo-img"
+                    />
+                  )}
                 </div>
               </div>
             </ScrollReveal>
@@ -28,14 +55,32 @@ export default function HomeWhoWeServe() {
           <div className="col-md-6 col-lg-5 order-1 order-md-2">
             <ScrollReveal className="sucita-reveal-right" delay={120}>
               <div className="feature-contents">
-                <h2>Who We Serve</h2>
-                <p>
-                  SMEs and growing businesses that need reliable accounting and tax
-                  compliance. Startups requiring setup, licensing, and structured
-                  financial systems. Companies facing tax audits, VAT matters, or
-                  statutory audit requirements — and organizations seeking outsourced
-                  financial control and corporate secretary support.
-                </p>
+                {edit ? (
+                  <>
+                    <EditableText
+                      className="h2-like mb-3"
+                      value={content.title}
+                      label="Who we serve title"
+                      onChange={(title) =>
+                        edit.onChange((prev) => ({ ...prev, title }))
+                      }
+                    />
+                    <EditableText
+                      className="lead"
+                      multiline
+                      value={content.text}
+                      label="Who we serve text"
+                      onChange={(text) =>
+                        edit.onChange((prev) => ({ ...prev, text }))
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h2>{content.title}</h2>
+                    <p>{content.text}</p>
+                  </>
+                )}
               </div>
             </ScrollReveal>
           </div>

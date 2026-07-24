@@ -1,33 +1,57 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
-import { siteConfig } from "@/data/site";
+import EditableText from "@/components/admin/EditableText";
+import { siteConfig as defaultSite } from "@/data/site";
+import type { SiteContent } from "@/lib/content/types";
+import type { HomeContactBlock } from "@/lib/content/homeTypes";
+import { defaultHomeContent } from "@/lib/content/homeDefaults";
 
-const contactItems = [
-  {
-    icon: "fas fa-map-marker-alt",
-    label: "Address",
-    value: siteConfig.address,
-  },
-  {
-    icon: "fas fa-envelope",
-    label: "Email",
-    value: siteConfig.email,
-    href: `mailto:${siteConfig.email}`,
-  },
-  {
-    icon: "fas fa-phone",
-    label: "Phone",
-    value: siteConfig.phone,
-    href: `tel:${siteConfig.phone.replace(/\s/g, "")}`,
-  },
-];
+type Props = {
+  content?: HomeContactBlock;
+  site?: SiteContent;
+  edit?: {
+    onChangeContent: (
+      updater: (prev: HomeContactBlock) => HomeContactBlock
+    ) => void;
+    onChangeSite: (updater: (prev: SiteContent) => SiteContent) => void;
+  };
+};
 
-export default function HomeContact() {
+export default function HomeContact({
+  content = defaultHomeContent.contact,
+  site = defaultSite,
+  edit,
+}: Props) {
   const [submitted, setSubmitted] = useState(false);
+  const contactItems = useMemo(
+    () => [
+      {
+        icon: "fas fa-map-marker-alt",
+        label: "Address",
+        field: "address" as const,
+        value: site.address,
+      },
+      {
+        icon: "fas fa-envelope",
+        label: "Email",
+        field: "email" as const,
+        value: site.email,
+        href: `mailto:${site.email}`,
+      },
+      {
+        icon: "fas fa-phone",
+        label: "Phone",
+        field: "phone" as const,
+        value: site.phone,
+        href: `tel:${site.phone.replace(/\s/g, "")}`,
+      },
+    ],
+    [site]
+  );
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,8 +64,31 @@ export default function HomeContact() {
         <div className="row justify-content-center mb-5">
           <div className="col-lg-7 text-center">
             <ScrollReveal className="sucita-reveal-up">
-              <p className="sucita-about-label mb-3">Get in touch</p>
-              <h2 className="sucita-contact-title mb-3">Contact</h2>
+              {edit ? (
+                <>
+                  <EditableText
+                    className="sucita-about-label mb-3"
+                    value={content.label}
+                    label="Contact label"
+                    onChange={(label) =>
+                      edit.onChangeContent((prev) => ({ ...prev, label }))
+                    }
+                  />
+                  <EditableText
+                    className="sucita-contact-title mb-3"
+                    value={content.title}
+                    label="Contact title"
+                    onChange={(title) =>
+                      edit.onChangeContent((prev) => ({ ...prev, title }))
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  <p className="sucita-about-label mb-3">{content.label}</p>
+                  <h2 className="sucita-contact-title mb-3">{content.title}</h2>
+                </>
+              )}
             </ScrollReveal>
           </div>
         </div>
@@ -51,10 +98,32 @@ export default function HomeContact() {
             <ScrollReveal className="sucita-reveal-left sucita-contact-reveal">
               <div className="sucita-contact-info">
                 <div className="sucita-contact-info-main">
-                  <h3 className="sucita-contact-info-title">Contact info</h3>
-                  <p className="sucita-contact-info-copy">
-                    Reach Sucita & Partners directly, or send a message using the form.
-                  </p>
+                  {edit ? (
+                    <>
+                      <EditableText
+                        className="sucita-contact-info-title"
+                        value={content.infoTitle}
+                        label="Info title"
+                        onChange={(infoTitle) =>
+                          edit.onChangeContent((prev) => ({ ...prev, infoTitle }))
+                        }
+                      />
+                      <EditableText
+                        className="sucita-contact-info-copy"
+                        multiline
+                        value={content.infoCopy}
+                        label="Info copy"
+                        onChange={(infoCopy) =>
+                          edit.onChangeContent((prev) => ({ ...prev, infoCopy }))
+                        }
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="sucita-contact-info-title">{content.infoTitle}</h3>
+                      <p className="sucita-contact-info-copy">{content.infoCopy}</p>
+                    </>
+                  )}
 
                   <ul className="sucita-contact-list list-unstyled mb-0">
                     {contactItems.map((item) => (
@@ -64,7 +133,19 @@ export default function HomeContact() {
                         </span>
                         <div>
                           <p className="sucita-contact-item-label mb-1">{item.label}</p>
-                          {item.href ? (
+                          {edit ? (
+                            <EditableText
+                              className="sucita-contact-item-value"
+                              value={item.value}
+                              label={item.label}
+                              onChange={(value) =>
+                                edit.onChangeSite((prev) => ({
+                                  ...prev,
+                                  [item.field]: value,
+                                }))
+                              }
+                            />
+                          ) : item.href ? (
                             <a href={item.href} className="sucita-contact-item-value">
                               {item.value}
                             </a>
@@ -79,7 +160,7 @@ export default function HomeContact() {
 
                 <div className="sucita-contact-channels">
                   <a
-                    href={siteConfig.whatsapp}
+                    href={site.whatsapp}
                     className="sucita-contact-channel"
                     target="_blank"
                     rel="noreferrer"
@@ -88,7 +169,7 @@ export default function HomeContact() {
                     WhatsApp
                   </a>
                   <a
-                    href={siteConfig.telegram}
+                    href={site.telegram}
                     className="sucita-contact-channel"
                     target="_blank"
                     rel="noreferrer"
@@ -123,6 +204,7 @@ export default function HomeContact() {
                           type="text"
                           className="form-control sucita-contact-input"
                           required
+                          disabled={!!edit}
                         />
                       </div>
                       <div className="col-sm-6">
@@ -134,6 +216,7 @@ export default function HomeContact() {
                           type="email"
                           className="form-control sucita-contact-input"
                           required
+                          disabled={!!edit}
                         />
                       </div>
                       <div className="col-12">
@@ -144,6 +227,7 @@ export default function HomeContact() {
                           id="home-phone"
                           type="tel"
                           className="form-control sucita-contact-input"
+                          disabled={!!edit}
                         />
                       </div>
                       <div className="col-12">
@@ -155,6 +239,7 @@ export default function HomeContact() {
                           className="form-control sucita-contact-input"
                           rows={5}
                           required
+                          disabled={!!edit}
                         />
                       </div>
                     </div>
@@ -163,10 +248,18 @@ export default function HomeContact() {
                       <button
                         type="submit"
                         className="btn btn-tertiary btn-lg d-inline-flex align-items-center gap-2"
+                        disabled={!!edit}
                       >
                         Send message
                         <MoveRightIcon className="sucita-link-arrow" />
                       </button>
+                      {!edit ? (
+                        <Link href="/contact" className="read-more-link">
+                          Open full contact page
+                        </Link>
+                      ) : (
+                        <span className="admin-muted">Form preview only</span>
+                      )}
                     </div>
                   </form>
                 )}
