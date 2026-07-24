@@ -45,8 +45,7 @@ export const defaultHomeContent: HomePageContent = {
     missionText: mission.text,
     valuesLabel: "What guides us",
     valuesTitle: "Core Values",
-    valuesIntro:
-      "Five principles that shape every engagement and every client relationship.",
+    valuesIntro: "",
     values: coreValues.map((v) => ({ ...v })),
   },
   services: {

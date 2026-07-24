@@ -7,21 +7,34 @@ import EditableText from "@/components/admin/EditableText";
 import EditableImage from "@/components/admin/EditableImage";
 import {
   IntegrityIcon,
-  IndependenceIcon,
-  ClientSuccessIcon,
-  AccountabilityIcon,
-  ExcellenceIcon,
+  InsightfulCommitmentIcon,
+  ImpactExcellenceIcon,
+  InclusivePartnershipIcon,
+  IntentionalProtectionIcon,
 } from "@/components/icons/CoreValueIcons";
 import type { HomeAboutContent } from "@/lib/content/homeTypes";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
 
-const valueIcons: Record<string, ComponentType<{ className?: string }>> = {
+const valueIconsByTitle: Record<string, ComponentType<{ className?: string }>> = {
   Integrity: IntegrityIcon,
-  Independence: IndependenceIcon,
-  "Client Success": ClientSuccessIcon,
-  Accountability: AccountabilityIcon,
-  Excellence: ExcellenceIcon,
+  "Insightful Commitment": InsightfulCommitmentIcon,
+  "Impact Through Excellence": ImpactExcellenceIcon,
+  "Inclusive Partnership": InclusivePartnershipIcon,
+  "Intentional Protection": IntentionalProtectionIcon,
+  // Older titles (if still in saved CMS content)
+  Independence: InclusivePartnershipIcon,
+  "Client Success": InsightfulCommitmentIcon,
+  Accountability: IntentionalProtectionIcon,
+  Excellence: ImpactExcellenceIcon,
 };
+
+const valueIconsByIndex = [
+  IntegrityIcon,
+  InsightfulCommitmentIcon,
+  ImpactExcellenceIcon,
+  InclusivePartnershipIcon,
+  IntentionalProtectionIcon,
+];
 
 type Props = {
   content?: HomeAboutContent;
@@ -220,21 +233,11 @@ export default function HomeAbout({
                         edit.onChange((prev) => ({ ...prev, valuesTitle }))
                       }
                     />
-                    <EditableText
-                      className="sucita-about-body"
-                      multiline
-                      value={content.valuesIntro}
-                      label="Values intro"
-                      onChange={(valuesIntro) =>
-                        edit.onChange((prev) => ({ ...prev, valuesIntro }))
-                      }
-                    />
                   </>
                 ) : (
                   <>
                     <p className="sucita-about-label mb-3">{content.valuesLabel}</p>
-                    <h2 className="mb-3">{content.valuesTitle}</h2>
-                    <p className="sucita-about-body mb-0">{content.valuesIntro}</p>
+                    <h2 className="mb-0">{content.valuesTitle}</h2>
                   </>
                 )}
               </ScrollReveal>
@@ -243,7 +246,8 @@ export default function HomeAbout({
 
           <div className="sucita-values-row">
             {content.values.map((value, index) => {
-              const Icon = valueIcons[value.title];
+              const Icon =
+                valueIconsByTitle[value.title] ?? valueIconsByIndex[index];
               return (
                 <ScrollReveal
                   key={`${value.title}-${index}`}

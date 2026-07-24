@@ -54,7 +54,6 @@ export default function AboutPage() {
             <div className="col-lg-6 text-center">
               <div className="section-heading">
                 <h2>Core Values</h2>
-                <p>The principles that guide every engagement and every client relationship.</p>
               </div>
             </div>
           </div>

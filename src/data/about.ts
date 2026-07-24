@@ -21,26 +21,26 @@ export const coreValues = [
   {
     title: "Integrity",
     description:
-      "We act with honesty and transparency in every engagement — earning trust through consistent, ethical professional conduct.",
+      "We act with unwavering honesty, professional ethics, and transparency in every decision—building long-term trust with clients, partners, regulators and stakeholders.",
   },
   {
-    title: "Independence",
+    title: "Insightful Commitment",
     description:
-      "We maintain objective judgment and professional independence, ensuring our advice serves your best interests without compromise.",
+      "We prioritize our clients’ interests, delivering accurate, timely, and tailored solutions that safeguard their business, reputation, and future.",
   },
   {
-    title: "Client Success",
+    title: "Impact Through Excellence",
     description:
-      "Your outcomes define our work. We measure success by the clarity, compliance, and confidence we deliver to every client.",
+      "We uphold the highest professional standards and deliver work with precision and accountability, ensuring every outcome adds value and builds lasting confidence.",
   },
   {
-    title: "Accountability",
+    title: "Inclusive Partnership",
     description:
-      "We take ownership of our deliverables and stand behind the quality of our services with rigor and responsibility.",
+      "We grow alongside our clients and partners, fostering mutual success through collaboration, trust, and shared purpose.",
   },
   {
-    title: "Excellence",
+    title: "Intentional Protection",
     description:
-      "We pursue high standards in accounting, tax, audit, and advisory — staying precise, current, and results-driven.",
+      "We serve as stewards of client trust by ensuring financial integrity and regulatory compliance, safeguarding client reputations and sustainable growth.",
   },
 ];

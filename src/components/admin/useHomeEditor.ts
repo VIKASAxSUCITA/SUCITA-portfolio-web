@@ -68,7 +68,12 @@ export function useHomeEditor() {
       setMessage("Saved.");
     } catch (error) {
       console.error(error);
-      setMessage(error instanceof Error ? error.message : "Save failed.");
+      const text = error instanceof Error ? error.message : "Save failed.";
+      setMessage(
+        text.includes("permissions")
+          ? "Save failed — sign out, sign in again, then retry."
+          : text
+      );
     } finally {
       setSaving(false);
     }

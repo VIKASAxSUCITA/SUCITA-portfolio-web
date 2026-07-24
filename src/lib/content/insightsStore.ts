@@ -1,14 +1,4 @@
 import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
-import { getFirebaseDb } from "@/lib/firebase";
-import {
   insights as defaultInsights,
   insightCategories,
   type Insight,
@@ -17,17 +7,10 @@ import {
 } from "@/data/insights";
 import { slugify } from "./slug";
 import type { CmsInsight } from "./types";
+import { readContentJson } from "./blobJson";
+import { adminPutContent, fetchContentJson } from "./adminClient";
 
-const PAGE = ["pages", "insights"] as const;
-const ENTRIES = "entries";
-
-function entriesCol() {
-  return collection(getFirebaseDb(), ...PAGE, ENTRIES);
-}
-
-function entryRef(id: string) {
-  return doc(getFirebaseDb(), ...PAGE, ENTRIES, id);
-}
+const PATH = "sucita/content/insights.json";
 
 function normalize(raw: Record<string, unknown>, id: string): CmsInsight {
   const title = String(raw.title ?? "Untitled");
@@ -69,84 +52,90 @@ function toInsight(item: CmsInsight): Insight {
   return rest;
 }
 
+function defaults(): CmsInsight[] {
+  return defaultInsights.map((item, index) => ({
+    ...item,
+    id: item.slug || `default-${index}`,
+  }));
+}
+
+function normalizeList(raw: unknown): CmsInsight[] {
+  if (!Array.isArray(raw) || raw.length === 0) return defaults();
+  return raw
+    .map((item, index) => {
+      if (!item || typeof item !== "object") return null;
+      const record = item as Record<string, unknown>;
+      const id = String(record.id ?? record.slug ?? `insight-${index}`);
+      return normalize(record, id);
+    })
+    .filter((item): item is CmsInsight => !!item)
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    );
+}
+
+async function readList(): Promise<CmsInsight[]> {
+  if (typeof window === "undefined") {
+    return normalizeList(await readContentJson<unknown>(PATH));
+  }
+  return normalizeList(await fetchContentJson<unknown>("insights"));
+}
+
 export async function listInsights(): Promise<CmsInsight[]> {
   try {
-    const snap = await getDocs(entriesCol());
-    if (snap.empty) {
-      return defaultInsights.map((item, index) => ({
-        ...item,
-        id: item.slug || `default-${index}`,
-      }));
-    }
-    return snap.docs
-      .map((d) => normalize(d.data() as Record<string, unknown>, d.id))
-      .sort(
-        (a, b) =>
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
+    return await readList();
   } catch {
-    return defaultInsights.map((item, index) => ({
-      ...item,
-      id: item.slug || `default-${index}`,
-    }));
+    return defaults();
   }
 }
 
 export async function getPublicInsights(): Promise<Insight[]> {
-  const items = await listInsights();
-  return items.map(toInsight);
+  return (await listInsights()).map(toInsight);
 }
 
 export async function getPublicInsightBySlug(
   slug: string
 ): Promise<Insight | undefined> {
-  const items = await getPublicInsights();
-  return items.find((item) => item.slug === slug);
+  return (await getPublicInsights()).find((item) => item.slug === slug);
 }
 
 export async function getInsightById(id: string): Promise<CmsInsight | null> {
-  const snap = await getDoc(entryRef(id));
-  if (!snap.exists()) return null;
-  return normalize(snap.data() as Record<string, unknown>, snap.id);
+  return (await listInsights()).find((item) => item.id === id) ?? null;
 }
 
 export async function saveInsight(
   input: Omit<CmsInsight, "id"> & { id?: string }
 ): Promise<string> {
   const id = input.id || slugify(input.title) || `insight-${Date.now()}`;
-  const payload = {
-    slug: input.slug || slugify(input.title) || id,
-    type: input.type,
-    title: input.title,
-    excerpt: input.excerpt,
-    content: input.content,
-    category: input.category,
-    publishedAt: input.publishedAt,
-    coverImage: input.coverImage,
-    galleryImages: input.galleryImages ?? [],
-    client: input.client || "",
-    service: input.service || "",
-    updatedAt: serverTimestamp(),
-  };
-  await setDoc(entryRef(id), payload, { merge: true });
-  await setDoc(
-    doc(getFirebaseDb(), ...PAGE),
-    { entriesReady: true, updatedAt: serverTimestamp() },
-    { merge: true }
+  const nextItem = normalize(
+    {
+      ...input,
+      slug: input.slug || slugify(input.title) || id,
+      client: input.client || "",
+      service: input.service || "",
+      galleryImages: input.galleryImages ?? [],
+    },
+    id
   );
+  const current = await listInsights();
+  const without = current.filter((item) => item.id !== id);
+  await adminPutContent("insights", [nextItem, ...without]);
   return id;
 }
 
 export async function deleteInsight(id: string) {
-  await deleteDoc(entryRef(id));
+  const current = await listInsights();
+  await adminPutContent(
+    "insights",
+    current.filter((item) => item.id !== id)
+  );
 }
 
-/** Seed defaults into Firestore once (admin helper). */
 export async function seedInsightsIfEmpty() {
-  const snap = await getDocs(entriesCol());
-  if (!snap.empty) return false;
-  for (const item of defaultInsights) {
-    await saveInsight({ ...item, id: item.slug });
-  }
+  if (typeof window === "undefined") return false;
+  const existing = await fetchContentJson<unknown>("insights");
+  if (Array.isArray(existing) && existing.length > 0) return false;
+  await adminPutContent("insights", defaults());
   return true;
 }

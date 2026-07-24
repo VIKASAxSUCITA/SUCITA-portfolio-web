@@ -1,27 +1,10 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
-import { getFirebaseDb } from "@/lib/firebase";
 import { events as defaultEvents, type EventItem, type EventType } from "@/data/events";
 import { slugify } from "./slug";
 import type { CmsEvent } from "./types";
+import { readContentJson } from "./blobJson";
+import { adminPutContent, fetchContentJson } from "./adminClient";
 
-const PAGE = ["pages", "events"] as const;
-const ENTRIES = "entries";
-
-function entriesCol() {
-  return collection(getFirebaseDb(), ...PAGE, ENTRIES);
-}
-
-function entryRef(id: string) {
-  return doc(getFirebaseDb(), ...PAGE, ENTRIES, id);
-}
+const PATH = "sucita/content/events.json";
 
 function normalize(raw: Record<string, unknown>, id: string): CmsEvent {
   const title = String(raw.title ?? "Untitled");
@@ -56,17 +39,35 @@ function toEvent(item: CmsEvent): EventItem {
   return rest;
 }
 
+function defaults(): CmsEvent[] {
+  return defaultEvents.map((item) => ({ ...item, id: item.slug }));
+}
+
+function normalizeList(raw: unknown): CmsEvent[] {
+  if (!Array.isArray(raw) || raw.length === 0) return defaults();
+  return raw
+    .map((item, index) => {
+      if (!item || typeof item !== "object") return null;
+      const record = item as Record<string, unknown>;
+      const id = String(record.id ?? record.slug ?? `event-${index}`);
+      return normalize(record, id);
+    })
+    .filter((item): item is CmsEvent => !!item)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+async function readList(): Promise<CmsEvent[]> {
+  if (typeof window === "undefined") {
+    return normalizeList(await readContentJson<unknown>(PATH));
+  }
+  return normalizeList(await fetchContentJson<unknown>("events"));
+}
+
 export async function listEvents(): Promise<CmsEvent[]> {
   try {
-    const snap = await getDocs(entriesCol());
-    if (snap.empty) {
-      return defaultEvents.map((item) => ({ ...item, id: item.slug }));
-    }
-    return snap.docs
-      .map((d) => normalize(d.data() as Record<string, unknown>, d.id))
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return await readList();
   } catch {
-    return defaultEvents.map((item) => ({ ...item, id: item.slug }));
+    return defaults();
   }
 }
 
@@ -81,49 +82,40 @@ export async function getPublicEventBySlug(
 }
 
 export async function getEventById(id: string): Promise<CmsEvent | null> {
-  const snap = await getDoc(entryRef(id));
-  if (!snap.exists()) return null;
-  return normalize(snap.data() as Record<string, unknown>, snap.id);
+  return (await listEvents()).find((item) => item.id === id) ?? null;
 }
 
 export async function saveEvent(
   input: Omit<CmsEvent, "id"> & { id?: string }
 ): Promise<string> {
   const id = input.id || slugify(input.title) || `event-${Date.now()}`;
-  await setDoc(
-    entryRef(id),
+  const nextItem = normalize(
     {
+      ...input,
       slug: input.slug || slugify(input.title) || id,
-      type: input.type,
-      title: input.title,
-      excerpt: input.excerpt,
-      description: input.description,
-      date: input.date,
       time: input.time || "",
       location: input.location || "",
-      isUpcoming: input.isUpcoming,
-      coverImage: input.coverImage,
-      updatedAt: serverTimestamp(),
     },
-    { merge: true }
+    id
   );
-  await setDoc(
-    doc(getFirebaseDb(), ...PAGE),
-    { entriesReady: true, updatedAt: serverTimestamp() },
-    { merge: true }
-  );
+  const current = await listEvents();
+  const without = current.filter((item) => item.id !== id);
+  await adminPutContent("events", [nextItem, ...without]);
   return id;
 }
 
 export async function deleteEvent(id: string) {
-  await deleteDoc(entryRef(id));
+  const current = await listEvents();
+  await adminPutContent(
+    "events",
+    current.filter((item) => item.id !== id)
+  );
 }
 
 export async function seedEventsIfEmpty() {
-  const snap = await getDocs(entriesCol());
-  if (!snap.empty) return false;
-  for (const item of defaultEvents) {
-    await saveEvent({ ...item, id: item.slug });
-  }
+  if (typeof window === "undefined") return false;
+  const existing = await fetchContentJson<unknown>("events");
+  if (Array.isArray(existing) && existing.length > 0) return false;
+  await adminPutContent("events", defaults());
   return true;
 }
