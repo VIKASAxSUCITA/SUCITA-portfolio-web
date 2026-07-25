@@ -17,6 +17,8 @@ export type Insight = {
   title: string;
   excerpt: string;
   content: string[];
+  /** Rich text body from TipTap (preferred over content[] when present). */
+  bodyHtml?: string;
   category: InsightCategory;
   publishedAt: string;
   /** Main / cover image shown on cards and detail hero */

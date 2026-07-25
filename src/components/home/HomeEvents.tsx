@@ -13,9 +13,15 @@ function formatEventDate(value: string) {
   };
 }
 
-type Props = { items: EventItem[] };
+type Props = {
+  items: EventItem[];
+  viewAllHref?: string;
+};
 
-export default function HomeEvents({ items }: Props) {
+export default function HomeEvents({
+  items,
+  viewAllHref = "/events",
+}: Props) {
   const latestEvents = [...items]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3);
@@ -95,7 +101,7 @@ export default function HomeEvents({ items }: Props) {
         </div>
 
         <div className="text-center mt-4 mt-lg-5">
-          <Link href="/events" className="btn btn-outline-primary sucita-insights-all">
+          <Link href={viewAllHref} className="btn btn-outline-primary sucita-insights-all">
             View all events
           </Link>
         </div>

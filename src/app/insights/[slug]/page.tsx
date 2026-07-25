@@ -6,6 +6,8 @@ import {
   getPublicInsightBySlug,
   getPublicInsights,
 } from "@/lib/content/insightsStore";
+import RichHtml from "@/components/template/RichHtml";
+import { resolveBodyHtml } from "@/lib/content/richText";
 
 export const dynamic = "force-dynamic";
 
@@ -87,11 +89,10 @@ export default async function InsightDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {item.content.map((p) => (
-                <p key={p.slice(0, 40)} className="lead">
-                  {p}
-                </p>
-              ))}
+              <RichHtml
+                className="sucita-article-body"
+                html={resolveBodyHtml(item.bodyHtml, item.content)}
+              />
 
               {gallery.length > 0 ? (
                 <div className="sucita-insight-gallery mt-5">

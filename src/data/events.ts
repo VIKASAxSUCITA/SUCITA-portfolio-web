@@ -6,6 +6,8 @@ export type EventItem = {
   title: string;
   excerpt: string;
   description: string[];
+  /** Rich text body from TipTap (preferred over description[] when present). */
+  bodyHtml?: string;
   date: string;
   time?: string;
   location?: string;

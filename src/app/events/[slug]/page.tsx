@@ -6,6 +6,8 @@ import {
   getPublicEventBySlug,
   getPublicEvents,
 } from "@/lib/content/eventsStore";
+import RichHtml from "@/components/template/RichHtml";
+import { resolveBodyHtml } from "@/lib/content/richText";
 
 export const dynamic = "force-dynamic";
 
@@ -80,11 +82,10 @@ export default async function EventDetailPage({ params }: Props) {
                 ) : null}
               </div>
 
-              {event.description.map((p) => (
-                <p key={p.slice(0, 40)} className="lead">
-                  {p}
-                </p>
-              ))}
+              <RichHtml
+                className="sucita-article-body"
+                html={resolveBodyHtml(event.bodyHtml, event.description)}
+              />
 
               {event.isUpcoming ? (
                 <Link href="/#contact" className="btn btn-primary mt-3">

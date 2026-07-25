@@ -3,6 +3,7 @@ import { slugify } from "./slug";
 import type { CmsEvent } from "./types";
 import { readContentJson } from "./blobJson";
 import { adminPutContent, fetchContentJson } from "./adminClient";
+import { htmlToParagraphs } from "./richText";
 
 const PATH = "sucita/content/events.json";
 
@@ -26,6 +27,7 @@ function normalize(raw: Record<string, unknown>, id: string): CmsEvent {
     title,
     excerpt: String(raw.excerpt ?? ""),
     description,
+    bodyHtml: raw.bodyHtml ? String(raw.bodyHtml) : undefined,
     date: String(raw.date ?? new Date().toISOString().slice(0, 10)),
     time: raw.time ? String(raw.time) : undefined,
     location: raw.location ? String(raw.location) : undefined,
@@ -89,10 +91,17 @@ export async function saveEvent(
   input: Omit<CmsEvent, "id"> & { id?: string }
 ): Promise<string> {
   const id = input.id || slugify(input.title) || `event-${Date.now()}`;
+  const bodyHtml = input.bodyHtml?.trim() || undefined;
+  const description =
+    bodyHtml && bodyHtml !== "<p></p>"
+      ? htmlToParagraphs(bodyHtml)
+      : input.description ?? [];
   const nextItem = normalize(
     {
       ...input,
       slug: input.slug || slugify(input.title) || id,
+      bodyHtml,
+      description,
       time: input.time || "",
       location: input.location || "",
     },

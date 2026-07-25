@@ -9,6 +9,7 @@ import { slugify } from "./slug";
 import type { CmsInsight } from "./types";
 import { readContentJson } from "./blobJson";
 import { adminPutContent, fetchContentJson } from "./adminClient";
+import { htmlToParagraphs } from "./richText";
 
 const PATH = "sucita/content/insights.json";
 
@@ -38,6 +39,7 @@ function normalize(raw: Record<string, unknown>, id: string): CmsInsight {
     title,
     excerpt: String(raw.excerpt ?? ""),
     content,
+    bodyHtml: raw.bodyHtml ? String(raw.bodyHtml) : undefined,
     category,
     publishedAt: String(raw.publishedAt ?? new Date().toISOString().slice(0, 10)),
     coverImage: String(raw.coverImage ?? "/assets/img/insights/vat-refund-cover.png"),
@@ -108,10 +110,17 @@ export async function saveInsight(
   input: Omit<CmsInsight, "id"> & { id?: string }
 ): Promise<string> {
   const id = input.id || slugify(input.title) || `insight-${Date.now()}`;
+  const bodyHtml = input.bodyHtml?.trim() || undefined;
+  const content =
+    bodyHtml && bodyHtml !== "<p></p>"
+      ? htmlToParagraphs(bodyHtml)
+      : input.content ?? [];
   const nextItem = normalize(
     {
       ...input,
       slug: input.slug || slugify(input.title) || id,
+      bodyHtml,
+      content,
       client: input.client || "",
       service: input.service || "",
       galleryImages: input.galleryImages ?? [],

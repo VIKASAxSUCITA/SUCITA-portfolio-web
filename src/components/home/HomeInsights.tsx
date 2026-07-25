@@ -14,9 +14,15 @@ function formatDate(value: string) {
   });
 }
 
-type Props = { items: Insight[] };
+type Props = {
+  items: Insight[];
+  viewAllHref?: string;
+};
 
-export default function HomeInsights({ items }: Props) {
+export default function HomeInsights({
+  items,
+  viewAllHref = "/insights",
+}: Props) {
   const trackRef = useRef<HTMLDivElement>(null);
   const latestInsights = [...items].sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
@@ -103,7 +109,7 @@ export default function HomeInsights({ items }: Props) {
       </div>
 
       <div className="container mt-3 text-center">
-        <Link href="/insights" className="btn btn-outline-primary sucita-insights-all">
+        <Link href={viewAllHref} className="btn btn-outline-primary sucita-insights-all">
           View all insights
         </Link>
       </div>

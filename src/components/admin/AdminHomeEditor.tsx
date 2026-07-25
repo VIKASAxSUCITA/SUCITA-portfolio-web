@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
 import AdminPreviewHeader from "@/components/admin/AdminPreviewHeader";
@@ -86,13 +85,12 @@ export default function AdminHomeEditor() {
               content={content.services}
               edit={sectionEdit("services")}
             />
-            <HomeInsights items={insights} />
+            <HomeInsights items={insights} viewAllHref="/admin/insights" />
             <p className="admin-section-note mb-0">
-              Insights &amp; Events above/below are preview only — edit them in{" "}
-              <Link href="/admin/insights">Insights</Link> /{" "}
-              <Link href="/admin/events">Events</Link>.
+              Insights &amp; Events above/below open the admin library — create or
+              edit with the rich text editor.
             </p>
-            <HomeEvents items={events} />
+            <HomeEvents items={events} viewAllHref="/admin/events" />
             <HomeContact
               content={content.contact}
               site={content.site}
