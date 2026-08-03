@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { locales, localeLabels, type Locale } from "@/lib/i18n/config";
+import { locales, localeLabels, localeCodes, type Locale } from "@/lib/i18n/config";
 
 export default function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useLocale();
@@ -45,7 +45,7 @@ export default function LanguageSwitcher({ className = "" }: { className?: strin
         onClick={() => setOpen((prev) => !prev)}
       >
         <i className="fas fa-globe" aria-hidden="true" />
-        <span className="sucita-lang-trigger-code">{locale.toUpperCase()}</span>
+        <span className="sucita-lang-trigger-code">{localeCodes[locale]}</span>
         <i className="fas fa-chevron-down sucita-lang-caret" aria-hidden="true" />
       </button>
 
@@ -58,7 +58,7 @@ export default function LanguageSwitcher({ className = "" }: { className?: strin
                 className={`sucita-lang-option${locale === code ? " is-active" : ""}`}
                 onClick={() => select(code as Locale)}
               >
-                <span className="sucita-lang-option-code">{code.toUpperCase()}</span>
+                <span className="sucita-lang-option-code">{localeCodes[code]}</span>
                 <span>{localeLabels[code]}</span>
               </button>
             </li>

@@ -8,6 +8,13 @@ export const localeLabels: Record<Locale, string> = {
   zh: "中文",
 };
 
+/** Short codes shown in the language switcher UI */
+export const localeCodes: Record<Locale, string> = {
+  en: "EN",
+  km: "KM",
+  zh: "CH",
+};
+
 export type LocalizedString = {
   en: string;
   km: string;
