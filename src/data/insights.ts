@@ -11,19 +11,19 @@ export const insightCategories: InsightCategory[] = [
   "Transformative Strategy",
 ];
 
+import type { LocalizedString } from "@/lib/i18n/config";
+
 export type Insight = {
   slug: string;
   type: InsightType;
-  title: string;
-  excerpt: string;
+  title: string | LocalizedString;
+  excerpt: string | LocalizedString;
   content: string[];
   /** Rich text body from TipTap (preferred over content[] when present). */
-  bodyHtml?: string;
+  bodyHtml?: string | LocalizedString;
   category: InsightCategory;
   publishedAt: string;
-  /** Main / cover image shown on cards and detail hero */
   coverImage: string;
-  /** Extra evidence images on the detail page (especially for projects) */
   galleryImages?: string[];
   client?: string;
   service?: string;

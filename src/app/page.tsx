@@ -8,11 +8,13 @@ import HomeInsights from "@/components/home/HomeInsights";
 import HomeEvents from "@/components/home/HomeEvents";
 import HomeContact from "@/components/home/HomeContact";
 import HomeStrategyCTA from "@/components/home/HomeStrategyCTA";
+import BrandMarquee from "@/components/home/BrandMarquee";
 import { getPublicInsights } from "@/lib/content/insightsStore";
 import { getPublicEvents } from "@/lib/content/eventsStore";
 import { loadHomeContent } from "@/lib/content/homeStore";
 import { getServiceCategories } from "@/lib/content/servicesStore";
 import { getSiteContent } from "@/lib/content/siteStore";
+import { partners, clients } from "@/data/partners";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +36,18 @@ export default async function HomePage() {
       <HomeStrategyCTA content={home.strategy} />
       <HomeAbout content={home.about} />
       <HomeServices content={{ ...home.services, categories }} />
+      <BrandMarquee
+        id="partners"
+        items={partners}
+        direction="left"
+        titleKey="home.partnersTitle"
+      />
+      <BrandMarquee
+        id="clients"
+        items={clients}
+        direction="right"
+        titleKey="home.clientsTitle"
+      />
       <HomeInsights items={insights} />
       <HomeEvents items={events} />
       <HomeContact content={home.contact} site={site} />

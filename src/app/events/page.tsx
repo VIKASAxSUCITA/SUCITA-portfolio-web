@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import { getPublicEvents } from "@/lib/content/eventsStore";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { pickLocalized } from "@/lib/i18n/config";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -20,6 +22,7 @@ function formatDate(d: string) {
 }
 
 export default async function EventsPage() {
+  const locale = await getRequestLocale();
   const events = await getPublicEvents();
   const upcoming = events.filter((item) => item.isUpcoming);
   const past = events.filter((item) => !item.isUpcoming);
@@ -46,7 +49,7 @@ export default async function EventsPage() {
                         <div className="sucita-insight-list-media">
                           <Image
                             src={event.coverImage}
-                            alt={event.title}
+                            alt={pickLocalized(event.title, locale)}
                             width={640}
                             height={400}
                             className="sucita-insight-list-img"
@@ -59,8 +62,8 @@ export default async function EventsPage() {
                           <small className="sucita-insight-date d-block mb-2">
                             {formatDate(event.date)}
                           </small>
-                          <h5 className="sucita-insight-list-title">{event.title}</h5>
-                          <p className="sucita-insight-list-excerpt mb-0">{event.excerpt}</p>
+                          <h5 className="sucita-insight-list-title">{pickLocalized(event.title, locale)}</h5>
+                          <p className="sucita-insight-list-excerpt mb-0">{pickLocalized(event.excerpt, locale)}</p>
                         </div>
                       </article>
                     </Link>
@@ -83,7 +86,7 @@ export default async function EventsPage() {
                         <div className="sucita-insight-list-media">
                           <Image
                             src={event.coverImage}
-                            alt={event.title}
+                            alt={pickLocalized(event.title, locale)}
                             width={640}
                             height={400}
                             className="sucita-insight-list-img"
@@ -96,8 +99,8 @@ export default async function EventsPage() {
                           <small className="sucita-insight-date d-block mb-2">
                             {formatDate(event.date)}
                           </small>
-                          <h5 className="sucita-insight-list-title">{event.title}</h5>
-                          <p className="sucita-insight-list-excerpt mb-0">{event.excerpt}</p>
+                          <h5 className="sucita-insight-list-title">{pickLocalized(event.title, locale)}</h5>
+                          <p className="sucita-insight-list-excerpt mb-0">{pickLocalized(event.excerpt, locale)}</p>
                         </div>
                       </article>
                     </Link>

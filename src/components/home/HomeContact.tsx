@@ -9,6 +9,8 @@ import { siteConfig as defaultSite } from "@/data/site";
 import type { SiteContent } from "@/lib/content/types";
 import type { HomeContactBlock } from "@/lib/content/homeTypes";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useLocalizedCopy } from "@/lib/i18n/useLocalizedCopy";
 
 type Props = {
   content?: HomeContactBlock;
@@ -26,17 +28,21 @@ export default function HomeContact({
   site = defaultSite,
   edit,
 }: Props) {
+  const { t } = useLocale();
+  const copy = useLocalizedCopy();
   const [submitted, setSubmitted] = useState(false);
   const contactItems = useMemo(
     () => [
       {
         icon: "fas fa-map-marker-alt",
+        labelKey: "home.contact.address" as const,
         label: "Address",
         field: "address" as const,
         value: site.address,
       },
       {
         icon: "fas fa-envelope",
+        labelKey: "home.contact.email" as const,
         label: "Email",
         field: "email" as const,
         value: site.email,
@@ -44,6 +50,7 @@ export default function HomeContact({
       },
       {
         icon: "fas fa-phone",
+        labelKey: "home.contact.phone" as const,
         label: "Phone",
         field: "phone" as const,
         value: site.phone,
@@ -85,8 +92,12 @@ export default function HomeContact({
                 </>
               ) : (
                 <>
-                  <p className="sucita-about-label mb-3">{content.label}</p>
-                  <h2 className="sucita-contact-title mb-3">{content.title}</h2>
+                  <p className="sucita-about-label mb-3">
+                    {copy(content.label, "home.contact.label")}
+                  </p>
+                  <h2 className="sucita-contact-title mb-3">
+                    {copy(content.title, "home.contact.title")}
+                  </h2>
                 </>
               )}
             </ScrollReveal>
@@ -120,8 +131,12 @@ export default function HomeContact({
                     </>
                   ) : (
                     <>
-                      <h3 className="sucita-contact-info-title">{content.infoTitle}</h3>
-                      <p className="sucita-contact-info-copy">{content.infoCopy}</p>
+                      <h3 className="sucita-contact-info-title">
+                        {copy(content.infoTitle, "home.contact.infoTitle")}
+                      </h3>
+                      <p className="sucita-contact-info-copy">
+                        {copy(content.infoCopy, "home.contact.infoCopy")}
+                      </p>
                     </>
                   )}
 
@@ -132,7 +147,9 @@ export default function HomeContact({
                           <i className={item.icon} />
                         </span>
                         <div>
-                          <p className="sucita-contact-item-label mb-1">{item.label}</p>
+                          <p className="sucita-contact-item-label mb-1">
+                            {t(item.labelKey)}
+                          </p>
                           {edit ? (
                             <EditableText
                               className="sucita-contact-item-value"
@@ -187,17 +204,15 @@ export default function HomeContact({
               <div className="sucita-contact-form-wrap">
                 {submitted ? (
                   <div className="sucita-contact-success">
-                    <h3>Thank you</h3>
-                    <p className="mb-0">
-                      We&apos;ve received your message and will get back to you shortly.
-                    </p>
+                    <h3>{t("home.contact.thankYou")}</h3>
+                    <p className="mb-0">{t("home.contact.thankYouCopy")}</p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="sucita-contact-form">
                     <div className="row g-3">
                       <div className="col-sm-6">
                         <label htmlFor="home-name" className="form-label">
-                          Full name
+                          {t("home.contact.fullName")}
                         </label>
                         <input
                           id="home-name"
@@ -209,7 +224,7 @@ export default function HomeContact({
                       </div>
                       <div className="col-sm-6">
                         <label htmlFor="home-email" className="form-label">
-                          Email
+                          {t("home.contact.email")}
                         </label>
                         <input
                           id="home-email"
@@ -221,7 +236,7 @@ export default function HomeContact({
                       </div>
                       <div className="col-12">
                         <label htmlFor="home-phone" className="form-label">
-                          Phone / WhatsApp
+                          {t("home.contact.phoneField")}
                         </label>
                         <input
                           id="home-phone"
@@ -232,7 +247,7 @@ export default function HomeContact({
                       </div>
                       <div className="col-12">
                         <label htmlFor="home-message" className="form-label">
-                          Message
+                          {t("home.contact.message")}
                         </label>
                         <textarea
                           id="home-message"
@@ -250,12 +265,12 @@ export default function HomeContact({
                         className="btn btn-tertiary btn-lg d-inline-flex align-items-center gap-2"
                         disabled={!!edit}
                       >
-                        Send message
+                        {t("contact.send")}
                         <MoveRightIcon className="sucita-link-arrow" />
                       </button>
                       {!edit ? (
                         <Link href="/contact" className="read-more-link">
-                          Open full contact page
+                          {t("home.contact.openFull")}
                         </Link>
                       ) : (
                         <span className="admin-muted">Form preview only</span>

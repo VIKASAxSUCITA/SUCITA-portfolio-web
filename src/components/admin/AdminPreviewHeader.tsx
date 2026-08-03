@@ -13,7 +13,7 @@ export default function AdminPreviewHeader() {
           <nav className="navbar navbar-expand-md header-nav">
             <span className="navbar-brand">
               <Image
-                src="/images/sucita_logo.png"
+                src="/images/sucitalogo_use.png"
                 alt="Sucita & Partners"
                 width={200}
                 height={55}

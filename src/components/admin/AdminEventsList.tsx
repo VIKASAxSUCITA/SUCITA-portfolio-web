@@ -7,6 +7,7 @@ import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
 import { listEvents } from "@/lib/content/eventsStore";
 import type { CmsEvent } from "@/lib/content/types";
+import { pickLocalized } from "@/lib/i18n/config";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", {
@@ -41,7 +42,7 @@ function EventCards({
                 <div className="sucita-insight-list-media">
                   <Image
                     src={event.coverImage || "/assets/img/events/tax-workshop.png"}
-                    alt={event.title}
+                    alt={pickLocalized(event.title, "en")}
                     width={640}
                     height={400}
                     className="sucita-insight-list-img"
@@ -54,8 +55,12 @@ function EventCards({
                   <small className="sucita-insight-date d-block mb-2">
                     {formatDate(event.date)}
                   </small>
-                  <h5 className="sucita-insight-list-title">{event.title}</h5>
-                  <p className="sucita-insight-list-excerpt mb-0">{event.excerpt}</p>
+                  <h5 className="sucita-insight-list-title">
+                    {pickLocalized(event.title, "en")}
+                  </h5>
+                  <p className="sucita-insight-list-excerpt mb-0">
+                    {pickLocalized(event.excerpt, "en")}
+                  </p>
                   <span className="admin-card-edit-hint">Click to edit</span>
                 </div>
               </article>

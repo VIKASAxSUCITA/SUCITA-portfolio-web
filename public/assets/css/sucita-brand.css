@@ -136,7 +136,7 @@
 }
 
 .sucita-header .navbar-brand img {
-  max-height: 58px;
+  max-height: 72px;
   width: auto;
   height: auto;
   display: block;
@@ -1067,7 +1067,7 @@ a.sucita-contact-item-value:hover {
 }
 
 .sucita-value-item {
-  text-align: center;
+  text-align: left;
   padding: 0.25rem 0.35rem;
   background: transparent;
   border: 0;
@@ -2878,4 +2878,311 @@ body:has(.admin-root) .main {
 .sucita-rich-html a,
 .sucita-article-body a {
   color: #188a6d;
+}
+
+/* Brand logo */
+.sucita-brand-logo {
+  max-height: 72px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 0.4rem;
+}
+
+.navbar-brand .sucita-brand-logo {
+  max-height: 72px;
+}
+
+.sucita-offcanvas-logo.sucita-brand-logo {
+  max-height: 64px;
+}
+
+@media (max-width: 767.98px) {
+  .navbar-brand .sucita-brand-logo {
+    max-height: 56px;
+  }
+}
+
+/* Language switcher — globe icon + dropdown */
+.sucita-lang-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sucita-lang-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.15rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid #d7e2df;
+  border-radius: 0.45rem;
+  background: #fff;
+  color: #083d36;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.sucita-lang-trigger:hover,
+.sucita-lang-dropdown.is-open .sucita-lang-trigger {
+  border-color: #083d36;
+  background: #f4faf8;
+}
+
+.sucita-lang-trigger .fa-globe {
+  font-size: 0.95rem;
+  color: #188a6d;
+}
+
+.sucita-lang-trigger-code {
+  letter-spacing: 0.04em;
+}
+
+.sucita-lang-caret {
+  font-size: 0.62rem;
+  opacity: 0.7;
+  transition: transform 0.15s ease;
+}
+
+.sucita-lang-dropdown.is-open .sucita-lang-caret {
+  transform: rotate(180deg);
+}
+
+.sucita-lang-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 1050;
+  min-width: 10.5rem;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  border: 1px solid #d7e2df;
+  border-radius: 0.55rem;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(8, 61, 54, 0.12);
+}
+
+.sucita-lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: #083d36;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sucita-lang-option:hover {
+  background: #f4faf8;
+}
+
+.sucita-lang-option.is-active {
+  background: #083d36;
+  color: #fff;
+}
+
+.sucita-lang-option-code {
+  min-width: 1.75rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.sucita-offcanvas-body .sucita-lang-menu {
+  right: auto;
+  left: 0;
+}
+
+/* Event date badge — month on top */
+.sucita-event-date-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  min-width: 3.4rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.55rem;
+  background: rgba(8, 61, 54, 0.92);
+  color: #fff;
+  line-height: 1.05;
+}
+
+.sucita-event-date-month {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.sucita-event-date-day {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sucita-event-date-year {
+  font-size: 0.65rem;
+  opacity: 0.85;
+}
+
+/* Partner / client marquees — always-full seamless infinite loop */
+.sucita-brand-marquee {
+  background: #ffffff;
+  overflow: hidden;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.sucita-brand-marquee + .sucita-brand-marquee {
+  padding-top: 2.75rem;
+  padding-bottom: 2.75rem;
+  background: #ffffff;
+}
+
+.sucita-brand-marquee-heading {
+  margin-bottom: 1.15rem;
+}
+
+.sucita-brand-marquee-title {
+  color: #083d36;
+}
+
+.sucita-marquee {
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 5%,
+    #000 95%,
+    transparent
+  );
+}
+
+.sucita-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: sucita-marquee-left 32s linear infinite !important;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.sucita-marquee.is-reverse .sucita-marquee-track {
+  animation-name: sucita-marquee-right !important;
+}
+
+.sucita-marquee-group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+
+.sucita-marquee-item {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 160px;
+  min-height: 112px;
+  padding: 0.9rem 0.75rem;
+  background: #fff;
+  border: 1px solid #e4ecea;
+  border-radius: 0.85rem;
+  box-shadow: 0 6px 16px rgba(8, 61, 54, 0.04);
+}
+
+.sucita-brand-marquee + .sucita-brand-marquee .sucita-marquee-item {
+  background: #fff;
+}
+
+.sucita-marquee-logo {
+  width: 88px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.sucita-marquee-name {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #5a6b69;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes sucita-marquee-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes sucita-marquee-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sucita-marquee-track {
+    /* Keep looping, just slower — still no empty gap */
+    animation-duration: 55s !important;
+  }
+}
+
+.admin-localized-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-localized-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.admin-localized-tab {
+  min-height: 2rem;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid #d7e2df;
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #083d36;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-localized-tab.is-active {
+  background: #188a6d;
+  border-color: #188a6d;
+  color: #fff;
 }

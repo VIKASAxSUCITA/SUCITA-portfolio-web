@@ -6,13 +6,14 @@ import Link from "next/link";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
 import AdminImageField from "@/components/admin/AdminImageField";
-import RichTextEditor from "@/components/admin/RichTextEditor";
+import LocalizedTextField from "@/components/admin/LocalizedTextField";
+import LocalizedRichTextField from "@/components/admin/LocalizedRichTextField";
 import {
   deleteInsight,
   saveInsight,
 } from "@/lib/content/insightsStore";
 import { slugify } from "@/lib/content/slug";
-import { resolveBodyHtml } from "@/lib/content/richText";
+import { asLocalized, pickLocalized } from "@/lib/i18n/config";
 import {
   insightCategories,
   type InsightCategory,
@@ -29,10 +30,12 @@ type Props = {
 
 export default function AdminInsightEditor({ initial, mode }: Props) {
   const router = useRouter();
-  const [form, setForm] = useState<InsightFormState>(initial);
-  const [bodyHtml, setBodyHtml] = useState(
-    resolveBodyHtml(initial.bodyHtml, initial.content)
-  );
+  const [form, setForm] = useState<InsightFormState>({
+    ...initial,
+    title: asLocalized(initial.title),
+    excerpt: asLocalized(initial.excerpt),
+    bodyHtml: asLocalized(initial.bodyHtml, "<p></p>"),
+  });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -41,10 +44,13 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
     setSaving(true);
     setMessage("");
     try {
+      const titleEn = pickLocalized(form.title, "en");
       const id = await saveInsight({
         ...form,
-        slug: form.slug || slugify(form.title),
-        bodyHtml,
+        slug: form.slug || slugify(titleEn),
+        title: asLocalized(form.title),
+        excerpt: asLocalized(form.excerpt),
+        bodyHtml: asLocalized(form.bodyHtml, "<p></p>"),
       });
       setMessage("Saved.");
       if (mode === "create") {
@@ -79,20 +85,17 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
         {message ? <p className="admin-toast">{message}</p> : null}
 
         <form className="admin-form admin-editor-form" onSubmit={handleSubmit}>
-          <label className="admin-field">
-            <span>Title</span>
-            <input
-              required
-              value={form.title}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  title: e.target.value,
-                  slug: prev.id ? prev.slug : slugify(e.target.value),
-                }))
-              }
-            />
-          </label>
+          <LocalizedTextField
+            label="Title"
+            value={asLocalized(form.title)}
+            onChange={(title) =>
+              setForm((prev) => ({
+                ...prev,
+                title,
+                slug: prev.id ? prev.slug : slugify(pickLocalized(title, "en")),
+              }))
+            }
+          />
 
           <div className="admin-form-row">
             <label className="admin-field">
@@ -141,17 +144,13 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
             </label>
           </div>
 
-          <label className="admin-field">
-            <span>Excerpt</span>
-            <textarea
-              rows={3}
-              required
-              value={form.excerpt}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, excerpt: e.target.value }))
-              }
-            />
-          </label>
+          <LocalizedTextField
+            label="Excerpt"
+            multiline
+            rows={3}
+            value={asLocalized(form.excerpt)}
+            onChange={(excerpt) => setForm((prev) => ({ ...prev, excerpt }))}
+          />
 
           {form.type === "project" ? (
             <div className="admin-form-row">
@@ -182,14 +181,12 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
             onChange={(coverImage) => setForm((prev) => ({ ...prev, coverImage }))}
           />
 
-          <div className="admin-field">
-            <span>Body</span>
-            <RichTextEditor
-              content={bodyHtml}
-              onChange={setBodyHtml}
-              placeholder="Write the insight article…"
-            />
-          </div>
+          <LocalizedRichTextField
+            label="Body"
+            value={asLocalized(form.bodyHtml, "<p></p>")}
+            onChange={(bodyHtml) => setForm((prev) => ({ ...prev, bodyHtml }))}
+            placeholder="Write the insight article…"
+          />
 
           <div className="admin-modal-actions">
             {mode === "edit" && form.id ? (

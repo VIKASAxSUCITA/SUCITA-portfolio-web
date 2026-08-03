@@ -8,6 +8,8 @@ import {
 } from "@/lib/content/eventsStore";
 import RichHtml from "@/components/template/RichHtml";
 import { resolveBodyHtml } from "@/lib/content/richText";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { pickLocalized } from "@/lib/i18n/config";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +23,16 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const event = await getPublicEventBySlug(slug);
-  return { title: event?.title ?? "Not Found" };
+  return { title: pickLocalized(event?.title, "en") || "Not Found" };
 }
 
 export default async function EventDetailPage({ params }: Props) {
   const { slug } = await params;
+  const locale = await getRequestLocale();
   const event = await getPublicEventBySlug(slug);
   if (!event) notFound();
+  const title = pickLocalized(event.title, locale);
+  const excerpt = pickLocalized(event.excerpt, locale);
 
   return (
     <>
@@ -38,8 +43,8 @@ export default async function EventDetailPage({ params }: Props) {
               <Link href="/events" className="text-white-50 small">
                 ← Back to Events
               </Link>
-              <h1 className="text-white mt-3">{event.title}</h1>
-              <p className="lead mb-0">{event.excerpt}</p>
+              <h1 className="text-white mt-3">{title}</h1>
+              <p className="lead mb-0">{excerpt}</p>
             </div>
           </div>
         </div>
@@ -52,7 +57,7 @@ export default async function EventDetailPage({ params }: Props) {
               <div className="sucita-insight-main-media mb-4 mb-lg-5">
                 <Image
                   src={event.coverImage}
-                  alt={event.title}
+                  alt={title}
                   width={1200}
                   height={700}
                   className="sucita-insight-main-img"
@@ -84,11 +89,11 @@ export default async function EventDetailPage({ params }: Props) {
 
               <RichHtml
                 className="sucita-article-body"
-                html={resolveBodyHtml(event.bodyHtml, event.description)}
+                html={resolveBodyHtml(event.bodyHtml, event.description, locale)}
               />
 
               {event.isUpcoming ? (
-                <Link href="/#contact" className="btn btn-primary mt-3">
+                <Link href="/contact" className="btn btn-primary mt-3">
                   Register / Contact Us
                 </Link>
               ) : null}

@@ -2,17 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { MouseEvent } from "react";
+import { usePathname } from "next/navigation";
 import { navLinks } from "@/data/site";
-import { scrollToSection } from "@/lib/scrollToSection";
+import LanguageSwitcher from "@/components/template/LanguageSwitcher";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 function closeOffcanvas() {
   const el = document.getElementById("offcanvasLeft");
   if (!el) return;
   const instance = (
     window as Window & {
-      bootstrap?: { Offcanvas: { getInstance: (el: Element) => { hide: () => void } | null } };
+      bootstrap?: {
+        Offcanvas: { getInstance: (el: Element) => { hide: () => void } | null };
+      };
     }
   ).bootstrap?.Offcanvas.getInstance(el);
   instance?.hide();
@@ -20,38 +22,20 @@ function closeOffcanvas() {
 
 export default function KohostHeader() {
   const pathname = usePathname();
-  const router = useRouter();
-
-  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (!href.startsWith("/#")) return;
-
-    const hash = href.slice(1);
-
-    if (pathname === "/") {
-      event.preventDefault();
-      scrollToSection(hash);
-      closeOffcanvas();
-      return;
-    }
-
-    // From other pages: go home, then scroll after navigation
-    event.preventDefault();
-    closeOffcanvas();
-    router.push(href);
-  };
+  const { t } = useLocale();
 
   return (
     <header id="header" className="header-main">
       <div id="logoAndNav" className="main-header-menu-wrap sucita-header fixed-top">
         <div className="container">
           <nav className="navbar navbar-expand-md header-nav">
-            <Link className="navbar-brand" href="/#home" onClick={(e) => handleNavClick(e, "/#home")}>
+            <Link className="navbar-brand" href="/">
               <Image
-                src="/images/sucita_logo.png"
+                src="/images/sucitalogo_use.png"
                 alt="Sucita & Partners"
-                width={220}
-                height={60}
-                className="img-fluid"
+                width={250}
+                height={72}
+                className="img-fluid sucita-brand-logo"
                 priority
               />
             </Link>
@@ -68,18 +52,26 @@ export default function KohostHeader() {
             </button>
 
             <div id="navBar" className="collapse navbar-collapse">
-              <ul className="navbar-nav ms-auto main-navbar-nav">
-                {navLinks.map((link) => (
-                  <li key={link.href} className="nav-item custom-nav-item">
-                    <Link
-                      className="nav-link custom-nav-link"
-                      href={link.href}
-                      onClick={(e) => handleNavClick(e, link.href)}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+              <ul className="navbar-nav ms-auto main-navbar-nav align-items-md-center">
+                {navLinks.map((link) => {
+                  const active =
+                    link.href === "/"
+                      ? pathname === "/"
+                      : pathname === link.href || pathname.startsWith(`${link.href}/`);
+                  return (
+                    <li key={link.href} className="nav-item custom-nav-item">
+                      <Link
+                        className={`nav-link custom-nav-link${active ? " active" : ""}`}
+                        href={link.href}
+                      >
+                        {t(link.labelKey)}
+                      </Link>
+                    </li>
+                  );
+                })}
+                <li className="nav-item custom-nav-item ms-md-2">
+                  <LanguageSwitcher />
+                </li>
               </ul>
             </div>
           </nav>
@@ -93,17 +85,13 @@ export default function KohostHeader() {
         aria-labelledby="offcanvasLeftLabel"
       >
         <div className="offcanvas-header sucita-offcanvas-header">
-          <Link
-            href="/#home"
-            className="navbar-brand"
-            onClick={(e) => handleNavClick(e, "/#home")}
-          >
+          <Link href="/" className="navbar-brand" onClick={closeOffcanvas}>
             <Image
-              src="/images/sucita_logo.png"
+              src="/images/sucitalogo_use.png"
               alt="Sucita & Partners"
-              width={220}
-              height={60}
-              className="img-fluid sucita-offcanvas-logo"
+              width={200}
+              height={56}
+              className="img-fluid sucita-offcanvas-logo sucita-brand-logo"
             />
           </Link>
           <button
@@ -120,13 +108,16 @@ export default function KohostHeader() {
                 <Link
                   className="nav-link sucita-offcanvas-link"
                   href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
+                  onClick={closeOffcanvas}
                 >
-                  {link.label}
+                  {t(link.labelKey)}
                 </Link>
               </li>
             ))}
           </ul>
+          <div className="mt-4">
+            <LanguageSwitcher />
+          </div>
         </div>
       </div>
     </header>

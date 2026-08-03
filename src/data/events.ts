@@ -1,13 +1,15 @@
 export type EventType = "event" | "announcement";
 
+import type { LocalizedString } from "@/lib/i18n/config";
+
 export type EventItem = {
   slug: string;
   type: EventType;
-  title: string;
-  excerpt: string;
+  title: string | LocalizedString;
+  excerpt: string | LocalizedString;
   description: string[];
   /** Rich text body from TipTap (preferred over description[] when present). */
-  bodyHtml?: string;
+  bodyHtml?: string | LocalizedString;
   date: string;
   time?: string;
   location?: string;

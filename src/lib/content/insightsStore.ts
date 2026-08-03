@@ -10,6 +10,7 @@ import type { CmsInsight } from "./types";
 import { readContentJson } from "./blobJson";
 import { adminPutContent, fetchContentJson } from "./adminClient";
 import { htmlToParagraphs } from "./richText";
+import { asLocalized } from "@/lib/i18n/config";
 
 const PATH = "sucita/content/insights.json";
 
@@ -36,10 +37,12 @@ function normalize(raw: Record<string, unknown>, id: string): CmsInsight {
     id,
     slug,
     type,
-    title,
-    excerpt: String(raw.excerpt ?? ""),
+    title: asLocalized(raw.title as string | undefined, title),
+    excerpt: asLocalized(raw.excerpt as string | undefined, String(raw.excerpt ?? "")),
     content,
-    bodyHtml: raw.bodyHtml ? String(raw.bodyHtml) : undefined,
+    bodyHtml: raw.bodyHtml
+      ? asLocalized(raw.bodyHtml as string | Record<string, string>, "<p></p>")
+      : undefined,
     category,
     publishedAt: String(raw.publishedAt ?? new Date().toISOString().slice(0, 10)),
     coverImage: String(raw.coverImage ?? "/assets/img/insights/vat-refund-cover.png"),
@@ -109,16 +112,21 @@ export async function getInsightById(id: string): Promise<CmsInsight | null> {
 export async function saveInsight(
   input: Omit<CmsInsight, "id"> & { id?: string }
 ): Promise<string> {
-  const id = input.id || slugify(input.title) || `insight-${Date.now()}`;
-  const bodyHtml = input.bodyHtml?.trim() || undefined;
+  const titleLocal = asLocalized(input.title);
+  const id = input.id || slugify(titleLocal.en) || `insight-${Date.now()}`;
+  const bodyHtml = input.bodyHtml
+    ? asLocalized(input.bodyHtml, "<p></p>")
+    : undefined;
   const content =
-    bodyHtml && bodyHtml !== "<p></p>"
-      ? htmlToParagraphs(bodyHtml)
+    bodyHtml && bodyHtml.en && bodyHtml.en !== "<p></p>"
+      ? htmlToParagraphs(bodyHtml.en)
       : input.content ?? [];
   const nextItem = normalize(
     {
       ...input,
-      slug: input.slug || slugify(input.title) || id,
+      slug: input.slug || slugify(titleLocal.en) || id,
+      title: titleLocal,
+      excerpt: asLocalized(input.excerpt),
       bodyHtml,
       content,
       client: input.client || "",

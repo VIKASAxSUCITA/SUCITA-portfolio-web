@@ -13,6 +13,7 @@ import { scrollToSection } from "@/lib/scrollToSection";
 import { getSiteContent } from "@/lib/content/siteStore";
 import type { SiteContent } from "@/lib/content/types";
 import EditableText from "@/components/admin/EditableText";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 type Props = {
   site?: SiteContent;
@@ -24,6 +25,7 @@ type Props = {
 export default function KohostFooter({ site: siteProp, edit }: Props) {
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useLocale();
   const [fetchedSite, setFetchedSite] = useState<SiteContent>(defaultSite);
   const site = siteProp ?? fetchedSite;
 
@@ -56,7 +58,7 @@ export default function KohostFooter({ site: siteProp, edit }: Props) {
               {edit ? (
                 <span className="d-inline-block mb-3">
                   <Image
-                    src="/images/sucita_logo.png"
+                    src="/images/sucitalogo_use.png"
                     alt="Sucita & Partners"
                     width={200}
                     height={55}
@@ -70,7 +72,7 @@ export default function KohostFooter({ site: siteProp, edit }: Props) {
                   onClick={(e) => handleHashClick(e, "/#home")}
                 >
                   <Image
-                    src="/images/sucita_logo.png"
+                    src="/images/sucitalogo_use.png"
                     alt="Sucita & Partners"
                     width={200}
                     height={55}
@@ -112,13 +114,13 @@ export default function KohostFooter({ site: siteProp, edit }: Props) {
                 {navLinks.map((link) => (
                   <li key={link.href}>
                     {edit ? (
-                      <span>{link.label}</span>
+                      <span>{t(link.labelKey)}</span>
                     ) : (
                       <Link
                         href={link.href}
                         onClick={(e) => handleHashClick(e, link.href)}
                       >
-                        {link.label}
+                        {t(link.labelKey)}
                       </Link>
                     )}
                   </li>

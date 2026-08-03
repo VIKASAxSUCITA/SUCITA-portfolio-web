@@ -1,13 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import EditableText from "@/components/admin/EditableText";
+import MoveRightIcon from "@/components/icons/MoveRightIcon";
 import {
   countServiceItems,
   type ServiceCategory,
 } from "@/data/services";
 import type { HomeServicesContent } from "@/lib/content/homeTypes";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useLocalizedCopy } from "@/lib/i18n/useLocalizedCopy";
 
 type Props = {
   content?: HomeServicesContent;
@@ -24,6 +28,8 @@ export default function HomeServices({
   categories,
   edit,
 }: Props) {
+  const { t, L } = useLocale();
+  const copy = useLocalizedCopy();
   const data: HomeServicesContent = {
     ...content,
     categories: categories ?? content.categories,
@@ -65,9 +71,15 @@ export default function HomeServices({
                 </>
               ) : (
                 <>
-                  <p className="sucita-about-label mb-3">{data.label}</p>
-                  <h2 className="sucita-services-title mb-3">{data.title}</h2>
-                  <p className="sucita-about-body mb-0">{data.intro}</p>
+                  <p className="sucita-about-label mb-3">
+                    {copy(data.label, "home.services.label")}
+                  </p>
+                  <h2 className="sucita-services-title mb-3">
+                    {copy(data.title, "home.services.title")}
+                  </h2>
+                  <p className="sucita-about-body mb-0">
+                    {copy(data.intro, "home.services.intro")}
+                  </p>
                 </>
               )}
             </ScrollReveal>
@@ -89,11 +101,13 @@ export default function HomeServices({
                       {category.letter}
                     </span>
                     <div>
-                      <p className="sucita-service-practice mb-1">Practice area</p>
+                      <p className="sucita-service-practice mb-1">
+                        {t("home.services.practiceArea")}
+                      </p>
                       {edit ? (
                         <EditableText
                           className="sucita-service-col-title"
-                          value={category.title}
+                          value={L(category.title)}
                           label={`${category.letter} title`}
                           onChange={(title) =>
                             edit.onChange((prev) => {
@@ -105,7 +119,7 @@ export default function HomeServices({
                           }
                         />
                       ) : (
-                        <h3 className="sucita-service-col-title">{category.title}</h3>
+                        <h3 className="sucita-service-col-title">{L(category.title)}</h3>
                       )}
                     </div>
                   </div>
@@ -113,7 +127,11 @@ export default function HomeServices({
                     <EditableText
                       className="sucita-service-card-desc"
                       multiline
-                      value={category.description}
+                      value={
+                        typeof category.description === "string"
+                          ? category.description
+                          : category.description.en
+                      }
                       label={`${category.letter} description`}
                       onChange={(description) =>
                         edit.onChange((prev) => {
@@ -126,14 +144,14 @@ export default function HomeServices({
                     />
                   ) : (
                     <p className="sucita-service-card-desc mb-0">
-                      {category.description}
+                      {L(category.description)}
                     </p>
                   )}
                 </header>
                 <ul className="sucita-service-list list-unstyled mb-0">
                   {category.items.map((item, itemIndex) => (
                     <li
-                      key={`${item.label}-${itemIndex}`}
+                      key={`${typeof item.label === "string" ? item.label : item.label.en}-${itemIndex}`}
                       className={
                         item.children?.length
                           ? "sucita-service-item has-children"
@@ -147,7 +165,7 @@ export default function HomeServices({
                         {edit ? (
                           <EditableText
                             className="sucita-service-item-label"
-                            value={item.label}
+                            value={L(item.label)}
                             label={`Service item ${itemIndex + 1}`}
                             onChange={(label) =>
                               edit.onChange((prev) => {
@@ -163,7 +181,7 @@ export default function HomeServices({
                             }
                           />
                         ) : (
-                          <span className="sucita-service-item-label">{item.label}</span>
+                          <span className="sucita-service-item-label">{L(item.label)}</span>
                         )}
                       </div>
                       {item.children?.length ? (
@@ -175,7 +193,7 @@ export default function HomeServices({
                               </span>
                               {edit ? (
                                 <EditableText
-                                  value={child}
+                                  value={L(child)}
                                   label={`Sub service ${childIndex + 1}`}
                                   onChange={(value) =>
                                     edit.onChange((prev) => {
@@ -194,7 +212,7 @@ export default function HomeServices({
                                   }
                                 />
                               ) : (
-                                <span>{child}</span>
+                                <span>{L(child)}</span>
                               )}
                             </li>
                           ))}
@@ -203,8 +221,19 @@ export default function HomeServices({
                     </li>
                   ))}
                 </ul>
-                <footer className="sucita-service-card-footer">
-                  {countServiceItems(category)} services
+                <footer className="sucita-service-card-footer d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                  <span>
+                    {countServiceItems(category)} {t("home.services.count")}
+                  </span>
+                  {!edit ? (
+                    <Link
+                      href={`/services/${category.id}`}
+                      className="read-more-link d-inline-flex align-items-center gap-2"
+                    >
+                      {t("common.learnMore")}
+                      <MoveRightIcon className="sucita-link-arrow" />
+                    </Link>
+                  ) : null}
                 </footer>
               </article>
             </ScrollReveal>

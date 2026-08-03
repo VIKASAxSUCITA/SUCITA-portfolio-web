@@ -3,37 +3,62 @@
 import { FormEvent, useEffect, useState } from "react";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
+import LocalizedTextField from "@/components/admin/LocalizedTextField";
 import {
   getServiceCategories,
   saveServiceCategories,
 } from "@/lib/content/servicesStore";
 import type { ServiceCategory } from "@/data/services";
+import { asLocalized, pickLocalized, type LocalizedString } from "@/lib/i18n/config";
+
+function labelText(value: string | LocalizedString) {
+  return pickLocalized(value, "en");
+}
 
 function itemsToText(category: ServiceCategory) {
   return category.items
     .map((item) =>
       item.children?.length
-        ? `${item.label}\n${item.children.map((c) => `  - ${c}`).join("\n")}`
-        : item.label
+        ? `${labelText(item.label)}\n${item.children
+            .map((c) => `  - ${labelText(c)}`)
+            .join("\n")}`
+        : labelText(item.label)
     )
     .join("\n");
 }
 
-function textToItems(text: string) {
+function textToItems(text: string, previous: ServiceCategory["items"]) {
   const lines = text.split("\n");
   const items: ServiceCategory["items"] = [];
   let current: ServiceCategory["items"][number] | null = null;
+  let prevIndex = -1;
 
   for (const raw of lines) {
     const line = raw.trimEnd();
     if (!line.trim()) continue;
     const childMatch = line.match(/^\s*-\s+(.+)$/);
     if (childMatch && current) {
-      current.children = [...(current.children ?? []), childMatch[1].trim()];
+      const childLabel = childMatch[1].trim();
+      const prevChildren = previous[prevIndex]?.children ?? [];
+      const matchedChild = prevChildren.find(
+        (c) => labelText(c) === childLabel
+      );
+      current.children = [
+        ...(current.children ?? []),
+        matchedChild ? asLocalized(matchedChild, childLabel) : childLabel,
+      ];
       continue;
     }
     if (current) items.push(current);
-    current = { label: line.trim() };
+    prevIndex += 1;
+    const matched = previous[prevIndex];
+    const label = line.trim();
+    current = {
+      label:
+        matched && labelText(matched.label) === label
+          ? asLocalized(matched.label, label)
+          : label,
+    };
   }
   if (current) items.push(current);
   return items;
@@ -62,7 +87,7 @@ export default function AdminServicesPage() {
     try {
       const next = categories.map((cat, index) => ({
         ...cat,
-        items: textToItems(texts[index] ?? ""),
+        items: textToItems(texts[index] ?? "", cat.items),
       }));
       await saveServiceCategories(next);
       setCategories(next);
@@ -78,12 +103,9 @@ export default function AdminServicesPage() {
     <AdminGuard>
       <AdminShell title="Services">
         <p className="admin-lead">
-          Edit each practice area. Put one service per line. For items under Assurance,
-          indent with <code>- </code> like this:
-          <br />
-          <code>Assurance</code>
-          <br />
-          <code>&nbsp;&nbsp;- Agreed-Upon Procedure</code>
+          Update each practice area in English, Khmer, and Chinese. Use Auto-translate,
+          then edit any language. Service list items stay English structure for now
+          (one per line; nest with <code>- </code>).
         </p>
         {message ? <p className="admin-toast">{message}</p> : null}
         {loading ? (
@@ -93,35 +115,32 @@ export default function AdminServicesPage() {
             {categories.map((cat, index) => (
               <div key={cat.id} className="admin-panel">
                 <h2>
-                  {cat.letter}. {cat.title}
+                  {cat.letter}. {labelText(cat.title)}
                 </h2>
+                <LocalizedTextField
+                  label="Title"
+                  value={asLocalized(cat.title)}
+                  onChange={(title) => {
+                    const next = [...categories];
+                    next[index] = { ...cat, title };
+                    setCategories(next);
+                  }}
+                />
+                <LocalizedTextField
+                  label="Description"
+                  multiline
+                  rows={4}
+                  value={asLocalized(cat.description)}
+                  onChange={(description) => {
+                    const next = [...categories];
+                    next[index] = { ...cat, description };
+                    setCategories(next);
+                  }}
+                />
                 <label className="admin-field">
-                  <span>Title</span>
-                  <input
-                    value={cat.title}
-                    onChange={(e) => {
-                      const next = [...categories];
-                      next[index] = { ...cat, title: e.target.value };
-                      setCategories(next);
-                    }}
-                  />
-                </label>
-                <label className="admin-field">
-                  <span>Description</span>
+                  <span>Service items (structure)</span>
                   <textarea
-                    rows={3}
-                    value={cat.description}
-                    onChange={(e) => {
-                      const next = [...categories];
-                      next[index] = { ...cat, description: e.target.value };
-                      setCategories(next);
-                    }}
-                  />
-                </label>
-                <label className="admin-field">
-                  <span>Services list</span>
-                  <textarea
-                    rows={10}
+                    rows={8}
                     value={texts[index] ?? ""}
                     onChange={(e) => {
                       const next = [...texts];

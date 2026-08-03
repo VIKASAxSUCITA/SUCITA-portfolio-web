@@ -6,10 +6,11 @@ import Link from "next/link";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
 import AdminImageField from "@/components/admin/AdminImageField";
-import RichTextEditor from "@/components/admin/RichTextEditor";
+import LocalizedTextField from "@/components/admin/LocalizedTextField";
+import LocalizedRichTextField from "@/components/admin/LocalizedRichTextField";
 import { deleteEvent, saveEvent } from "@/lib/content/eventsStore";
 import { slugify } from "@/lib/content/slug";
-import { resolveBodyHtml } from "@/lib/content/richText";
+import { asLocalized, pickLocalized } from "@/lib/i18n/config";
 import type { EventType } from "@/data/events";
 import type { CmsEvent } from "@/lib/content/types";
 
@@ -22,10 +23,12 @@ type Props = {
 
 export default function AdminEventEditor({ initial, mode }: Props) {
   const router = useRouter();
-  const [form, setForm] = useState<EventFormState>(initial);
-  const [bodyHtml, setBodyHtml] = useState(
-    resolveBodyHtml(initial.bodyHtml, initial.description)
-  );
+  const [form, setForm] = useState<EventFormState>({
+    ...initial,
+    title: asLocalized(initial.title),
+    excerpt: asLocalized(initial.excerpt),
+    bodyHtml: asLocalized(initial.bodyHtml, "<p></p>"),
+  });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -34,10 +37,13 @@ export default function AdminEventEditor({ initial, mode }: Props) {
     setSaving(true);
     setMessage("");
     try {
+      const titleEn = pickLocalized(form.title, "en");
       const id = await saveEvent({
         ...form,
-        slug: form.slug || slugify(form.title),
-        bodyHtml,
+        slug: form.slug || slugify(titleEn),
+        title: asLocalized(form.title),
+        excerpt: asLocalized(form.excerpt),
+        bodyHtml: asLocalized(form.bodyHtml, "<p></p>"),
       });
       setMessage("Saved.");
       if (mode === "create") {
@@ -72,20 +78,17 @@ export default function AdminEventEditor({ initial, mode }: Props) {
         {message ? <p className="admin-toast">{message}</p> : null}
 
         <form className="admin-form admin-editor-form" onSubmit={handleSubmit}>
-          <label className="admin-field">
-            <span>Title</span>
-            <input
-              required
-              value={form.title}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  title: e.target.value,
-                  slug: prev.id ? prev.slug : slugify(e.target.value),
-                }))
-              }
-            />
-          </label>
+          <LocalizedTextField
+            label="Title"
+            value={asLocalized(form.title)}
+            onChange={(title) =>
+              setForm((prev) => ({
+                ...prev,
+                title,
+                slug: prev.id ? prev.slug : slugify(pickLocalized(title, "en")),
+              }))
+            }
+          />
 
           <div className="admin-form-row">
             <label className="admin-field">
@@ -153,17 +156,13 @@ export default function AdminEventEditor({ initial, mode }: Props) {
             </label>
           </div>
 
-          <label className="admin-field">
-            <span>Excerpt</span>
-            <textarea
-              rows={3}
-              required
-              value={form.excerpt}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, excerpt: e.target.value }))
-              }
-            />
-          </label>
+          <LocalizedTextField
+            label="Excerpt"
+            multiline
+            rows={3}
+            value={asLocalized(form.excerpt)}
+            onChange={(excerpt) => setForm((prev) => ({ ...prev, excerpt }))}
+          />
 
           <AdminImageField
             label="Cover image"
@@ -171,14 +170,12 @@ export default function AdminEventEditor({ initial, mode }: Props) {
             onChange={(coverImage) => setForm((prev) => ({ ...prev, coverImage }))}
           />
 
-          <div className="admin-field">
-            <span>Body</span>
-            <RichTextEditor
-              content={bodyHtml}
-              onChange={setBodyHtml}
-              placeholder="Write the event details…"
-            />
-          </div>
+          <LocalizedRichTextField
+            label="Body"
+            value={asLocalized(form.bodyHtml, "<p></p>")}
+            onChange={(bodyHtml) => setForm((prev) => ({ ...prev, bodyHtml }))}
+            placeholder="Write the event details…"
+          />
 
           <div className="admin-modal-actions">
             {mode === "edit" && form.id ? (

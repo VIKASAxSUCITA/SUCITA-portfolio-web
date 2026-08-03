@@ -4,6 +4,7 @@ import KohostHeader from "@/components/template/KohostHeader";
 import KohostFooter from "@/components/template/KohostFooter";
 import ScrollTop from "@/components/template/ScrollTop";
 import TemplateScripts from "@/components/template/TemplateScripts";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
   description:
     "Professional accounting, tax, and audit services. Trusted financial expertise for businesses and individuals.",
   icons: {
-    icon: "/images/sucita_logo.png",
+    icon: "/images/sucitalogo_use.png",
   },
 };
 
@@ -33,14 +34,16 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/css/sucita-brand.css" />
       </head>
       <body>
-        <Preloader />
-        <div className="main">
-          <KohostHeader />
-          {children}
-        </div>
-        <KohostFooter />
-        <ScrollTop />
-        <TemplateScripts />
+        <LocaleProvider>
+          <Preloader />
+          <div className="main">
+            <KohostHeader />
+            {children}
+          </div>
+          <KohostFooter />
+          <ScrollTop />
+          <TemplateScripts />
+        </LocaleProvider>
       </body>
     </html>
   );

@@ -6,6 +6,14 @@ import MoveRightIcon from "@/components/icons/MoveRightIcon";
 import EditableText from "@/components/admin/EditableText";
 import type { HomeStrategyContent } from "@/lib/content/homeTypes";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
+import { useLocalizedCopy } from "@/lib/i18n/useLocalizedCopy";
+import type { MessageKey } from "@/lib/i18n/messages";
+
+const pointKeys: MessageKey[] = [
+  "home.strategy.point1",
+  "home.strategy.point2",
+  "home.strategy.point3",
+];
 
 type Props = {
   content?: HomeStrategyContent;
@@ -18,6 +26,7 @@ export default function HomeStrategyCTA({
   content = defaultHomeContent.strategy,
   edit,
 }: Props) {
+  const copy = useLocalizedCopy();
   return (
     <section className="sucita-layer sucita-strategy-cta">
       <div className="sucita-strategy-cta-media" aria-hidden="true" />
@@ -57,9 +66,15 @@ export default function HomeStrategyCTA({
                 </>
               ) : (
                 <>
-                  <p className="sucita-strategy-cta-label mb-3">{content.label}</p>
-                  <h2 className="text-white mb-3">{content.title}</h2>
-                  <p className="sucita-strategy-cta-copy mb-0">{content.text}</p>
+                  <p className="sucita-strategy-cta-label mb-3">
+                    {copy(content.label, "home.strategy.label")}
+                  </p>
+                  <h2 className="text-white mb-3">
+                    {copy(content.title, "home.strategy.title")}
+                  </h2>
+                  <p className="sucita-strategy-cta-copy mb-0">
+                    {copy(content.text, "home.strategy.text")}
+                  </p>
                 </>
               )}
             </ScrollReveal>
@@ -87,7 +102,11 @@ export default function HomeStrategyCTA({
                           }
                         />
                       ) : (
-                        <span>{point}</span>
+                        <span>
+                          {pointKeys[index]
+                            ? copy(point, pointKeys[index])
+                            : point}
+                        </span>
                       )}
                     </li>
                   ))}
@@ -106,7 +125,7 @@ export default function HomeStrategyCTA({
                     href="/#contact"
                     className="btn btn-tertiary btn-lg sucita-strategy-cta-btn d-inline-flex align-items-center gap-2"
                   >
-                    {content.buttonLabel}
+                    {copy(content.buttonLabel, "home.strategy.button")}
                     <MoveRightIcon className="sucita-link-arrow" />
                   </Link>
                 )}

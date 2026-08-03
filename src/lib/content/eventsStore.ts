@@ -4,6 +4,7 @@ import type { CmsEvent } from "./types";
 import { readContentJson } from "./blobJson";
 import { adminPutContent, fetchContentJson } from "./adminClient";
 import { htmlToParagraphs } from "./richText";
+import { asLocalized } from "@/lib/i18n/config";
 
 const PATH = "sucita/content/events.json";
 
@@ -24,10 +25,12 @@ function normalize(raw: Record<string, unknown>, id: string): CmsEvent {
     id,
     slug,
     type,
-    title,
-    excerpt: String(raw.excerpt ?? ""),
+    title: asLocalized(raw.title as string | undefined, title),
+    excerpt: asLocalized(raw.excerpt as string | undefined, String(raw.excerpt ?? "")),
     description,
-    bodyHtml: raw.bodyHtml ? String(raw.bodyHtml) : undefined,
+    bodyHtml: raw.bodyHtml
+      ? asLocalized(raw.bodyHtml as string | Record<string, string>, "<p></p>")
+      : undefined,
     date: String(raw.date ?? new Date().toISOString().slice(0, 10)),
     time: raw.time ? String(raw.time) : undefined,
     location: raw.location ? String(raw.location) : undefined,
@@ -90,16 +93,21 @@ export async function getEventById(id: string): Promise<CmsEvent | null> {
 export async function saveEvent(
   input: Omit<CmsEvent, "id"> & { id?: string }
 ): Promise<string> {
-  const id = input.id || slugify(input.title) || `event-${Date.now()}`;
-  const bodyHtml = input.bodyHtml?.trim() || undefined;
+  const titleLocal = asLocalized(input.title);
+  const id = input.id || slugify(titleLocal.en) || `event-${Date.now()}`;
+  const bodyHtml = input.bodyHtml
+    ? asLocalized(input.bodyHtml, "<p></p>")
+    : undefined;
   const description =
-    bodyHtml && bodyHtml !== "<p></p>"
-      ? htmlToParagraphs(bodyHtml)
+    bodyHtml && bodyHtml.en && bodyHtml.en !== "<p></p>"
+      ? htmlToParagraphs(bodyHtml.en)
       : input.description ?? [];
   const nextItem = normalize(
     {
       ...input,
-      slug: input.slug || slugify(input.title) || id,
+      slug: input.slug || slugify(titleLocal.en) || id,
+      title: titleLocal,
+      excerpt: asLocalized(input.excerpt),
       bodyHtml,
       description,
       time: input.time || "",

@@ -17,7 +17,7 @@ export default function Preloader() {
     <div id="preloader">
       <div className="preloader-wrap">
         <Image
-          src="/images/sucita_logo.png"
+          src="/images/sucitalogo_use.png"
           alt="Sucita & Partners"
           width={200}
           height={60}

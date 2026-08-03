@@ -69,7 +69,7 @@ function ContactContent() {
                     <label htmlFor="service">Service of Interest</label>
                     <select className="form-control" id="service">
                       {serviceCategories.map((cat) => (
-                        <optgroup key={cat.id} label={cat.title}>
+                        <optgroup key={cat.id} label={typeof cat.title === "string" ? cat.title : cat.title.en}>
                           {getServiceLabels(cat).map((item) => (
                             <option key={item} value={item}>{item}</option>
                           ))}

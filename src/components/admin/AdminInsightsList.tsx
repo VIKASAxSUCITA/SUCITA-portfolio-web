@@ -11,6 +11,7 @@ import {
   type InsightCategory,
 } from "@/data/insights";
 import type { CmsInsight } from "@/lib/content/types";
+import { pickLocalized } from "@/lib/i18n/config";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", {
@@ -134,7 +135,7 @@ export default function AdminInsightsListPage() {
                             <div className="sucita-insight-list-media">
                               <Image
                                 src={item.coverImage || "/assets/img/insights/vat-refund-cover.png"}
-                                alt={item.title}
+                                alt={pickLocalized(item.title, "en")}
                                 width={640}
                                 height={400}
                                 className="sucita-insight-list-img"
@@ -147,9 +148,11 @@ export default function AdminInsightsListPage() {
                               <small className="sucita-insight-date d-block mb-2">
                                 {formatDate(item.publishedAt)}
                               </small>
-                              <h5 className="sucita-insight-list-title">{item.title}</h5>
+                              <h5 className="sucita-insight-list-title">
+                                {pickLocalized(item.title, "en")}
+                              </h5>
                               <p className="sucita-insight-list-excerpt mb-0">
-                                {item.excerpt}
+                                {pickLocalized(item.excerpt, "en")}
                               </p>
                               <span className="admin-card-edit-hint">Click to edit</span>
                             </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Insight } from "@/data/insights";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 function formatDate(value: string) {
   return new Date(value).toLocaleDateString("en-US", {
@@ -23,6 +24,7 @@ export default function HomeInsights({
   items,
   viewAllHref = "/insights",
 }: Props) {
+  const { t, L } = useLocale();
   const trackRef = useRef<HTMLDivElement>(null);
   const latestInsights = [...items].sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
@@ -44,8 +46,8 @@ export default function HomeInsights({
       <div className="container">
         <div className="sucita-insights-head">
           <div>
-            <p className="sucita-about-label mb-3">Articles & work</p>
-            <h2 className="sucita-insights-title mb-2">Insights</h2>
+            <p className="sucita-about-label mb-3">{t("home.insights.label")}</p>
+            <h2 className="sucita-insights-title mb-2">{t("home.insights.title")}</h2>
           </div>
           <div className="sucita-insights-controls">
             <button
@@ -76,7 +78,7 @@ export default function HomeInsights({
                 <div className="sucita-insight-card-media">
                   <Image
                     src={item.coverImage}
-                    alt={item.title}
+                    alt={L(item.title)}
                     width={640}
                     height={400}
                     className="sucita-insight-card-img"
@@ -89,8 +91,8 @@ export default function HomeInsights({
                   <div className="sucita-insight-card-meta">
                     <span className="sucita-insight-date">{formatDate(item.publishedAt)}</span>
                   </div>
-                  <h3 className="sucita-insight-card-title">{item.title}</h3>
-                  <p className="sucita-insight-excerpt">{item.excerpt}</p>
+                  <h3 className="sucita-insight-card-title">{L(item.title)}</h3>
+                  <p className="sucita-insight-excerpt">{L(item.excerpt)}</p>
                   {item.type === "project" && item.client ? (
                     <p className="sucita-insight-client mb-3">{item.client}</p>
                   ) : null}
@@ -110,7 +112,7 @@ export default function HomeInsights({
 
       <div className="container mt-3 text-center">
         <Link href={viewAllHref} className="btn btn-outline-primary sucita-insights-all">
-          View all insights
+          {t("home.viewAllInsights")}
         </Link>
       </div>
     </section>

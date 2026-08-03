@@ -1,3 +1,6 @@
+import type { Locale, LocalizedString } from "@/lib/i18n/config";
+import { pickLocalized } from "@/lib/i18n/config";
+
 /** Convert legacy paragraph arrays into TipTap-friendly HTML. */
 export function paragraphsToHtml(paragraphs: string[] | undefined): string {
   if (!paragraphs?.length) return "<p></p>";
@@ -31,10 +34,17 @@ export function htmlToParagraphs(html: string): string[] {
 }
 
 export function resolveBodyHtml(
-  bodyHtml: string | undefined,
-  paragraphs: string[] | undefined
+  bodyHtml: string | LocalizedString | undefined,
+  paragraphs: string[] | undefined,
+  locale: Locale = "en"
 ): string {
-  if (bodyHtml && bodyHtml.replace(/<[^>]+>/g, "").trim()) return bodyHtml;
+  if (bodyHtml) {
+    const html =
+      typeof bodyHtml === "string"
+        ? bodyHtml
+        : pickLocalized(bodyHtml, locale, "");
+    if (html.replace(/<[^>]+>/g, "").trim()) return html;
+  }
   return paragraphsToHtml(paragraphs);
 }
 

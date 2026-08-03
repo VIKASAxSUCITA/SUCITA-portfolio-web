@@ -11,17 +11,19 @@ export const siteConfig = {
     "We simplify financial complexity and protect client interests through accountable accounting, tax, audit, and compliance services.",
 };
 
+/** Own pages for every main nav item */
 export const navLinks = [
-  { href: "/#home", label: "Home" },
-  { href: "/#about", label: "About Us" },
-  { href: "/#services", label: "Services" },
-  { href: "/#insights", label: "Insights" },
-  { href: "/#events", label: "Events" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/", labelKey: "nav.home" as const, label: "Home" },
+  { href: "/about", labelKey: "nav.about" as const, label: "About Us" },
+  { href: "/services", labelKey: "nav.services" as const, label: "Services" },
+  { href: "/insights", labelKey: "nav.insights" as const, label: "Insights" },
+  { href: "/events", labelKey: "nav.events" as const, label: "Events" },
+  { href: "/partners", labelKey: "nav.partners" as const, label: "Partners" },
+  { href: "/contact", labelKey: "nav.contact" as const, label: "Contact" },
 ];
 
 export const footerServiceLinks = [
-  { href: "/#home-audit-assurance", label: "Audit & Assurance" },
-  { href: "/#home-accounting-tax", label: "Accounting & Tax" },
-  { href: "/#home-transformative-strategy", label: "Transformative Strategy" },
+  { href: "/services/audit-assurance", label: "Audit & Assurance" },
+  { href: "/services/accounting-tax", label: "Accounting & Tax" },
+  { href: "/services/transformative-strategy", label: "Transformative Strategy" },
 ];

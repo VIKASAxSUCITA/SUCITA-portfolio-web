@@ -50,7 +50,7 @@ export default function AdminLoginForm() {
     <div className="admin-login-card">
       <div className="admin-login-brand">
         <Image
-          src="/images/sucita_logo.png"
+          src="/images/sucitalogo_use.png"
           alt="Sucita & Partners"
           width={180}
           height={48}

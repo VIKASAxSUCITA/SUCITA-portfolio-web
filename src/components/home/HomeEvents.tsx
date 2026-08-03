@@ -1,14 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
 import type { EventItem } from "@/data/events";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 function formatEventDate(value: string) {
   const date = new Date(value);
   return {
     day: date.toLocaleDateString("en-US", { day: "2-digit" }),
-    month: date.toLocaleDateString("en-US", { month: "short" }),
+    month: date.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
     year: date.toLocaleDateString("en-US", { year: "numeric" }),
   };
 }
@@ -22,6 +25,7 @@ export default function HomeEvents({
   items,
   viewAllHref = "/events",
 }: Props) {
+  const { t, L } = useLocale();
   const latestEvents = [...items]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3);
@@ -32,10 +36,8 @@ export default function HomeEvents({
         <div className="row justify-content-center mb-5">
           <div className="col-lg-7 text-center">
             <ScrollReveal className="sucita-reveal-up">
-              <h2 className="sucita-events-title mb-3">Events</h2>
-              <p className="sucita-about-body mb-0">
-                Workshops, sessions, and announcements from Sucita & Partners.
-              </p>
+              <h2 className="sucita-events-title mb-3">{t("home.events.title")}</h2>
+              <p className="sucita-about-body mb-0">{t("home.events.intro")}</p>
             </ScrollReveal>
           </div>
         </div>
@@ -53,11 +55,16 @@ export default function HomeEvents({
                   <div className="sucita-event-media">
                     <Image
                       src={event.coverImage}
-                      alt={event.title}
+                      alt={L(event.title)}
                       width={360}
                       height={200}
                       className="sucita-event-img"
                     />
+                    <div className="sucita-event-date-badge" aria-hidden="true">
+                      <span className="sucita-event-date-month">{date.month}</span>
+                      <span className="sucita-event-date-day">{date.day}</span>
+                      <span className="sucita-event-date-year">{date.year}</span>
+                    </div>
                   </div>
 
                   <div className="sucita-event-content">
@@ -70,12 +77,9 @@ export default function HomeEvents({
                       ) : (
                         <span className="sucita-event-status">Past</span>
                       )}
-                      <span className="sucita-event-date-inline">
-                        {date.day} {date.month} {date.year}
-                      </span>
                     </div>
-                    <h3 className="sucita-event-title">{event.title}</h3>
-                    <p className="sucita-event-excerpt mb-0">{event.excerpt}</p>
+                    <h3 className="sucita-event-title">{L(event.title)}</h3>
+                    <p className="sucita-event-excerpt mb-0">{L(event.excerpt)}</p>
                     {(event.time || event.location) && (
                       <p className="sucita-event-info mb-0">
                         {event.time ? <span>{event.time}</span> : null}
@@ -90,7 +94,7 @@ export default function HomeEvents({
                       href={`/events/${event.slug}`}
                       className="btn btn-tertiary sucita-event-btn d-inline-flex align-items-center gap-2"
                     >
-                      View details
+                      {t("events.viewDetails")}
                       <MoveRightIcon className="sucita-link-arrow" />
                     </Link>
                   </div>
@@ -102,7 +106,7 @@ export default function HomeEvents({
 
         <div className="text-center mt-4 mt-lg-5">
           <Link href={viewAllHref} className="btn btn-outline-primary sucita-insights-all">
-            View all events
+            {t("home.viewAllEvents")}
           </Link>
         </div>
       </div>

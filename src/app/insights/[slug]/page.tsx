@@ -8,6 +8,8 @@ import {
 } from "@/lib/content/insightsStore";
 import RichHtml from "@/components/template/RichHtml";
 import { resolveBodyHtml } from "@/lib/content/richText";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { pickLocalized } from "@/lib/i18n/config";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +23,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const item = await getPublicInsightBySlug(slug);
-  return { title: item?.title ?? "Not Found" };
+  return { title: pickLocalized(item?.title, "en") || "Not Found" };
 }
 
 function formatDate(value: string) {
@@ -34,10 +36,13 @@ function formatDate(value: string) {
 
 export default async function InsightDetailPage({ params }: Props) {
   const { slug } = await params;
+  const locale = await getRequestLocale();
   const item = await getPublicInsightBySlug(slug);
   if (!item) notFound();
 
   const gallery = item.galleryImages ?? [];
+  const title = pickLocalized(item.title, locale);
+  const excerpt = pickLocalized(item.excerpt, locale);
 
   return (
     <>
@@ -51,8 +56,8 @@ export default async function InsightDetailPage({ params }: Props) {
               <span className="sucita-insight-type ms-2 is-article-light">
                 {item.category}
               </span>
-              <h1 className="text-white mt-3">{item.title}</h1>
-              <p className="lead mb-2">{item.excerpt}</p>
+              <h1 className="text-white mt-3">{title}</h1>
+              <p className="lead mb-2">{excerpt}</p>
               <p className="mb-0 small text-white-50">{formatDate(item.publishedAt)}</p>
             </div>
           </div>
@@ -66,7 +71,7 @@ export default async function InsightDetailPage({ params }: Props) {
               <div className="sucita-insight-main-media mb-4 mb-lg-5">
                 <Image
                   src={item.coverImage}
-                  alt={item.title}
+                  alt={title}
                   width={1200}
                   height={700}
                   className="sucita-insight-main-img"
@@ -91,7 +96,7 @@ export default async function InsightDetailPage({ params }: Props) {
 
               <RichHtml
                 className="sucita-article-body"
-                html={resolveBodyHtml(item.bodyHtml, item.content)}
+                html={resolveBodyHtml(item.bodyHtml, item.content, locale)}
               />
 
               {gallery.length > 0 ? (

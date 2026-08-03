@@ -6,6 +6,7 @@ import EditableText from "@/components/admin/EditableText";
 import EditableImage from "@/components/admin/EditableImage";
 import type { HomeSplitContent } from "@/lib/content/homeTypes";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
+import { useLocalizedCopy } from "@/lib/i18n/useLocalizedCopy";
 
 type Props = {
   content?: HomeSplitContent;
@@ -18,6 +19,7 @@ export default function HomeWhoWeServe({
   content = defaultHomeContent.whoWeServe,
   edit,
 }: Props) {
+  const copy = useLocalizedCopy();
   return (
     <section className="sucita-layer sucita-layer-serve ptb-100">
       <div className="container">
@@ -77,8 +79,8 @@ export default function HomeWhoWeServe({
                   </>
                 ) : (
                   <>
-                    <h2>{content.title}</h2>
-                    <p>{content.text}</p>
+                    <h2>{copy(content.title, "home.whoWeServe.title")}</h2>
+                    <p>{copy(content.text, "home.whoWeServe.text")}</p>
                   </>
                 )}
               </div>

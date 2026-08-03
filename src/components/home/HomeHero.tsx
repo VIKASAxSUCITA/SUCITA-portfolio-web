@@ -6,6 +6,7 @@ import EditableText from "@/components/admin/EditableText";
 import EditableImage from "@/components/admin/EditableImage";
 import type { HomeHeroContent } from "@/lib/content/homeTypes";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
+import { useLocalizedCopy } from "@/lib/i18n/useLocalizedCopy";
 
 type Props = {
   content?: HomeHeroContent;
@@ -18,6 +19,7 @@ export default function HomeHero({
   content = defaultHomeContent.hero,
   edit,
 }: Props) {
+  const copy = useLocalizedCopy();
   const bgStyle = {
     backgroundImage: `url(${content.backgroundImage})`,
   } as React.CSSProperties;
@@ -90,14 +92,16 @@ export default function HomeHero({
                   </>
                 ) : (
                   <>
-                    <h1 className="text-white">{content.title}</h1>
-                    <p className="lead">{content.text}</p>
+                    <h1 className="text-white">
+                      {copy(content.title, "home.hero.title")}
+                    </h1>
+                    <p className="lead">{copy(content.text, "home.hero.text")}</p>
                     <div className="action-btns mt-4">
                       <Link href="/#about" className="btn btn-tertiary btn-lg me-2">
-                        {content.aboutLabel}
+                        {copy(content.aboutLabel, "home.hero.aboutLabel")}
                       </Link>
                       <Link href="/#services" className="btn btn-outline-light btn-lg">
-                        {content.servicesLabel}
+                        {copy(content.servicesLabel, "home.hero.servicesLabel")}
                       </Link>
                     </div>
                   </>

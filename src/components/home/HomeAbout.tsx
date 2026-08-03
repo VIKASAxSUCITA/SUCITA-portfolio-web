@@ -14,6 +14,30 @@ import {
 } from "@/components/icons/CoreValueIcons";
 import type { HomeAboutContent } from "@/lib/content/homeTypes";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
+import { useLocalizedCopy } from "@/lib/i18n/useLocalizedCopy";
+import type { MessageKey } from "@/lib/i18n/messages";
+
+const paragraphKeys: MessageKey[] = [
+  "home.about.p1",
+  "home.about.p2",
+  "home.about.p3",
+];
+
+const valueTitleKeys: MessageKey[] = [
+  "home.value.0.title",
+  "home.value.1.title",
+  "home.value.2.title",
+  "home.value.3.title",
+  "home.value.4.title",
+];
+
+const valueDescKeys: MessageKey[] = [
+  "home.value.0.desc",
+  "home.value.1.desc",
+  "home.value.2.desc",
+  "home.value.3.desc",
+  "home.value.4.desc",
+];
 
 const valueIconsByTitle: Record<string, ComponentType<{ className?: string }>> = {
   Integrity: IntegrityIcon,
@@ -21,7 +45,6 @@ const valueIconsByTitle: Record<string, ComponentType<{ className?: string }>> =
   "Impact Through Excellence": ImpactExcellenceIcon,
   "Inclusive Partnership": InclusivePartnershipIcon,
   "Intentional Protection": IntentionalProtectionIcon,
-  // Older titles (if still in saved CMS content)
   Independence: InclusivePartnershipIcon,
   "Client Success": InsightfulCommitmentIcon,
   Accountability: IntentionalProtectionIcon,
@@ -47,6 +70,7 @@ export default function HomeAbout({
   content = defaultHomeContent.about,
   edit,
 }: Props) {
+  const copy = useLocalizedCopy();
   return (
     <>
       <section id="about" className="sucita-about-intro ptb-100">
@@ -91,8 +115,12 @@ export default function HomeAbout({
                   </>
                 ) : (
                   <>
-                    <p className="sucita-about-label mb-3">{content.label}</p>
-                    <h2 className="sucita-about-title mb-4">{content.title}</h2>
+                    <p className="sucita-about-label mb-3">
+                      {copy(content.label, "home.about.label")}
+                    </p>
+                    <h2 className="sucita-about-title mb-4">
+                      {copy(content.title, "home.about.title")}
+                    </h2>
                     {content.paragraphs.map((paragraph, index) => (
                       <p
                         key={index}
@@ -100,7 +128,9 @@ export default function HomeAbout({
                           index === content.paragraphs.length - 1 ? "mb-0" : "mb-3"
                         }`}
                       >
-                        {paragraph}
+                        {paragraphKeys[index]
+                          ? copy(paragraph, paragraphKeys[index])
+                          : paragraph}
                       </p>
                     ))}
                   </>
@@ -153,7 +183,9 @@ export default function HomeAbout({
                       }
                     />
                   ) : (
-                    <h3 className="sucita-vm-heading mb-0">{content.visionTitle}</h3>
+                    <h3 className="sucita-vm-heading mb-0">
+                      {copy(content.visionTitle, "home.about.visionTitle")}
+                    </h3>
                   )}
                 </div>
                 {edit ? (
@@ -167,7 +199,9 @@ export default function HomeAbout({
                     }
                   />
                 ) : (
-                  <p className="sucita-vm-text mb-0">{content.visionText}</p>
+                  <p className="sucita-vm-text mb-0">
+                    {copy(content.visionText, "home.about.visionText")}
+                  </p>
                 )}
               </article>
             </ScrollReveal>
@@ -188,7 +222,9 @@ export default function HomeAbout({
                       }
                     />
                   ) : (
-                    <h3 className="sucita-vm-heading mb-0">{content.missionTitle}</h3>
+                    <h3 className="sucita-vm-heading mb-0">
+                      {copy(content.missionTitle, "home.about.missionTitle")}
+                    </h3>
                   )}
                 </div>
                 {edit ? (
@@ -202,7 +238,9 @@ export default function HomeAbout({
                     }
                   />
                 ) : (
-                  <p className="sucita-vm-text mb-0">{content.missionText}</p>
+                  <p className="sucita-vm-text mb-0">
+                    {copy(content.missionText, "home.about.missionText")}
+                  </p>
                 )}
               </article>
             </ScrollReveal>
@@ -236,8 +274,12 @@ export default function HomeAbout({
                   </>
                 ) : (
                   <>
-                    <p className="sucita-about-label mb-3">{content.valuesLabel}</p>
-                    <h2 className="mb-0">{content.valuesTitle}</h2>
+                    <p className="sucita-about-label mb-3">
+                      {copy(content.valuesLabel, "home.about.valuesLabel")}
+                    </p>
+                    <h2 className="mb-0">
+                      {copy(content.valuesTitle, "home.about.valuesTitle")}
+                    </h2>
                   </>
                 )}
               </ScrollReveal>
@@ -290,8 +332,16 @@ export default function HomeAbout({
                       </>
                     ) : (
                       <>
-                        <h3 className="sucita-value-title">{value.title}</h3>
-                        <p className="sucita-value-desc mb-0">{value.description}</p>
+                        <h3 className="sucita-value-title">
+                          {valueTitleKeys[index]
+                            ? copy(value.title, valueTitleKeys[index])
+                            : value.title}
+                        </h3>
+                        <p className="sucita-value-desc mb-0">
+                          {valueDescKeys[index]
+                            ? copy(value.description, valueDescKeys[index])
+                            : value.description}
+                        </p>
                       </>
                     )}
                   </article>

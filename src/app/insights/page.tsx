@@ -7,6 +7,8 @@ import {
   type InsightCategory,
 } from "@/data/insights";
 import { getPublicInsights } from "@/lib/content/insightsStore";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { pickLocalized } from "@/lib/i18n/config";
 
 export const metadata: Metadata = {
   title: "Insights",
@@ -30,6 +32,7 @@ function isInsightCategory(value?: string): value is InsightCategory {
 
 export default async function InsightsPage({ searchParams }: Props) {
   const { category } = await searchParams;
+  const locale = await getRequestLocale();
   const activeCategory = isInsightCategory(category) ? category : null;
   const insights = await getPublicInsights();
 
@@ -86,7 +89,7 @@ export default async function InsightsPage({ searchParams }: Props) {
                       <div className="sucita-insight-list-media">
                         <Image
                           src={item.coverImage}
-                          alt={item.title}
+                          alt={pickLocalized(item.title, locale)}
                           width={640}
                           height={400}
                           className="sucita-insight-list-img"
@@ -99,8 +102,8 @@ export default async function InsightsPage({ searchParams }: Props) {
                         <small className="sucita-insight-date d-block mb-2">
                           {formatDate(item.publishedAt)}
                         </small>
-                        <h5 className="sucita-insight-list-title">{item.title}</h5>
-                        <p className="sucita-insight-list-excerpt mb-0">{item.excerpt}</p>
+                        <h5 className="sucita-insight-list-title">{pickLocalized(item.title, locale)}</h5>
+                        <p className="sucita-insight-list-excerpt mb-0">{pickLocalized(item.excerpt, locale)}</p>
                       </div>
                     </article>
                   </Link>
