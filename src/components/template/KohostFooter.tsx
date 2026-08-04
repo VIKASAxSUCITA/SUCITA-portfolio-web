@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, MouseEvent } from "react";
+import { type MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   siteConfig as defaultSite,
@@ -10,7 +10,6 @@ import {
   footerServiceLinks,
 } from "@/data/site";
 import { scrollToSection } from "@/lib/scrollToSection";
-import { getSiteContent } from "@/lib/content/siteStore";
 import type { SiteContent } from "@/lib/content/types";
 import EditableText from "@/components/admin/EditableText";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -26,13 +25,7 @@ export default function KohostFooter({ site: siteProp, edit }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useLocale();
-  const [fetchedSite, setFetchedSite] = useState<SiteContent>(defaultSite);
-  const site = siteProp ?? fetchedSite;
-
-  useEffect(() => {
-    if (siteProp) return;
-    void getSiteContent().then(setFetchedSite).catch(() => undefined);
-  }, [siteProp]);
+  const site = siteProp ?? defaultSite;
 
   const handleHashClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     if (edit || !href.startsWith("/#")) return;

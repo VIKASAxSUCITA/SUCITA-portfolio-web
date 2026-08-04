@@ -26,12 +26,14 @@ export default async function PartnersPage() {
       />
       <BrandMarquee
         id="partners"
+        liveGroup="partners"
         items={partners}
         direction="left"
         titleKey="home.partnersTitle"
       />
       <BrandMarquee
         id="clients"
+        liveGroup="clients"
         items={clients}
         direction="right"
         titleKey="home.clientsTitle"

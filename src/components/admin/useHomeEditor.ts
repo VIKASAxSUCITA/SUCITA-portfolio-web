@@ -2,14 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
-import { loadHomeContent, saveHomeContent } from "@/lib/content/homeStore";
+import { loadHomeContent } from "@/lib/content/homeStore";
 import type { HomePageContent } from "@/lib/content/homeTypes";
 import {
   getServiceCategories,
   saveServiceCategories,
 } from "@/lib/content/servicesStore";
-import { getSiteContent, saveSiteContent } from "@/lib/content/siteStore";
+import { getSiteContent } from "@/lib/content/siteStore";
 
+/** Legacy homepage editor — home/site are static in code; only services save to Blob. */
 export function useHomeEditor() {
   const [content, setContent] = useState<HomePageContent>(() =>
     structuredClone(defaultHomeContent)
@@ -40,7 +41,7 @@ export function useHomeEditor() {
         setDirty(false);
       } catch (error) {
         console.error(error);
-        if (active) setMessage("Could not load saved content. Showing defaults.");
+        if (active) setMessage("Could not load content. Showing defaults.");
       } finally {
         if (active) setLoading(false);
       }
@@ -60,20 +61,14 @@ export function useHomeEditor() {
     setSaving(true);
     setMessage("");
     try {
-      await saveHomeContent(content);
       await saveServiceCategories(content.services.categories);
-      await saveSiteContent(content.site);
       savedRef.current = content;
       setDirty(false);
-      setMessage("Saved.");
+      setMessage("Services saved. Home/site copy is edited in code.");
     } catch (error) {
       console.error(error);
       const text = error instanceof Error ? error.message : "Save failed.";
-      setMessage(
-        text.includes("permissions")
-          ? "Save failed — sign out, sign in again, then retry."
-          : text
-      );
+      setMessage(text);
     } finally {
       setSaving(false);
     }

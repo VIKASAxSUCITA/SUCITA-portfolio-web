@@ -14,6 +14,8 @@ const PATHS = {
   insights: "sucita/content/insights.json",
   events: "sucita/content/events.json",
   logos: "sucita/content/logos.json",
+  partners: "sucita/content/partners.json",
+  clients: "sucita/content/clients.json",
 } as const;
 
 type Collection = keyof typeof PATHS;
@@ -24,7 +26,9 @@ type Body =
   | { collection: "services"; data: { categories: ServiceCategory[] } }
   | { collection: "insights"; data: CmsInsight[] }
   | { collection: "events"; data: CmsEvent[] }
-  | { collection: "logos"; data: { partners: unknown; clients: unknown } };
+  | { collection: "logos"; data: { partners: unknown; clients: unknown } }
+  | { collection: "partners"; data: { items: unknown } }
+  | { collection: "clients"; data: { items: unknown } };
 
 function isCollection(value: unknown): value is Collection {
   return typeof value === "string" && value in PATHS;
@@ -49,6 +53,16 @@ export async function PUT(request: Request) {
   if (!isCollection(body.collection) || body.data == null) {
     return NextResponse.json(
       { error: "Expected { collection, data }." },
+      { status: 400 }
+    );
+  }
+
+  if (body.collection === "home" || body.collection === "site") {
+    return NextResponse.json(
+      {
+        error:
+          "Home and site copy are static in code. Edit src/lib/content/homeDefaults.ts or src/data/site.ts instead.",
+      },
       { status: 400 }
     );
   }

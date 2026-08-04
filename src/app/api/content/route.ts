@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import { readContentJson } from "@/lib/content/blobJson";
-import { defaultHomeContent, mergeHomeContent } from "@/lib/content/homeDefaults";
-import type { HomePageContent } from "@/lib/content/homeTypes";
+import { defaultHomeContent } from "@/lib/content/homeDefaults";
 import { siteConfig } from "@/data/site";
 import { serviceCategories } from "@/data/services";
 import { insights as defaultInsights } from "@/data/insights";
 import { events as defaultEvents } from "@/data/events";
-import type { SiteContent, CmsInsight, CmsEvent } from "@/lib/content/types";
+import type { CmsInsight, CmsEvent } from "@/lib/content/types";
 import type { ServiceCategory } from "@/data/services";
-import type { LogosContent } from "@/lib/content/logosStore";
+import { readLogoGroup } from "@/lib/content/logosStore";
 
 export const runtime = "nodejs";
 
@@ -40,12 +39,10 @@ export async function GET(request: Request) {
 
   try {
     if (collection === "home") {
-      const data = await readContentJson<Partial<HomePageContent>>(PATHS.home);
-      return NextResponse.json(mergeHomeContent(data));
+      return NextResponse.json(structuredClone(defaultHomeContent));
     }
     if (collection === "site") {
-      const data = await readContentJson<Partial<SiteContent>>(PATHS.site);
-      return NextResponse.json({ ...siteConfig, ...data });
+      return NextResponse.json({ ...siteConfig });
     }
     if (collection === "services") {
       const data = await readContentJson<{ categories?: ServiceCategory[] }>(
@@ -66,11 +63,11 @@ export async function GET(request: Request) {
       );
     }
     if (collection === "logos") {
-      const data = await readContentJson<LogosContent>(PATHS.logos);
-      return NextResponse.json({
-        partners: Array.isArray(data?.partners) ? data.partners : [],
-        clients: Array.isArray(data?.clients) ? data.clients : [],
-      });
+      const [partners, clients] = await Promise.all([
+        readLogoGroup("partners"),
+        readLogoGroup("clients"),
+      ]);
+      return NextResponse.json({ partners, clients });
     }
     const data = await readContentJson<CmsEvent[]>(PATHS.events);
     return NextResponse.json(

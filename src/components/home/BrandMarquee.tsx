@@ -3,9 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { BrandLogo } from "@/data/partners";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import {
+  subscribeLogoGroup,
+  type LogoGroup,
+} from "@/lib/content/logosStore";
 
 type Props = {
   items: BrandLogo[];
+  /** When set, marquee stays in sync with Firestore in real time. */
+  liveGroup?: LogoGroup;
   /** left = partners (A→Z), right = clients (Z→A) */
   direction?: "left" | "right";
   titleKey?: "home.partnersTitle" | "home.clientsTitle";
@@ -13,10 +19,11 @@ type Props = {
   id?: string;
 };
 
-const ITEM_WIDTH = 176; // card + gap estimate for fill math
+const ITEM_WIDTH = 176;
 
 export default function BrandMarquee({
-  items,
+  items: initialItems,
+  liveGroup,
   direction = "left",
   titleKey = "home.partnersTitle",
   title,
@@ -25,6 +32,14 @@ export default function BrandMarquee({
   const { t } = useLocale();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [copies, setCopies] = useState(6);
+  const [liveItems, setLiveItems] = useState<BrandLogo[] | null>(null);
+
+  useEffect(() => {
+    if (!liveGroup) return;
+    return subscribeLogoGroup(liveGroup, setLiveItems);
+  }, [liveGroup]);
+
+  const items = liveItems ?? initialItems;
 
   const ordered = useMemo(
     () => (direction === "right" ? [...items].reverse() : items),
@@ -37,7 +52,6 @@ export default function BrandMarquee({
 
     const update = () => {
       const width = el.clientWidth || window.innerWidth;
-      // Enough logos so ONE group is always wider than the viewport
       const needed = Math.ceil(width / ITEM_WIDTH) + 2;
       const perGroup = Math.max(2, Math.ceil(needed / ordered.length));
       setCopies(perGroup);
@@ -79,7 +93,7 @@ export default function BrandMarquee({
           <div className="sucita-marquee-group">
             {group.map((item, index) => (
               <div
-                key={`a-${item.id}-${index}`}
+                key={`a-${item.id}-${index}-${item.logo}`}
                 className="sucita-marquee-item is-logo-only"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -87,6 +101,8 @@ export default function BrandMarquee({
                   src={item.logo}
                   alt=""
                   className="sucita-marquee-logo"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
             ))}
@@ -94,7 +110,7 @@ export default function BrandMarquee({
           <div className="sucita-marquee-group" aria-hidden="true">
             {group.map((item, index) => (
               <div
-                key={`b-${item.id}-${index}`}
+                key={`b-${item.id}-${index}-${item.logo}`}
                 className="sucita-marquee-item is-logo-only"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -102,6 +118,8 @@ export default function BrandMarquee({
                   src={item.logo}
                   alt=""
                   className="sucita-marquee-logo"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
             ))}

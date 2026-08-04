@@ -11,9 +11,9 @@ import HomeStrategyCTA from "@/components/home/HomeStrategyCTA";
 import BrandMarquee from "@/components/home/BrandMarquee";
 import { getPublicInsights } from "@/lib/content/insightsStore";
 import { getPublicEvents } from "@/lib/content/eventsStore";
-import { loadHomeContent } from "@/lib/content/homeStore";
+import { getHomeContent } from "@/lib/content/homeStore";
 import { getServiceCategories } from "@/lib/content/servicesStore";
-import { getSiteContent } from "@/lib/content/siteStore";
+import { getSiteConfig } from "@/lib/content/siteStore";
 import {
   getPublicClients,
   getPublicPartners,
@@ -22,16 +22,15 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [home, categories, site, insights, events, partners, clients] =
-    await Promise.all([
-      loadHomeContent(),
-      getServiceCategories(),
-      getSiteContent(),
-      getPublicInsights(),
-      getPublicEvents(),
-      getPublicPartners(),
-      getPublicClients(),
-    ]);
+  const home = getHomeContent();
+  const site = getSiteConfig();
+  const [categories, insights, events, partners, clients] = await Promise.all([
+    getServiceCategories(),
+    getPublicInsights(),
+    getPublicEvents(),
+    getPublicPartners(),
+    getPublicClients(),
+  ]);
 
   return (
     <>
@@ -44,12 +43,14 @@ export default async function HomePage() {
       <HomeServices content={{ ...home.services, categories }} />
       <BrandMarquee
         id="partners"
+        liveGroup="partners"
         items={partners}
         direction="left"
         titleKey="home.partnersTitle"
       />
       <BrandMarquee
         id="clients"
+        liveGroup="clients"
         items={clients}
         direction="right"
         titleKey="home.clientsTitle"

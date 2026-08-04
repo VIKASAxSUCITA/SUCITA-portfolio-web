@@ -29,7 +29,10 @@ export async function fetchContentJson<T>(collection: string): Promise<T | null>
   return (await res.json()) as T;
 }
 
-export async function adminUploadFile(file: File): Promise<string> {
+export async function adminUploadFile(
+  file: File,
+  options?: { folder?: "partner" | "client" }
+): Promise<string> {
   const { getFirebaseAuth } = await import("@/lib/firebase/client");
   const user = getFirebaseAuth().currentUser;
   if (!user) {
@@ -39,6 +42,9 @@ export async function adminUploadFile(file: File): Promise<string> {
   const idToken = await user.getIdToken();
   const form = new FormData();
   form.append("file", file);
+  if (options?.folder) {
+    form.append("folder", options.folder);
+  }
 
   const res = await fetch("/api/admin/upload", {
     method: "POST",
@@ -57,3 +63,35 @@ export async function adminUploadFile(file: File): Promise<string> {
   }
   return payload.url;
 }
+
+export async function adminDeleteBlobUrls(urls: string[]): Promise<void> {
+  const unique = [...new Set(urls.map((url) => url.trim()).filter(Boolean))];
+  if (unique.length === 0) return;
+
+  const { getFirebaseAuth } = await import("@/lib/firebase/client");
+  const user = getFirebaseAuth().currentUser;
+  if (!user) {
+    throw new Error("Please sign in again before deleting.");
+  }
+
+  const idToken = await user.getIdToken();
+  const res = await fetch("/api/admin/blob", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ urls: unique }),
+  });
+
+  const payload = (await res.json().catch(() => ({}))) as {
+    error?: string;
+    deleted?: number;
+    missing?: boolean;
+  };
+  if (!res.ok) {
+    throw new Error(payload.error || "Could not delete blob file(s).");
+  }
+}
+
+
