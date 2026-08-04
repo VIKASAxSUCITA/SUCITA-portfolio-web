@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import { readContentJson } from "@/lib/content/blobJson";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
 import { siteConfig } from "@/data/site";
-import { serviceCategories } from "@/data/services";
-import { insights as defaultInsights } from "@/data/insights";
 import { events as defaultEvents } from "@/data/events";
-import type { CmsInsight, CmsEvent } from "@/lib/content/types";
-import type { ServiceCategory } from "@/data/services";
+import type { CmsEvent } from "@/lib/content/types";
+import { getServiceCategories } from "@/lib/content/servicesStore";
+import { listInsights } from "@/lib/content/insightsStore";
 import { readLogoGroup } from "@/lib/content/logosStore";
 
 export const runtime = "nodejs";
@@ -45,22 +44,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ ...siteConfig });
     }
     if (collection === "services") {
-      const data = await readContentJson<{ categories?: ServiceCategory[] }>(
-        PATHS.services
-      );
-      return NextResponse.json({
-        categories: data?.categories?.length
-          ? data.categories
-          : serviceCategories,
-      });
+      // Services live in Firestore (pages/services); falls back internally.
+      const categories = await getServiceCategories();
+      return NextResponse.json({ categories });
     }
     if (collection === "insights") {
-      const data = await readContentJson<CmsInsight[]>(PATHS.insights);
-      return NextResponse.json(
-        Array.isArray(data) && data.length
-          ? data
-          : defaultInsights.map((item) => ({ ...item, id: item.slug }))
-      );
+      // Insights live in Firestore (pages/insights); falls back internally.
+      return NextResponse.json(await listInsights());
     }
     if (collection === "logos") {
       const [partners, clients] = await Promise.all([

@@ -1,14 +1,21 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { UploadFolder } from "@/lib/content/adminClient";
 
 type Props = {
   src: string;
   onChange: (src: string) => void;
   onRemove?: () => void;
+  folder?: UploadFolder;
 };
 
-export default function ComposerCoverImage({ src, onChange, onRemove }: Props) {
+export default function ComposerCoverImage({
+  src,
+  onChange,
+  onRemove,
+  folder,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -17,7 +24,7 @@ export default function ComposerCoverImage({ src, onChange, onRemove }: Props) {
     setUploading(true);
     try {
       const { adminUploadFile } = await import("@/lib/content/adminClient");
-      onChange(await adminUploadFile(file));
+      onChange(await adminUploadFile(file, { folder }));
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Upload failed");
     } finally {

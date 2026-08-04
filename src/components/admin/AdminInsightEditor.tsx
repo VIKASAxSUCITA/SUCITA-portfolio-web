@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
 import ComposerCoverImage from "@/components/admin/ComposerCoverImage";
+import ComposerGalleryImages from "@/components/admin/ComposerGalleryImages";
 import LocaleEditTabs from "@/components/admin/LocaleEditTabs";
 import AutoTranslateButton from "@/components/admin/AutoTranslateButton";
 import RichTextEditor from "@/components/admin/RichTextEditor";
@@ -237,6 +238,7 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
                   <span>Image</span>
                 </div>
                 <ComposerCoverImage
+                  folder="insight"
                   src={form.coverImage}
                   onChange={(coverImage) =>
                     patch((prev) => ({ ...prev, coverImage }))
@@ -311,8 +313,22 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
                       }))
                     }
                     placeholder="Write the insight article…"
+                    uploadFolder="insight"
                   />
                 </div>
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-label">
+                  <span>Gallery</span>
+                </div>
+                <ComposerGalleryImages
+                  folder="insight"
+                  images={form.galleryImages ?? []}
+                  onChange={(galleryImages) =>
+                    patch((prev) => ({ ...prev, galleryImages }))
+                  }
+                />
               </div>
             </article>
           </div>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { navLinks } from "@/data/site";
 import LanguageSwitcher from "@/components/template/LanguageSwitcher";
+import ServicesNavDropdown from "@/components/template/ServicesNavDropdown";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 function closeOffcanvas() {
@@ -23,6 +24,8 @@ function closeOffcanvas() {
 export default function KohostHeader() {
   const pathname = usePathname();
   const { t } = useLocale();
+  const servicesActive =
+    pathname === "/services" || pathname.startsWith("/services/");
 
   return (
     <header id="header" className="header-main">
@@ -54,10 +57,19 @@ export default function KohostHeader() {
             <div id="navBar" className="collapse navbar-collapse">
               <ul className="navbar-nav ms-auto main-navbar-nav align-items-md-center">
                 {navLinks.map((link) => {
+                  if (link.href === "/services") {
+                    return (
+                      <li key={link.href} className="nav-item custom-nav-item">
+                        <ServicesNavDropdown active={servicesActive} />
+                      </li>
+                    );
+                  }
+
                   const active =
                     link.href === "/"
                       ? pathname === "/"
-                      : pathname === link.href || pathname.startsWith(`${link.href}/`);
+                      : pathname === link.href ||
+                        pathname.startsWith(`${link.href}/`);
                   return (
                     <li key={link.href} className="nav-item custom-nav-item">
                       <Link
@@ -103,17 +115,29 @@ export default function KohostHeader() {
         </div>
         <div className="offcanvas-body sucita-offcanvas-body">
           <ul className="navbar-nav sucita-offcanvas-nav">
-            {navLinks.map((link) => (
-              <li key={link.href} className="nav-item">
-                <Link
-                  className="nav-link sucita-offcanvas-link"
-                  href={link.href}
-                  onClick={closeOffcanvas}
-                >
-                  {t(link.labelKey)}
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((link) => {
+              if (link.href === "/services") {
+                return (
+                  <ServicesNavDropdown
+                    key={link.href}
+                    variant="mobile"
+                    active={servicesActive}
+                    onNavigate={closeOffcanvas}
+                  />
+                );
+              }
+              return (
+                <li key={link.href} className="nav-item">
+                  <Link
+                    className="nav-link sucita-offcanvas-link"
+                    href={link.href}
+                    onClick={closeOffcanvas}
+                  >
+                    {t(link.labelKey)}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
           <div className="mt-4">
             <LanguageSwitcher />

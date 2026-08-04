@@ -29,9 +29,11 @@ export async function fetchContentJson<T>(collection: string): Promise<T | null>
   return (await res.json()) as T;
 }
 
+export type UploadFolder = "partner" | "client" | "insight" | "event";
+
 export async function adminUploadFile(
   file: File,
-  options?: { folder?: "partner" | "client" }
+  options?: { folder?: UploadFolder }
 ): Promise<string> {
   const { getFirebaseAuth } = await import("@/lib/firebase/client");
   const user = getFirebaseAuth().currentUser;

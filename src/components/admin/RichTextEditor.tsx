@@ -7,12 +7,13 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
-import { adminUploadFile } from "@/lib/content/adminClient";
+import { adminUploadFile, type UploadFolder } from "@/lib/content/adminClient";
 
 type RichTextEditorProps = {
   content: string;
   onChange: (html: string) => void;
   placeholder?: string;
+  uploadFolder?: UploadFolder;
 };
 
 function ToolbarButton({
@@ -43,6 +44,7 @@ export default function RichTextEditor({
   content,
   onChange,
   placeholder = "Write your content…",
+  uploadFolder,
 }: RichTextEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lastEmitted = useRef(content);
@@ -87,7 +89,7 @@ export default function RichTextEditor({
   async function handleImageFile(file: File | undefined) {
     if (!file || !editor) return;
     try {
-      const src = await adminUploadFile(file);
+      const src = await adminUploadFile(file, { folder: uploadFolder });
       editor.chain().focus().setImage({ src }).run();
     } catch (error) {
       window.alert(error instanceof Error ? error.message : "Upload failed");

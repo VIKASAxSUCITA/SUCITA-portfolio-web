@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -50,13 +49,7 @@ export default async function InsightDetailPage({ params }: Props) {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8 text-white text-center">
-              <Link href="/insights" className="text-white-50 small">
-                ← Back to Insights
-              </Link>
-              <span className="sucita-insight-type ms-2 is-article-light">
-                {item.category}
-              </span>
-              <h1 className="text-white mt-3">{title}</h1>
+              <h1 className="text-white">{title}</h1>
               <p className="lead mb-2">{excerpt}</p>
               <p className="mb-0 small text-white-50">{formatDate(item.publishedAt)}</p>
             </div>

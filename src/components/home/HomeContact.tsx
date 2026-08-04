@@ -15,6 +15,8 @@ import { useLocalizedCopy } from "@/lib/i18n/useLocalizedCopy";
 type Props = {
   content?: HomeContactBlock;
   site?: SiteContent;
+  /** Hide the "open full contact page" link (e.g. on the contact page itself). */
+  showFullLink?: boolean;
   edit?: {
     onChangeContent: (
       updater: (prev: HomeContactBlock) => HomeContactBlock
@@ -26,6 +28,7 @@ type Props = {
 export default function HomeContact({
   content = defaultHomeContent.contact,
   site = defaultSite,
+  showFullLink = true,
   edit,
 }: Props) {
   const { t } = useLocale();
@@ -268,13 +271,13 @@ export default function HomeContact({
                         {t("contact.send")}
                         <MoveRightIcon className="sucita-link-arrow" />
                       </button>
-                      {!edit ? (
+                      {edit ? (
+                        <span className="admin-muted">Form preview only</span>
+                      ) : showFullLink ? (
                         <Link href="/contact" className="read-more-link">
                           {t("home.contact.openFull")}
                         </Link>
-                      ) : (
-                        <span className="admin-muted">Form preview only</span>
-                      )}
+                      ) : null}
                     </div>
                   </form>
                 )}

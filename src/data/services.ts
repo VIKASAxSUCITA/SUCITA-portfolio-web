@@ -10,6 +10,8 @@ export type ServiceCategory = {
   letter: string;
   title: string | LocalizedString;
   description: string | LocalizedString;
+  bodyHtml?: string | LocalizedString;
+  coverImage?: string;
   items: ServiceItem[];
 };
 

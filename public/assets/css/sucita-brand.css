@@ -101,18 +101,28 @@
   box-sizing: border-box;
 }
 
+/* Page banners sit under the fixed 80px header — add its height back to the
+   top padding so the visible space above and below the content is equal. */
+.page-header-section.ptb-100 {
+  padding-top: 180px !important;
+  padding-bottom: 100px !important;
+}
+
 /* Header — white background for dark-text logo visibility */
 .sucita-header {
   background-color: #ffffff !important;
   box-shadow: 0 2px 16px rgba(8, 61, 54, 0.08);
   height: 80px;
   min-height: 80px;
+  overflow: visible;
+  z-index: 1030;
 }
 
 .sucita-header .container {
   height: 80px;
   display: flex;
   align-items: center;
+  overflow: visible;
 }
 
 .sucita-header .header-nav {
@@ -122,6 +132,13 @@
   align-items: center !important;
   padding: 0 !important;
   --bs-navbar-padding-y: 0;
+  overflow: visible;
+}
+
+.sucita-header #navBar,
+.sucita-header .main-navbar-nav,
+.sucita-header .nav-item {
+  overflow: visible;
 }
 
 .sucita-header .navbar-brand {
@@ -2423,6 +2440,116 @@ body:has(.admin-root) .main {
   line-height: 1.3;
 }
 
+/* Auto-translate success dialog */
+.translate-success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(6, 32, 28, 0.45);
+  backdrop-filter: blur(4px);
+  animation: translateOverlayIn 0.2s ease-out;
+}
+
+.translate-success-card {
+  width: min(400px, 100%);
+  padding: 2.25rem 2rem 1.75rem;
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(6, 32, 28, 0.28);
+  animation: translateCardIn 0.28s cubic-bezier(0.21, 1.02, 0.55, 1.1);
+}
+
+.translate-success-svg {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 1.1rem;
+}
+
+.translate-success-circle {
+  fill: rgba(22, 163, 74, 0.12);
+  stroke: #16a34a;
+  stroke-width: 2.5;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: translateStroke 0.5s ease-out 0.1s forwards;
+}
+
+.translate-success-tick {
+  stroke: #16a34a;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 36;
+  stroke-dashoffset: 36;
+  animation: translateStroke 0.35s ease-out 0.45s forwards;
+}
+
+.translate-success-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #10241f;
+}
+
+.translate-success-copy {
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #5b6b66;
+}
+
+.translate-success-done {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 0.65rem 1.75rem;
+  border: none;
+  border-radius: 999px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.translate-success-done:hover {
+  background: #128a3f;
+  transform: translateY(-1px);
+}
+
+@keyframes translateOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes translateCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes translateStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 .admin-shell-content {
   flex: 1;
   min-width: 0;
@@ -2613,6 +2740,66 @@ textarea.admin-composer-title:focus {
 }
 
 .admin-article-image-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Admin gallery images (insight editor) */
+.admin-gallery {
+  width: 100%;
+}
+
+.admin-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.admin-gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #eef3f2;
+}
+
+.admin-gallery-item img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.admin-gallery-item .admin-article-image-actions {
+  top: 8px;
+  right: 8px;
+}
+
+.admin-gallery-item:hover .admin-article-image-actions {
+  opacity: 1;
+}
+
+.admin-gallery-add {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  border: 1.5px dashed rgba(8, 61, 54, 0.3);
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(8, 61, 54, 0.55);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-gallery-add:hover:not(:disabled) {
+  border-color: #083d36;
+  color: #083d36;
+}
+
+.admin-gallery-add:disabled {
   opacity: 0.6;
   cursor: default;
 }
@@ -3218,6 +3405,178 @@ textarea.admin-composer-title:focus {
   color: #083d36;
 }
 
+/* Admin Services — fixed 3 cards, edit only */
+.admin-services-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-services-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.25rem;
+  border: 1px solid #e4ecea;
+  border-radius: 0.85rem;
+  background: #fff;
+  color: #5a6b69;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-services-card:hover {
+  border-color: #188a6d;
+  box-shadow: 0 8px 24px rgba(8, 61, 54, 0.08);
+  color: #083d36;
+}
+
+.admin-services-item-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 0.35rem;
+  background: rgba(24, 138, 109, 0.12);
+  color: #188a6d;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.admin-services-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #083d36;
+}
+
+.admin-services-card-desc {
+  margin: 0;
+  flex: 1 1 auto;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #5a6b69;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.admin-services-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid #eef3f1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #7a8b88;
+}
+
+.admin-services-edit-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-services-edit-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #083d36;
+}
+
+.admin-services-back {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #188a6d;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-services-back:hover {
+  color: #083d36;
+}
+
+.admin-services-item-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(14rem, 0.9fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 991.98px) {
+  .admin-services-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-services-submenu-preview {
+  padding: 0.85rem;
+  border: 1px solid #e4ecea;
+  border-radius: 0.75rem;
+  background: #f8fafa;
+}
+
+.admin-services-submenu-label {
+  margin: 0 0 0.65rem;
+  color: #7a8b88;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-services-submenu-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.admin-services-submenu-parent {
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  color: #083d36;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.admin-services-submenu-children {
+  margin: 0 0 0.35rem;
+  padding: 0 0 0 0.85rem;
+  list-style: none;
+}
+
+.admin-services-submenu-children li {
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.45rem;
+  color: #5a6b69;
+  font-size: 0.86rem;
+  font-weight: 500;
+}
+
+.admin-services-submenu-children li:hover,
+.admin-services-submenu-parent:hover {
+  background: rgba(8, 61, 54, 0.06);
+}
+
+@media (max-width: 991.98px) {
+  .admin-services-item-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 767px) {
   .admin-wp-bar {
     flex-wrap: wrap;
@@ -3376,7 +3735,24 @@ textarea.admin-composer-title:focus {
 .sucita-rte-body ul,
 .sucita-rte-body ol {
   margin: 0 0 0.85rem;
-  padding-left: 1.25rem;
+  padding-left: 1.4rem;
+}
+
+/* main.css resets ol/ul to list-style:none — restore bullets inside the editor */
+.sucita-rte-body ul {
+  list-style: disc;
+}
+
+.sucita-rte-body ol {
+  list-style: decimal;
+}
+
+.sucita-rte-body li {
+  margin-bottom: 0.35rem;
+}
+
+.sucita-rte-body li p {
+  margin: 0;
 }
 
 .sucita-rte-body blockquote {
@@ -3437,7 +3813,28 @@ textarea.admin-composer-title:focus {
 .sucita-rich-html ol,
 .sucita-article-body ol {
   margin: 0 0 1rem;
-  padding-left: 1.25rem;
+  padding-left: 1.4rem;
+}
+
+/* main.css resets ol/ul to list-style:none — restore bullets in rendered content */
+.sucita-rich-html ul,
+.sucita-article-body ul {
+  list-style: disc;
+}
+
+.sucita-rich-html ol,
+.sucita-article-body ol {
+  list-style: decimal;
+}
+
+.sucita-rich-html li,
+.sucita-article-body li {
+  margin-bottom: 0.35rem;
+}
+
+.sucita-rich-html li p,
+.sucita-article-body li p {
+  margin: 0;
 }
 
 .sucita-rich-html img,
@@ -3571,6 +3968,609 @@ textarea.admin-composer-title:focus {
   font-weight: 800;
   letter-spacing: 0.04em;
   opacity: 0.85;
+}
+
+/* Services nav dropdown */
+.sucita-services-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sucita-services-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.sucita-services-caret {
+  font-size: 0.62rem;
+  opacity: 0.7;
+  transition: transform 0.15s ease;
+}
+
+.sucita-services-dropdown.is-open .sucita-services-caret {
+  transform: rotate(180deg);
+}
+
+.sucita-services-menu {
+  /* Keep hover continuous: transparent padding bridges trigger → panel */
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 1050;
+  width: min(20rem, calc(100vw - 2rem));
+  padding-top: 0.65rem;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  transform: translateX(-50%);
+}
+
+.sucita-services-menu-panel {
+  position: relative;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #d7e2df;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(8, 61, 54, 0.14);
+}
+
+.sucita-services-menu .sucita-services-overview {
+  display: block;
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid #e4ecea;
+  color: #188a6d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sucita-services-overview:hover {
+  color: #083d36;
+  text-decoration: underline;
+}
+
+.sucita-services-menu-titles {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.sucita-services-menu-row {
+  position: relative;
+}
+
+.sucita-services-menu-category {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.35rem;
+  border-radius: 0.45rem;
+  color: #083d36;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.sucita-services-menu-category-label {
+  flex: 1 1 auto;
+}
+
+.sucita-services-submenu-caret {
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  opacity: 0.55;
+}
+
+.sucita-services-menu-category:hover,
+.sucita-services-menu-row.is-open > .sucita-services-menu-category {
+  color: #188a6d;
+  background: rgba(24, 138, 109, 0.08);
+}
+
+.sucita-services-submenu {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 0.35rem);
+  z-index: 1060;
+  min-width: 14rem;
+  margin: 0;
+  padding: 0.45rem;
+  border: 1px solid #d7e2df;
+  border-radius: 0.65rem;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(8, 61, 54, 0.12);
+}
+
+/* Invisible bridge so hover doesn't drop between parent and submenu */
+.sucita-services-submenu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -0.45rem;
+  width: 0.45rem;
+  height: 100%;
+}
+
+.sucita-services-submenu-item {
+  display: block;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.4rem;
+  color: #3d524e;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sucita-services-submenu-item:hover {
+  color: #188a6d;
+  background: rgba(24, 138, 109, 0.08);
+}
+
+.sucita-services-letter {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 0.3rem;
+  background: rgba(24, 138, 109, 0.12);
+  color: #188a6d;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.sucita-services-menu-items {
+  margin: 0;
+  padding: 0;
+}
+
+.sucita-services-menu-item {
+  display: block;
+  padding: 0.2rem 0;
+  color: #3d524e;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sucita-services-menu-item:hover {
+  color: #188a6d;
+}
+
+.sucita-services-menu-children {
+  margin: 0.15rem 0 0.35rem;
+  padding: 0 0 0 0.75rem;
+  border-left: 2px solid #e4ecea;
+}
+
+.sucita-services-menu-child {
+  display: block;
+  padding: 0.15rem 0;
+  color: #5a6b69;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.sucita-services-menu-child:hover {
+  color: #188a6d;
+}
+
+.sucita-services-mobile-trigger {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sucita-services-mobile-trigger .fa-chevron-down {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  transition: transform 0.15s ease;
+}
+
+.sucita-services-mobile-trigger.is-open .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.sucita-services-mobile-menu {
+  margin: 0.25rem 0 0.75rem;
+  padding: 0.35rem 0 0.35rem 0.75rem;
+  border-left: 2px solid #e4ecea;
+}
+
+.sucita-services-mobile-link {
+  display: block;
+  padding: 0.35rem 0;
+  color: #083d36;
+  text-decoration: none;
+}
+
+.sucita-services-mobile-link.is-overview {
+  font-weight: 700;
+}
+
+.sucita-services-mobile-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sucita-services-mobile-row .sucita-services-mobile-link.is-category {
+  flex: 1 1 auto;
+  margin-top: 0.45rem;
+}
+
+.sucita-services-mobile-expand {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0.45rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: #083d36;
+  cursor: pointer;
+}
+
+.sucita-services-mobile-expand .fa-chevron-down {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  transition: transform 0.15s ease;
+}
+
+.sucita-services-mobile-expand.is-open .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.sucita-services-mobile-link.is-category {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.sucita-services-mobile-link.is-item {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #3d524e;
+  padding-left: 1.85rem;
+}
+
+.sucita-services-mobile-items {
+  margin: 0.15rem 0 0.35rem;
+  padding: 0;
+}
+
+@media (max-width: 991.98px) {
+  .sucita-services-menu {
+    left: 0;
+    transform: none;
+    width: min(20rem, calc(100vw - 2rem));
+  }
+}
+
+/* Service detail — full-bleed banner (homepage hero style) */
+.sucita-service-banner {
+  position: relative;
+  min-height: 58vh;
+  min-height: 58dvh;
+  display: flex;
+  align-items: center;
+  padding-top: 80px;
+  padding-bottom: 3.5rem;
+  background-color: #083d36;
+}
+
+.sucita-service-banner-media {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.sucita-service-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(8, 61, 54, 0.75);
+  z-index: 1;
+}
+
+.sucita-service-banner .container {
+  z-index: 2;
+}
+
+.sucita-service-banner-row {
+  min-height: calc(58vh - 80px - 3.5rem);
+  min-height: calc(58dvh - 80px - 3.5rem);
+}
+
+.sucita-service-banner-content h1 {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.85rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sucita-service-banner-content .lead {
+  margin: 0;
+  max-width: 36rem;
+  font-size: 1.1rem;
+  line-height: 1.65;
+  opacity: 0.95;
+}
+
+.sucita-service-banner-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 1rem;
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.sucita-service-detail {
+  background:
+    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(24, 138, 109, 0.07), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(8, 61, 54, 0.05), transparent 50%),
+    #f7f9f8;
+  padding: 4.5rem 0 5.5rem;
+}
+
+.sucita-service-detail-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 1.5rem 2.5rem;
+  align-items: end;
+  margin-bottom: 2.25rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid rgba(8, 61, 54, 0.12);
+}
+
+.sucita-service-detail-heading {
+  margin: 0;
+  color: #083d36;
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.sucita-service-detail-head-copy {
+  color: #5a6b69;
+  font-size: 1rem;
+  line-height: 1.65;
+  max-width: 28rem;
+  justify-self: end;
+}
+
+.sucita-service-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0 0 3.5rem;
+  padding: 0;
+}
+
+.sucita-service-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid rgba(8, 61, 54, 0.1);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.72);
+  color: #083d36;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.sucita-service-detail-item:hover {
+  border-color: rgba(24, 138, 109, 0.35);
+  background: #fff;
+}
+
+.sucita-service-detail-item .sucita-service-check {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.sucita-service-detail-item-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #083d36;
+}
+
+.sucita-service-detail-children {
+  margin: 0.65rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: #5a6b69;
+  font-size: 0.92rem;
+}
+
+.sucita-service-detail-children li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+/* Service detail rich text — top-level lists look like the check-card grid */
+.sucita-service-detail-content > ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+
+.sucita-service-detail-content > ul > li {
+  position: relative;
+  margin: 0;
+  padding: 1.25rem 1.35rem 1.25rem 3.1rem;
+  border: 1px solid rgba(8, 61, 54, 0.1);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.72);
+  color: #083d36;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.sucita-service-detail-content > ul > li:hover {
+  border-color: rgba(24, 138, 109, 0.35);
+  background: #fff;
+}
+
+.sucita-service-detail-content > ul > li::before {
+  content: "\f00c";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  left: 1.2rem;
+  top: 1.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #188a6d;
+  color: #fff;
+  font-size: 0.5rem;
+}
+
+.sucita-service-detail-content > ul > li > ul {
+  list-style: none;
+  margin: 0.65rem 0 0;
+  padding: 0.6rem 0.85rem 0.65rem 0.95rem;
+  border-left: 2px solid #c5ddd5;
+  background: #f6faf8;
+  border-radius: 0 0.55rem 0.55rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sucita-service-detail-content > ul > li > ul li {
+  position: relative;
+  margin: 0;
+  padding-left: 0.95rem;
+  color: #5a6b69;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.sucita-service-detail-content > ul > li > ul li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: #94a1a0;
+}
+
+@media (max-width: 767.98px) {
+  .sucita-service-detail-content > ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sucita-service-detail-others {
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(8, 61, 54, 0.12);
+}
+
+.sucita-service-detail-others-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.sucita-service-detail-other-card {
+  height: 100%;
+  color: inherit;
+}
+
+.sucita-service-detail-other-card .sucita-service-card-footer {
+  margin-top: auto;
+}
+
+.sucita-service-detail-other-cta {
+  color: #188a6d;
+  font-weight: 700;
+}
+
+@media (max-width: 991.98px) {
+  .sucita-service-detail-head {
+    grid-template-columns: 1fr;
+  }
+
+  .sucita-service-detail-head-copy {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sucita-service-banner {
+    min-height: auto;
+    padding-top: 100px;
+    padding-bottom: 3rem;
+  }
+
+  .sucita-service-banner-row {
+    min-height: auto;
+  }
+
+  .sucita-service-banner-content h1 {
+    font-size: clamp(1.7rem, 7.5vw, 2.15rem);
+  }
+
+  .sucita-service-banner .action-btns {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .sucita-service-banner .action-btns .btn {
+    margin-right: 0 !important;
+    width: 100%;
+  }
+
+  .sucita-service-detail-grid,
+  .sucita-service-detail-others-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .sucita-offcanvas-body .sucita-lang-menu {

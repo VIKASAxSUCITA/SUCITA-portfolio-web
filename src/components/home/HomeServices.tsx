@@ -23,6 +23,19 @@ type Props = {
   };
 };
 
+function getServiceIcon(id: string) {
+  switch (id) {
+    case "audit-assurance":
+      return "fas fa-shield-alt";
+    case "accounting-tax":
+      return "fas fa-calculator";
+    case "transformative-strategy":
+      return "fas fa-chart-line";
+    default:
+      return "fas fa-briefcase";
+  }
+}
+
 export default function HomeServices({
   content = defaultHomeContent.services,
   categories,
@@ -98,7 +111,7 @@ export default function HomeServices({
                 <header className="sucita-service-card-header">
                   <div className="sucita-service-card-top">
                     <span className="sucita-service-letter" aria-hidden="true">
-                      {category.letter}
+                      <i className={getServiceIcon(category.id)} />
                     </span>
                     <div>
                       <p className="sucita-service-practice mb-1">

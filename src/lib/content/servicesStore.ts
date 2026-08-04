@@ -1,3 +1,4 @@
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
   serviceCategories as defaultServices,
   type ServiceCategory,
@@ -7,10 +8,15 @@ import {
   asLocalized,
   type LocalizedString,
 } from "@/lib/i18n/config";
+import { getFirebaseDb } from "@/lib/firebase/client";
 import { readContentJson } from "./blobJson";
-import { adminPutContent, fetchContentJson } from "./adminClient";
 
-const PATH = "sucita/content/services.json";
+/** Legacy Blob JSON path — read-only fallback for content saved before Firestore. */
+const LEGACY_BLOB_PATH = "sucita/content/services.json";
+
+function servicesDoc() {
+  return doc(getFirebaseDb(), "pages", "services");
+}
 
 function mergeLocalized(
   raw: unknown,
@@ -76,6 +82,8 @@ function normalizeCategory(
     letter: String(cat.letter ?? fallback?.letter ?? "A"),
     title: mergeLocalized(cat.title, fallback?.title, "Service"),
     description: mergeLocalized(cat.description, fallback?.description),
+    bodyHtml: mergeLocalized(cat.bodyHtml, fallback?.bodyHtml, "<p></p>"),
+    coverImage: String(cat.coverImage ?? fallback?.coverImage ?? ""),
     items,
   };
 }
@@ -86,6 +94,8 @@ function normalizeCategories(raw: unknown): ServiceCategory[] {
       ...s,
       title: asLocalized(s.title),
       description: asLocalized(s.description),
+      bodyHtml: asLocalized(s.bodyHtml, "<p></p>"),
+      coverImage: s.coverImage ?? "",
       items: s.items.map((item) => ({
         label: asLocalized(item.label),
         children: item.children?.map((c) => asLocalized(c)),
@@ -97,21 +107,62 @@ function normalizeCategories(raw: unknown): ServiceCategory[] {
     .filter((item): item is ServiceCategory => !!item);
 }
 
+/** Firestore rejects `undefined` field values — emit plain objects only. */
+function toFirestoreCategories(categories: ServiceCategory[]) {
+  return categories.map((cat) => ({
+    id: cat.id,
+    letter: cat.letter,
+    title: asLocalized(cat.title),
+    description: asLocalized(cat.description),
+    bodyHtml: asLocalized(cat.bodyHtml, "<p></p>"),
+    coverImage: cat.coverImage ?? "",
+    items: cat.items.map((item) => {
+      const row: Record<string, unknown> = {
+        label: asLocalized(item.label),
+      };
+      if (item.children?.length) {
+        row.children = item.children.map((c) => asLocalized(c));
+      }
+      return row;
+    }),
+  }));
+}
+
 export async function getServiceCategories(): Promise<ServiceCategory[]> {
   try {
-    if (typeof window === "undefined") {
-      const data = await readContentJson<{ categories?: unknown[] }>(PATH);
-      return normalizeCategories(data?.categories);
+    const snap = await getDoc(servicesDoc());
+    if (snap.exists()) {
+      const data = snap.data() as { categories?: unknown[] };
+      if (Array.isArray(data.categories) && data.categories.length) {
+        return normalizeCategories(data.categories);
+      }
     }
-    const data = await fetchContentJson<{ categories?: unknown[] }>("services");
-    return normalizeCategories(data?.categories);
-  } catch {
-    return normalizeCategories(null);
+  } catch (error) {
+    console.error("Firestore read failed for services", error);
   }
+
+  // Legacy fallback: content saved to Blob JSON before the Firestore migration
+  if (typeof window === "undefined") {
+    try {
+      const data = await readContentJson<{ categories?: unknown[] }>(
+        LEGACY_BLOB_PATH
+      );
+      return normalizeCategories(data?.categories);
+    } catch {
+      return normalizeCategories(null);
+    }
+  }
+  return normalizeCategories(null);
 }
 
 export async function saveServiceCategories(categories: ServiceCategory[]) {
-  await adminPutContent("services", {
-    categories: normalizeCategories(categories),
-  });
+  const normalized = normalizeCategories(categories);
+  await setDoc(
+    servicesDoc(),
+    {
+      categories: toFirestoreCategories(normalized),
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
-import { listInsights } from "@/lib/content/insightsStore";
+import { listInsights, seedInsightsIfEmpty } from "@/lib/content/insightsStore";
 import {
   insightCategories,
   type InsightCategory,
@@ -34,6 +34,8 @@ export default function AdminInsightsListPage() {
     let active = true;
     (async () => {
       try {
+        // Migrate legacy/code insights into Firestore on first visit.
+        await seedInsightsIfEmpty().catch(() => false);
         const data = await listInsights();
         if (active) setItems(data);
       } finally {
@@ -60,17 +62,6 @@ export default function AdminInsightsListPage() {
     <AdminGuard>
       <AdminShell pageTitle="Insights">
         <div className="admin-site admin-collection-page">
-          <header className="admin-collection-hero">
-            <div className="container">
-              <p className="admin-collection-kicker">Admin</p>
-              <h1 className="admin-collection-title">Insights</h1>
-              <p className="admin-collection-sub mb-0">
-                Same layout as the public insights page — click a card to edit, or
-                create a new one.
-              </p>
-            </div>
-          </header>
-
           <section className="ptb-100 sucita-insights-page">
             <div className="container">
               {loading ? (

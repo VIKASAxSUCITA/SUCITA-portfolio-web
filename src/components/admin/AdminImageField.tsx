@@ -1,17 +1,20 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { UploadFolder } from "@/lib/content/adminClient";
 
 type Props = {
   label?: string;
   value: string;
   onChange: (url: string) => void;
+  folder?: UploadFolder;
 };
 
 export default function AdminImageField({
   label = "Image",
   value,
   onChange,
+  folder,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -22,7 +25,7 @@ export default function AdminImageField({
     setUploading(true);
     try {
       const { adminUploadFile } = await import("@/lib/content/adminClient");
-      onChange(await adminUploadFile(file));
+      onChange(await adminUploadFile(file, { folder }));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {

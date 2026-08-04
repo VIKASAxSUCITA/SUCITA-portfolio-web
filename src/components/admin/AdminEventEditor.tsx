@@ -216,6 +216,7 @@ export default function AdminEventEditor({ initial, mode }: Props) {
                 </div>
                 <AdminImageField
                   label=""
+                  folder="event"
                   value={form.coverImage}
                   onChange={(coverImage) =>
                     patch((prev) => ({ ...prev, coverImage }))
@@ -313,6 +314,7 @@ export default function AdminEventEditor({ initial, mode }: Props) {
                       }))
                     }
                     placeholder="Write the event details…"
+                    uploadFolder="event"
                   />
                 </div>
               </div>

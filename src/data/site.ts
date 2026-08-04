@@ -18,7 +18,6 @@ export const navLinks = [
   { href: "/services", labelKey: "nav.services" as const, label: "Services" },
   { href: "/insights", labelKey: "nav.insights" as const, label: "Insights" },
   { href: "/events", labelKey: "nav.events" as const, label: "Events" },
-  { href: "/partners", labelKey: "nav.partners" as const, label: "Partners" },
   { href: "/contact", labelKey: "nav.contact" as const, label: "Contact" },
 ];
 

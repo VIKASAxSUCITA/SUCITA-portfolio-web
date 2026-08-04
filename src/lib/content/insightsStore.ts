@@ -1,3 +1,4 @@
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import {
   insights as defaultInsights,
   insightCategories,
@@ -8,11 +9,17 @@ import {
 import { slugify } from "./slug";
 import type { CmsInsight } from "./types";
 import { readContentJson } from "./blobJson";
-import { adminPutContent, fetchContentJson } from "./adminClient";
-import { htmlToParagraphs } from "./richText";
+import { fetchContentJson } from "./adminClient";
+import { htmlToParagraphs, paragraphsToHtml } from "./richText";
 import { asLocalized } from "@/lib/i18n/config";
+import { getFirebaseDb } from "@/lib/firebase/client";
 
-const PATH = "sucita/content/insights.json";
+/** Legacy Blob JSON path — read-only fallback for content saved before Firestore. */
+const LEGACY_BLOB_PATH = "sucita/content/insights.json";
+
+function insightsDoc() {
+  return doc(getFirebaseDb(), "pages", "insights");
+}
 
 function normalize(raw: Record<string, unknown>, id: string): CmsInsight {
   const title = String(raw.title ?? "Untitled");
@@ -33,6 +40,19 @@ function normalize(raw: Record<string, unknown>, id: string): CmsInsight {
     ? raw.galleryImages.map(String).filter(Boolean)
     : [];
 
+  // Legacy articles only have plain `content` paragraphs — build the rich
+  // text body from them so the editor doesn't open empty.
+  const bodyHtmlRaw = raw.bodyHtml
+    ? asLocalized(raw.bodyHtml as string | Record<string, string>, "<p></p>")
+    : undefined;
+  const hasBodyHtml =
+    !!bodyHtmlRaw && !!bodyHtmlRaw.en.replace(/<[^>]+>/g, "").trim();
+  const bodyHtml = hasBodyHtml
+    ? bodyHtmlRaw
+    : content.length
+      ? asLocalized(paragraphsToHtml(content), "<p></p>")
+      : undefined;
+
   return {
     id,
     slug,
@@ -40,9 +60,7 @@ function normalize(raw: Record<string, unknown>, id: string): CmsInsight {
     title: asLocalized(raw.title as string | undefined, title),
     excerpt: asLocalized(raw.excerpt as string | undefined, String(raw.excerpt ?? "")),
     content,
-    bodyHtml: raw.bodyHtml
-      ? asLocalized(raw.bodyHtml as string | Record<string, string>, "<p></p>")
-      : undefined,
+    bodyHtml,
     category,
     publishedAt: String(raw.publishedAt ?? new Date().toISOString().slice(0, 10)),
     coverImage: String(raw.coverImage ?? "/assets/img/insights/vat-refund-cover.png"),
@@ -80,11 +98,63 @@ function normalizeList(raw: unknown): CmsInsight[] {
     );
 }
 
+/** Firestore rejects `undefined` field values — emit plain objects only. */
+function toFirestoreItems(items: CmsInsight[]) {
+  return items.map((item) => {
+    const row: Record<string, unknown> = {
+      id: item.id,
+      slug: item.slug,
+      type: item.type,
+      title: asLocalized(item.title),
+      excerpt: asLocalized(item.excerpt),
+      content: item.content ?? [],
+      category: item.category,
+      publishedAt: item.publishedAt,
+      coverImage: item.coverImage,
+      galleryImages: item.galleryImages ?? [],
+    };
+    if (item.bodyHtml) row.bodyHtml = asLocalized(item.bodyHtml, "<p></p>");
+    if (item.client) row.client = item.client;
+    if (item.service) row.service = item.service;
+    return row;
+  });
+}
+
+async function writeList(items: CmsInsight[]) {
+  await setDoc(
+    insightsDoc(),
+    {
+      items: toFirestoreItems(items),
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
+}
+
 async function readList(): Promise<CmsInsight[]> {
-  if (typeof window === "undefined") {
-    return normalizeList(await readContentJson<unknown>(PATH));
+  try {
+    const snap = await getDoc(insightsDoc());
+    if (snap.exists()) {
+      const data = snap.data() as { items?: unknown[] };
+      // An existing doc with an empty list means the admin deleted every
+      // insight on purpose — don't fall back to defaults.
+      if (Array.isArray(data.items)) {
+        return data.items.length ? normalizeList(data.items) : [];
+      }
+    }
+  } catch (error) {
+    console.error("Firestore read failed for insights", error);
   }
-  return normalizeList(await fetchContentJson<unknown>("insights"));
+
+  // Legacy fallback: content saved to Blob JSON before the Firestore migration
+  if (typeof window === "undefined") {
+    try {
+      return normalizeList(await readContentJson<unknown>(LEGACY_BLOB_PATH));
+    } catch {
+      return defaults();
+    }
+  }
+  return defaults();
 }
 
 export async function listInsights(): Promise<CmsInsight[]> {
@@ -137,22 +207,38 @@ export async function saveInsight(
   );
   const current = await listInsights();
   const without = current.filter((item) => item.id !== id);
-  await adminPutContent("insights", [nextItem, ...without]);
+  await writeList([nextItem, ...without]);
   return id;
 }
 
 export async function deleteInsight(id: string) {
   const current = await listInsights();
-  await adminPutContent(
-    "insights",
-    current.filter((item) => item.id !== id)
-  );
+  await writeList(current.filter((item) => item.id !== id));
 }
 
-export async function seedInsightsIfEmpty() {
-  if (typeof window === "undefined") return false;
-  const existing = await fetchContentJson<unknown>("insights");
-  if (Array.isArray(existing) && existing.length > 0) return false;
-  await adminPutContent("insights", defaults());
+/**
+ * One-time migration: copy the current insights (Firestore fallback chain —
+ * legacy Blob JSON or the hardcoded defaults) into Firestore if the
+ * `pages/insights` document is empty. Safe to call repeatedly.
+ */
+export async function seedInsightsIfEmpty(): Promise<boolean> {
+  try {
+    const snap = await getDoc(insightsDoc());
+    if (snap.exists()) {
+      const data = snap.data() as { items?: unknown[] };
+      // Any items field (even an empty list) means Firestore is already the
+      // source of truth — never overwrite it.
+      if (Array.isArray(data.items)) return false;
+    }
+  } catch {
+    return false;
+  }
+  // In the browser we can't read the legacy Blob JSON directly, so ask the
+  // server (which still falls back to Blob, then code defaults) for the list.
+  const current =
+    typeof window === "undefined"
+      ? await listInsights()
+      : normalizeList(await fetchContentJson<unknown>("insights"));
+  await writeList(current);
   return true;
 }

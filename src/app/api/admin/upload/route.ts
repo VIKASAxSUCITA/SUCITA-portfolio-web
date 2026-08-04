@@ -4,15 +4,17 @@ import { requireAdminFromRequest } from "@/lib/auth/verifyFirebaseIdToken";
 
 export const runtime = "nodejs";
 
-const LOGO_FOLDERS = {
+const UPLOAD_FOLDERS = {
   partner: "sucita/partner",
   client: "sucita/client",
+  insight: "sucita/insight",
+  event: "sucita/event",
 } as const;
 
-type LogoFolder = keyof typeof LOGO_FOLDERS;
+type UploadFolder = keyof typeof UPLOAD_FOLDERS;
 
-function isLogoFolder(value: unknown): value is LogoFolder {
-  return value === "partner" || value === "client";
+function isUploadFolder(value: unknown): value is UploadFolder {
+  return typeof value === "string" && value in UPLOAD_FOLDERS;
 }
 
 function safeFileName(name: string) {
@@ -47,8 +49,8 @@ export async function POST(request: Request) {
   }
 
   const folderRaw = form.get("folder");
-  const prefix = isLogoFolder(folderRaw)
-    ? LOGO_FOLDERS[folderRaw]
+  const prefix = isUploadFolder(folderRaw)
+    ? UPLOAD_FOLDERS[folderRaw]
     : "sucita";
 
   const pathname = `${prefix}/${Date.now()}-${safeFileName(file.name)}`;
