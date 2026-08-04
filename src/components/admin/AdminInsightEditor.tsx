@@ -109,7 +109,7 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
     setMessage("");
     try {
       const titleEn = pickLocalized(form.title, "en");
-      const id = await saveInsight({
+      await saveInsight({
         ...form,
         type: "article",
         publishedAt:
@@ -122,10 +122,7 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
         bodyHtml: asLocalized(form.bodyHtml, "<p></p>"),
       });
       setDirty(false);
-      setMessage("Saved.");
-      if (mode === "create") {
-        router.replace(`/admin/insights/${id}/edit`);
-      }
+      router.push("/admin/insights");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Save failed.");
     } finally {

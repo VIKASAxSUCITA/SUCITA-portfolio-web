@@ -15,7 +15,7 @@ export default function AdminNewInsightPage() {
         bodyHtml: "<p></p>",
         category: "Accounting & Tax",
         publishedAt: new Date().toISOString().slice(0, 10),
-        coverImage: "/assets/img/insights/vat-refund-cover.png",
+        coverImage: "",
         galleryImages: [],
         client: "",
         service: "",

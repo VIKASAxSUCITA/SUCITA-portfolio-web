@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import {
   asLocalized,
   emptyLocalized,
@@ -197,33 +198,60 @@ export default function AutoTranslateButton({
       </button>
       {error ? <span className="auto-translate-msg is-inline">{error}</span> : null}
 
-      {success ? (
-        <div
-          className="translate-success-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="translate-success-title"
-        >
-          <div className="translate-success-card">
-            <SuccessCheckIcon />
-            <h3 id="translate-success-title" className="translate-success-title">
-              Translation complete
-            </h3>
-            <p className="translate-success-copy">
-              All languages were translated successfully. Review each tab, then
-              save your changes.
-            </p>
-            <button
-              type="button"
-              className="translate-success-done"
-              onClick={() => setSuccess(false)}
-              autoFocus
+      {busy
+        ? createPortal(
+            <div
+              className="translate-success-overlay"
+              role="alertdialog"
+              aria-modal="true"
+              aria-label="Translating"
             >
-              Done
-            </button>
-          </div>
-        </div>
-      ) : null}
+              <div className="translate-success-card">
+                <span className="translate-progress-spinner" aria-hidden="true" />
+                <h3 className="translate-success-title">Translating…</h3>
+                <p className="translate-success-copy mb-0">
+                  Converting your content into the other languages. This can
+                  take a moment.
+                </p>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
+
+      {success
+        ? createPortal(
+            <div
+              className="translate-success-overlay"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="translate-success-title"
+            >
+              <div className="translate-success-card">
+                <SuccessCheckIcon />
+                <h3
+                  id="translate-success-title"
+                  className="translate-success-title"
+                >
+                  Translation complete
+                </h3>
+                <p className="translate-success-copy">
+                  All languages were translated successfully. Review each tab,
+                  then save your changes.
+                </p>
+                <button
+                  type="button"
+                  className="translate-success-done"
+                  onClick={() => setSuccess(false)}
+                  autoFocus
+                >
+                  Done
+                </button>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }
