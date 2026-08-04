@@ -5,6 +5,7 @@ import KohostPageHeader from "@/components/template/KohostPageHeader";
 import { getPublicEvents } from "@/lib/content/eventsStore";
 import { getRequestLocale } from "@/lib/i18n/server";
 import { pickLocalized } from "@/lib/i18n/config";
+import { isEventUpcoming, sortEventsByProximity } from "@/lib/content/eventSort";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -23,9 +24,9 @@ function formatDate(d: string) {
 
 export default async function EventsPage() {
   const locale = await getRequestLocale();
-  const events = await getPublicEvents();
-  const upcoming = events.filter((item) => item.isUpcoming);
-  const past = events.filter((item) => !item.isUpcoming);
+  const events = sortEventsByProximity(await getPublicEvents());
+  const upcoming = events.filter((item) => isEventUpcoming(item.date));
+  const past = events.filter((item) => !isEventUpcoming(item.date));
 
   return (
     <>

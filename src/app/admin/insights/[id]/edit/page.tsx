@@ -36,8 +36,8 @@ export default function AdminEditInsightPage({ params }: Props) {
   if (loading) {
     return (
       <AdminGuard>
-        <AdminShell title="Edit insight">
-          <p className="admin-lead">Loading…</p>
+        <AdminShell pageTitle="Insights">
+          <p className="admin-cms-empty">Loading…</p>
         </AdminShell>
       </AdminGuard>
     );
@@ -46,8 +46,8 @@ export default function AdminEditInsightPage({ params }: Props) {
   if (missing || !item) {
     return (
       <AdminGuard>
-        <AdminShell title="Insight not found">
-          <p className="admin-lead">
+        <AdminShell pageTitle="Insights">
+          <p className="admin-cms-empty">
             <Link href="/admin/insights">← Back to insights</Link>
           </p>
         </AdminShell>

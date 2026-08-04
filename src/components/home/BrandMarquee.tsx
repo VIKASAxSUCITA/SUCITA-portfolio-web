@@ -58,6 +58,8 @@ export default function BrandMarquee({
     [copies, ordered]
   );
 
+  if (ordered.length === 0) return null;
+
   return (
     <section id={id} className="sucita-brand-marquee">
       <div className="container">
@@ -78,25 +80,7 @@ export default function BrandMarquee({
             {group.map((item, index) => (
               <div
                 key={`a-${item.id}-${index}`}
-                className="sucita-marquee-item"
-                title={item.name}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.logo}
-                  alt={item.name}
-                  className="sucita-marquee-logo"
-                />
-                <span className="sucita-marquee-name">{item.name}</span>
-              </div>
-            ))}
-          </div>
-          <div className="sucita-marquee-group" aria-hidden="true">
-            {group.map((item, index) => (
-              <div
-                key={`b-${item.id}-${index}`}
-                className="sucita-marquee-item"
-                title={item.name}
+                className="sucita-marquee-item is-logo-only"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -104,7 +88,21 @@ export default function BrandMarquee({
                   alt=""
                   className="sucita-marquee-logo"
                 />
-                <span className="sucita-marquee-name">{item.name}</span>
+              </div>
+            ))}
+          </div>
+          <div className="sucita-marquee-group" aria-hidden="true">
+            {group.map((item, index) => (
+              <div
+                key={`b-${item.id}-${index}`}
+                className="sucita-marquee-item is-logo-only"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={item.logo}
+                  alt=""
+                  className="sucita-marquee-logo"
+                />
               </div>
             ))}
           </div>

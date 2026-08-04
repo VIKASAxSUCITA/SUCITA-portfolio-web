@@ -1,13 +1,23 @@
 import type { Metadata } from "next";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import BrandMarquee from "@/components/home/BrandMarquee";
-import { partners, clients } from "@/data/partners";
+import {
+  getPublicClients,
+  getPublicPartners,
+} from "@/lib/content/logosStore";
 
 export const metadata: Metadata = {
   title: "Partners & Clients",
 };
 
-export default function PartnersPage() {
+export const dynamic = "force-dynamic";
+
+export default async function PartnersPage() {
+  const [partners, clients] = await Promise.all([
+    getPublicPartners(),
+    getPublicClients(),
+  ]);
+
   return (
     <>
       <KohostPageHeader

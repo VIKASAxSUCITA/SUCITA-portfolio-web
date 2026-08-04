@@ -14,18 +14,24 @@ import { getPublicEvents } from "@/lib/content/eventsStore";
 import { loadHomeContent } from "@/lib/content/homeStore";
 import { getServiceCategories } from "@/lib/content/servicesStore";
 import { getSiteContent } from "@/lib/content/siteStore";
-import { partners, clients } from "@/data/partners";
+import {
+  getPublicClients,
+  getPublicPartners,
+} from "@/lib/content/logosStore";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [home, categories, site, insights, events] = await Promise.all([
-    loadHomeContent(),
-    getServiceCategories(),
-    getSiteContent(),
-    getPublicInsights(),
-    getPublicEvents(),
-  ]);
+  const [home, categories, site, insights, events, partners, clients] =
+    await Promise.all([
+      loadHomeContent(),
+      getServiceCategories(),
+      getSiteContent(),
+      getPublicInsights(),
+      getPublicEvents(),
+      getPublicPartners(),
+      getPublicClients(),
+    ]);
 
   return (
     <>

@@ -5,6 +5,7 @@ import { readContentJson } from "./blobJson";
 import { adminPutContent, fetchContentJson } from "./adminClient";
 import { htmlToParagraphs } from "./richText";
 import { asLocalized } from "@/lib/i18n/config";
+import { isEventUpcoming, sortEventsByProximity } from "./eventSort";
 
 const PATH = "sucita/content/events.json";
 
@@ -34,7 +35,9 @@ function normalize(raw: Record<string, unknown>, id: string): CmsEvent {
     date: String(raw.date ?? new Date().toISOString().slice(0, 10)),
     time: raw.time ? String(raw.time) : undefined,
     location: raw.location ? String(raw.location) : undefined,
-    isUpcoming: Boolean(raw.isUpcoming ?? true),
+    isUpcoming: isEventUpcoming(
+      String(raw.date ?? new Date().toISOString().slice(0, 10))
+    ),
     coverImage: String(raw.coverImage ?? "/assets/img/events/tax-workshop.png"),
   };
 }
@@ -49,16 +52,19 @@ function defaults(): CmsEvent[] {
 }
 
 function normalizeList(raw: unknown): CmsEvent[] {
-  if (!Array.isArray(raw) || raw.length === 0) return defaults();
-  return raw
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return sortEventsByProximity(defaults());
+  }
+  const normalized = raw
     .map((item, index) => {
       if (!item || typeof item !== "object") return null;
       const record = item as Record<string, unknown>;
       const id = String(record.id ?? record.slug ?? `event-${index}`);
       return normalize(record, id);
     })
-    .filter((item): item is CmsEvent => !!item)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .filter((item): item is CmsEvent => !!item);
+
+  return sortEventsByProximity(normalized);
 }
 
 async function readList(): Promise<CmsEvent[]> {

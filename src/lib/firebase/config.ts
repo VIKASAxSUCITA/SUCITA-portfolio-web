@@ -5,9 +5,7 @@ export function getFirebaseClientConfig() {
   const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
 
   if (!apiKey || !authDomain || !projectId || !appId) {
-    throw new Error(
-      "Missing Firebase client env. Check NEXT_PUBLIC_FIREBASE_* in .env.local"
-    );
+    return null;
   }
 
   return {
@@ -19,4 +17,14 @@ export function getFirebaseClientConfig() {
     appId,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || undefined,
   };
+}
+
+export function requireFirebaseClientConfig() {
+  const config = getFirebaseClientConfig();
+  if (!config) {
+    throw new Error(
+      "Missing Firebase client env. Add NEXT_PUBLIC_FIREBASE_* in Vercel (Project Settings → Environment Variables) and redeploy."
+    );
+  }
+  return config;
 }

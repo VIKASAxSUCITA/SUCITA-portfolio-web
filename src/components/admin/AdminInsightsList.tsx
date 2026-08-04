@@ -58,7 +58,7 @@ export default function AdminInsightsListPage() {
 
   return (
     <AdminGuard>
-      <AdminShell>
+      <AdminShell pageTitle="Insights">
         <div className="admin-site admin-collection-page">
           <header className="admin-collection-hero">
             <div className="container">

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
 import LocalizedTextField from "@/components/admin/LocalizedTextField";
@@ -69,7 +69,9 @@ export default function AdminServicesPage() {
   const [texts, setTexts] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [message, setMessage] = useState("");
+  const ready = useRef(false);
 
   useEffect(() => {
     void (async () => {
@@ -77,11 +79,15 @@ export default function AdminServicesPage() {
       setCategories(data);
       setTexts(data.map(itemsToText));
       setLoading(false);
+      ready.current = true;
     })();
   }, []);
 
-  async function handleSave(event: FormEvent) {
-    event.preventDefault();
+  function markDirty() {
+    if (ready.current) setDirty(true);
+  }
+
+  async function handleSave() {
     setSaving(true);
     setMessage("");
     try {
@@ -91,7 +97,9 @@ export default function AdminServicesPage() {
       }));
       await saveServiceCategories(next);
       setCategories(next);
-      setMessage("Services saved.");
+      setTexts(next.map(itemsToText));
+      setDirty(false);
+      setMessage("Saved.");
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Save failed");
     } finally {
@@ -101,65 +109,67 @@ export default function AdminServicesPage() {
 
   return (
     <AdminGuard>
-      <AdminShell title="Services">
-        <p className="admin-lead">
-          Update each practice area in English, Khmer, and Chinese. Use Auto-translate,
-          then edit any language. Service list items stay English structure for now
-          (one per line; nest with <code>- </code>).
-        </p>
-        {message ? <p className="admin-toast">{message}</p> : null}
-        {loading ? (
-          <p>Loading…</p>
-        ) : (
-          <form className="admin-form" onSubmit={handleSave}>
-            {categories.map((cat, index) => (
-              <div key={cat.id} className="admin-panel">
-                <h2>
-                  {cat.letter}. {labelText(cat.title)}
-                </h2>
-                <LocalizedTextField
-                  label="Title"
-                  value={asLocalized(cat.title)}
-                  onChange={(title) => {
-                    const next = [...categories];
-                    next[index] = { ...cat, title };
-                    setCategories(next);
-                  }}
-                />
-                <LocalizedTextField
-                  label="Description"
-                  multiline
-                  rows={4}
-                  value={asLocalized(cat.description)}
-                  onChange={(description) => {
-                    const next = [...categories];
-                    next[index] = { ...cat, description };
-                    setCategories(next);
-                  }}
-                />
-                <label className="admin-field">
-                  <span>Service items (structure)</span>
-                  <textarea
-                    rows={8}
-                    value={texts[index] ?? ""}
-                    onChange={(e) => {
-                      const next = [...texts];
-                      next[index] = e.target.value;
-                      setTexts(next);
+      <AdminShell
+        pageTitle="Services"
+        onSave={() => void handleSave()}
+        saving={saving}
+        dirty={dirty}
+        message={message}
+      >
+        <div className="admin-cms">
+          <p className="admin-lead">
+            Update only — edit titles and descriptions in EN / KM / CH. Service
+            items: one per line; nest with <code>- </code>.
+          </p>
+          {loading ? (
+            <p className="admin-cms-empty">Loading…</p>
+          ) : (
+            <div className="admin-form">
+              {categories.map((cat, index) => (
+                <div key={cat.id} className="admin-panel">
+                  <h2>
+                    {cat.letter}. {labelText(cat.title)}
+                  </h2>
+                  <LocalizedTextField
+                    label="Title"
+                    value={asLocalized(cat.title)}
+                    onChange={(title) => {
+                      const next = [...categories];
+                      next[index] = { ...cat, title };
+                      setCategories(next);
+                      markDirty();
                     }}
                   />
-                </label>
-              </div>
-            ))}
-            <button
-              type="submit"
-              className="admin-btn admin-btn-primary"
-              disabled={saving}
-            >
-              {saving ? "Saving…" : "Save services"}
-            </button>
-          </form>
-        )}
+                  <LocalizedTextField
+                    label="Description"
+                    multiline
+                    rows={4}
+                    value={asLocalized(cat.description)}
+                    onChange={(description) => {
+                      const next = [...categories];
+                      next[index] = { ...cat, description };
+                      setCategories(next);
+                      markDirty();
+                    }}
+                  />
+                  <label className="admin-field">
+                    <span>Service items (structure)</span>
+                    <textarea
+                      rows={8}
+                      value={texts[index] ?? ""}
+                      onChange={(e) => {
+                        const next = [...texts];
+                        next[index] = e.target.value;
+                        setTexts(next);
+                        markDirty();
+                      }}
+                    />
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </AdminShell>
     </AdminGuard>
   );

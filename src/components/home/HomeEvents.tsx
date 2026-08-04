@@ -6,6 +6,7 @@ import ScrollReveal from "@/components/template/ScrollReveal";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
 import type { EventItem } from "@/data/events";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { sortEventsByProximity } from "@/lib/content/eventSort";
 
 function formatEventDate(value: string) {
   const date = new Date(value);
@@ -26,9 +27,7 @@ export default function HomeEvents({
   viewAllHref = "/events",
 }: Props) {
   const { t, L } = useLocale();
-  const latestEvents = [...items]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 3);
+  const latestEvents = sortEventsByProximity(items).slice(0, 3);
 
   return (
     <section id="events" className="sucita-events ptb-100">

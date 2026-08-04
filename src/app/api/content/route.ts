@@ -8,6 +8,7 @@ import { insights as defaultInsights } from "@/data/insights";
 import { events as defaultEvents } from "@/data/events";
 import type { SiteContent, CmsInsight, CmsEvent } from "@/lib/content/types";
 import type { ServiceCategory } from "@/data/services";
+import type { LogosContent } from "@/lib/content/logosStore";
 
 export const runtime = "nodejs";
 
@@ -17,6 +18,7 @@ const PATHS = {
   services: "sucita/content/services.json",
   insights: "sucita/content/insights.json",
   events: "sucita/content/events.json",
+  logos: "sucita/content/logos.json",
 } as const;
 
 type Collection = keyof typeof PATHS;
@@ -28,7 +30,10 @@ export async function GET(request: Request) {
 
   if (!collection || !(collection in PATHS)) {
     return NextResponse.json(
-      { error: "Pass ?collection=home|site|services|insights|events" },
+      {
+        error:
+          "Pass ?collection=home|site|services|insights|events|logos",
+      },
       { status: 400 }
     );
   }
@@ -59,6 +64,13 @@ export async function GET(request: Request) {
           ? data
           : defaultInsights.map((item) => ({ ...item, id: item.slug }))
       );
+    }
+    if (collection === "logos") {
+      const data = await readContentJson<LogosContent>(PATHS.logos);
+      return NextResponse.json({
+        partners: Array.isArray(data?.partners) ? data.partners : [],
+        clients: Array.isArray(data?.clients) ? data.clients : [],
+      });
     }
     const data = await readContentJson<CmsEvent[]>(PATHS.events);
     return NextResponse.json(

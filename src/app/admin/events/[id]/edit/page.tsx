@@ -36,8 +36,8 @@ export default function AdminEditEventPage({ params }: Props) {
   if (loading) {
     return (
       <AdminGuard>
-        <AdminShell title="Edit event">
-          <p className="admin-lead">Loading…</p>
+        <AdminShell pageTitle="Events">
+          <p className="admin-cms-empty">Loading…</p>
         </AdminShell>
       </AdminGuard>
     );
@@ -46,8 +46,8 @@ export default function AdminEditEventPage({ params }: Props) {
   if (missing || !item) {
     return (
       <AdminGuard>
-        <AdminShell title="Event not found">
-          <p className="admin-lead">
+        <AdminShell pageTitle="Events">
+          <p className="admin-cms-empty">
             <Link href="/admin/events">← Back to events</Link>
           </p>
         </AdminShell>

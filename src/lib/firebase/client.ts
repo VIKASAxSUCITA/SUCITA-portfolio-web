@@ -1,7 +1,7 @@
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
-import { getFirebaseClientConfig } from "./config";
+import { requireFirebaseClientConfig } from "./config";
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
@@ -9,7 +9,9 @@ let db: Firestore | undefined;
 
 export function getFirebaseApp() {
   if (!app) {
-    app = getApps().length ? getApp() : initializeApp(getFirebaseClientConfig());
+    app = getApps().length
+      ? getApp()
+      : initializeApp(requireFirebaseClientConfig());
   }
   return app;
 }

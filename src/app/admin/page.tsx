@@ -1,7 +1,5 @@
-"use client";
-
-import AdminHomeEditor from "@/components/admin/AdminHomeEditor";
+import { redirect } from "next/navigation";
 
 export default function AdminDashboardPage() {
-  return <AdminHomeEditor />;
+  redirect("/admin/insights");
 }

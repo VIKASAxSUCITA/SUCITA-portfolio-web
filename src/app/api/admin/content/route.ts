@@ -13,6 +13,7 @@ const PATHS = {
   services: "sucita/content/services.json",
   insights: "sucita/content/insights.json",
   events: "sucita/content/events.json",
+  logos: "sucita/content/logos.json",
 } as const;
 
 type Collection = keyof typeof PATHS;
@@ -22,7 +23,8 @@ type Body =
   | { collection: "site"; data: SiteContent }
   | { collection: "services"; data: { categories: ServiceCategory[] } }
   | { collection: "insights"; data: CmsInsight[] }
-  | { collection: "events"; data: CmsEvent[] };
+  | { collection: "events"; data: CmsEvent[] }
+  | { collection: "logos"; data: { partners: unknown; clients: unknown } };
 
 function isCollection(value: unknown): value is Collection {
   return typeof value === "string" && value in PATHS;

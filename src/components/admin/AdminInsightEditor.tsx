@@ -1,23 +1,27 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
-import AdminImageField from "@/components/admin/AdminImageField";
-import LocalizedTextField from "@/components/admin/LocalizedTextField";
-import LocalizedRichTextField from "@/components/admin/LocalizedRichTextField";
+import ComposerCoverImage from "@/components/admin/ComposerCoverImage";
+import LocaleEditTabs from "@/components/admin/LocaleEditTabs";
+import AutoTranslateButton from "@/components/admin/AutoTranslateButton";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import {
   deleteInsight,
   saveInsight,
 } from "@/lib/content/insightsStore";
 import { slugify } from "@/lib/content/slug";
-import { asLocalized, pickLocalized } from "@/lib/i18n/config";
+import {
+  asLocalized,
+  pickLocalized,
+  type Locale,
+  type LocalizedString,
+} from "@/lib/i18n/config";
 import {
   insightCategories,
   type InsightCategory,
-  type InsightType,
 } from "@/data/insights";
 import type { CmsInsight } from "@/lib/content/types";
 
@@ -28,30 +32,95 @@ type Props = {
   mode: "create" | "edit";
 };
 
+const TITLE_MAX = 120;
+
+function TrashIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M5 7h14M10 11v6M14 11v6M8 7l1-2h6l1 2M7 7l1 12h8l1-12"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function setLocaleValue(
+  value: string | LocalizedString,
+  locale: Locale,
+  next: string,
+  fallback = ""
+): LocalizedString {
+  return { ...asLocalized(value, fallback), [locale]: next };
+}
+
 export default function AdminInsightEditor({ initial, mode }: Props) {
   const router = useRouter();
+  const [editLocale, setEditLocale] = useState<Locale>("en");
   const [form, setForm] = useState<InsightFormState>({
     ...initial,
     title: asLocalized(initial.title),
     excerpt: asLocalized(initial.excerpt),
     bodyHtml: asLocalized(initial.bodyHtml, "<p></p>"),
   });
+  const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  const title = pickLocalized(form.title, editLocale);
+  const excerpt = pickLocalized(form.excerpt, editLocale);
+  const bodyHtml = pickLocalized(form.bodyHtml, editLocale, "<p></p>");
+
+  const translateSources = useMemo(
+    () => [
+      { value: asLocalized(form.title) },
+      { value: asLocalized(form.excerpt) },
+      { value: asLocalized(form.bodyHtml, "<p></p>"), html: true },
+    ],
+    [form.title, form.excerpt, form.bodyHtml]
+  );
+
+  function patch(updater: (prev: InsightFormState) => InsightFormState) {
+    setForm(updater);
+    setDirty(true);
+    setMessage("");
+  }
+
+  function handleBack() {
+    if (dirty) {
+      const ok = window.confirm(
+        "You have unsaved changes. Leave without saving?"
+      );
+      if (!ok) return;
+    }
+    router.push("/admin/insights");
+  }
+
+  async function handleSave() {
+    if (!pickLocalized(form.title, "en").trim()) {
+      setMessage("Add an English title before saving.");
+      return;
+    }
     setSaving(true);
     setMessage("");
     try {
       const titleEn = pickLocalized(form.title, "en");
       const id = await saveInsight({
         ...form,
+        type: "article",
+        publishedAt:
+          mode === "create"
+            ? new Date().toISOString().slice(0, 10)
+            : form.publishedAt || new Date().toISOString().slice(0, 10),
         slug: form.slug || slugify(titleEn),
         title: asLocalized(form.title),
         excerpt: asLocalized(form.excerpt),
         bodyHtml: asLocalized(form.bodyHtml, "<p></p>"),
       });
+      setDirty(false);
       setMessage("Saved.");
       if (mode === "create") {
         router.replace(`/admin/insights/${id}/edit`);
@@ -78,139 +147,176 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
 
   return (
     <AdminGuard>
-      <AdminShell title={mode === "create" ? "New insight" : "Edit insight"}>
-        <p className="admin-lead">
-          <Link href="/admin/insights">← Back to insights</Link>
-        </p>
-        {message ? <p className="admin-toast">{message}</p> : null}
-
-        <form className="admin-form admin-editor-form" onSubmit={handleSubmit}>
-          <LocalizedTextField
-            label="Title"
-            value={asLocalized(form.title)}
-            onChange={(title) =>
-              setForm((prev) => ({
-                ...prev,
-                title,
-                slug: prev.id ? prev.slug : slugify(pickLocalized(title, "en")),
-              }))
-            }
-          />
-
-          <div className="admin-form-row">
-            <label className="admin-field">
-              <span>Type</span>
-              <select
-                value={form.type}
-                onChange={(e) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    type: e.target.value as InsightType,
-                  }))
-                }
-              >
-                <option value="article">Article</option>
-                <option value="project">Project</option>
-              </select>
-            </label>
-            <label className="admin-field">
-              <span>Category</span>
-              <select
-                value={form.category}
-                onChange={(e) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    category: e.target.value as InsightCategory,
-                  }))
-                }
-              >
-                {insightCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="admin-field">
-              <span>Published date</span>
-              <input
-                type="date"
-                required
-                value={form.publishedAt}
-                onChange={(e) =>
-                  setForm((prev) => ({ ...prev, publishedAt: e.target.value }))
-                }
-              />
-            </label>
-          </div>
-
-          <LocalizedTextField
-            label="Excerpt"
-            multiline
-            rows={3}
-            value={asLocalized(form.excerpt)}
-            onChange={(excerpt) => setForm((prev) => ({ ...prev, excerpt }))}
-          />
-
-          {form.type === "project" ? (
-            <div className="admin-form-row">
-              <label className="admin-field">
-                <span>Client</span>
-                <input
-                  value={form.client ?? ""}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, client: e.target.value }))
-                  }
-                />
-              </label>
-              <label className="admin-field">
-                <span>Service</span>
-                <input
-                  value={form.service ?? ""}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, service: e.target.value }))
-                  }
-                />
-              </label>
-            </div>
-          ) : null}
-
-          <AdminImageField
-            label="Cover image"
-            value={form.coverImage}
-            onChange={(coverImage) => setForm((prev) => ({ ...prev, coverImage }))}
-          />
-
-          <LocalizedRichTextField
-            label="Body"
-            value={asLocalized(form.bodyHtml, "<p></p>")}
-            onChange={(bodyHtml) => setForm((prev) => ({ ...prev, bodyHtml }))}
-            placeholder="Write the insight article…"
-          />
-
-          <div className="admin-modal-actions">
+      <AdminShell
+        pageTitle="Insights"
+        onBack={handleBack}
+        onSave={() => void handleSave()}
+        saving={saving}
+        dirty={dirty}
+        message={message}
+        topbarTools={
+          <>
+            <LocaleEditTabs locale={editLocale} onChange={setEditLocale} />
+            <AutoTranslateButton
+              from={editLocale}
+              sources={translateSources}
+              disabled={saving}
+              onTranslated={([titleNext, excerptNext, bodyNext]) => {
+                patch((prev) => ({
+                  ...prev,
+                  title: titleNext ?? asLocalized(prev.title),
+                  excerpt: excerptNext ?? asLocalized(prev.excerpt),
+                  bodyHtml: bodyNext ?? asLocalized(prev.bodyHtml, "<p></p>"),
+                }));
+              }}
+            />
             {mode === "edit" && form.id ? (
               <button
                 type="button"
-                className="admin-btn admin-btn-danger"
+                className="admin-topbar-icon-btn is-danger"
                 onClick={() => void handleDelete()}
                 disabled={saving}
+                aria-label="Delete insight"
+                title="Delete"
               >
-                Delete
+                <TrashIcon />
               </button>
             ) : null}
-            <Link href="/admin/insights" className="admin-btn admin-btn-secondary">
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              className="admin-btn admin-btn-primary"
-              disabled={saving}
-            >
-              {saving ? "Saving…" : "Save insight"}
-            </button>
+          </>
+        }
+      >
+        <div className="admin-composer admin-composer--embedded">
+          <div className="admin-composer-body">
+            <article className="admin-composer-paper admin-composer-paper--form">
+              <div className="admin-composer-slugline">
+                {mode === "create" ? (
+                  "New insight"
+                ) : (
+                  <>
+                    Slug: <span>/insights/{form.slug || form.id}</span>
+                  </>
+                )}
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-label">
+                  <label htmlFor="insight-title">Title</label>
+                  <span>
+                    {title.length}/{TITLE_MAX}
+                  </span>
+                </div>
+                <textarea
+                  id="insight-title"
+                  className="admin-composer-title"
+                  rows={2}
+                  maxLength={TITLE_MAX}
+                  value={title}
+                  placeholder="Add a title…"
+                  onChange={(e) =>
+                    patch((prev) => ({
+                      ...prev,
+                      title: setLocaleValue(
+                        prev.title,
+                        editLocale,
+                        e.target.value
+                      ),
+                      slug: prev.id
+                        ? prev.slug
+                        : slugify(
+                            editLocale === "en"
+                              ? e.target.value
+                              : pickLocalized(prev.title, "en")
+                          ),
+                    }))
+                  }
+                />
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-label">
+                  <span>Image</span>
+                </div>
+                <ComposerCoverImage
+                  src={form.coverImage}
+                  onChange={(coverImage) =>
+                    patch((prev) => ({ ...prev, coverImage }))
+                  }
+                  onRemove={() =>
+                    patch((prev) => ({ ...prev, coverImage: "" }))
+                  }
+                />
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-label">
+                  <span>Details</span>
+                </div>
+                <div className="admin-form-meta-grid">
+                  <label className="admin-form-meta-field">
+                    <span>Category</span>
+                    <select
+                      value={form.category}
+                      onChange={(e) =>
+                        patch((prev) => ({
+                          ...prev,
+                          category: e.target.value as InsightCategory,
+                        }))
+                      }
+                    >
+                      {insightCategories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="admin-form-meta-field admin-form-meta-field--wide">
+                    <span>Excerpt</span>
+                    <textarea
+                      rows={2}
+                      value={excerpt}
+                      placeholder="Short summary…"
+                      onChange={(e) =>
+                        patch((prev) => ({
+                          ...prev,
+                          excerpt: setLocaleValue(
+                            prev.excerpt,
+                            editLocale,
+                            e.target.value
+                          ),
+                        }))
+                      }
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="admin-form-row">
+                <div className="admin-form-label">
+                  <span>Content</span>
+                </div>
+                <div className="admin-composer-editor">
+                  <RichTextEditor
+                    key={editLocale}
+                    content={bodyHtml || "<p></p>"}
+                    onChange={(html) =>
+                      patch((prev) => ({
+                        ...prev,
+                        bodyHtml: setLocaleValue(
+                          asLocalized(prev.bodyHtml, "<p></p>"),
+                          editLocale,
+                          html,
+                          "<p></p>"
+                        ),
+                      }))
+                    }
+                    placeholder="Write the insight article…"
+                  />
+                </div>
+              </div>
+            </article>
           </div>
-        </form>
+        </div>
       </AdminShell>
     </AdminGuard>
   );

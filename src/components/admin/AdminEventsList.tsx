@@ -8,6 +8,7 @@ import AdminShell from "@/components/admin/AdminShell";
 import { listEvents } from "@/lib/content/eventsStore";
 import type { CmsEvent } from "@/lib/content/types";
 import { pickLocalized } from "@/lib/i18n/config";
+import { isEventUpcoming } from "@/lib/content/eventSort";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", {
@@ -91,12 +92,12 @@ export default function AdminEventsListPage() {
     };
   }, []);
 
-  const upcoming = items.filter((item) => item.isUpcoming);
-  const past = items.filter((item) => !item.isUpcoming);
+  const upcoming = items.filter((item) => isEventUpcoming(item.date));
+  const past = items.filter((item) => !isEventUpcoming(item.date));
 
   return (
     <AdminGuard>
-      <AdminShell>
+      <AdminShell pageTitle="Events">
         <div className="admin-site admin-collection-page">
           <header className="admin-collection-hero">
             <div className="container">
