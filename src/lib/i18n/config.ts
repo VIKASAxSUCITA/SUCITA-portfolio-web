@@ -11,7 +11,7 @@ export const localeLabels: Record<Locale, string> = {
 /** Short codes shown in the language switcher UI */
 export const localeCodes: Record<Locale, string> = {
   en: "EN",
-  km: "KM",
+  km: "KH",
   zh: "CH",
 };
 

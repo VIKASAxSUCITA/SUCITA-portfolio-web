@@ -51,13 +51,17 @@ function normalizeItem(
   if (!label.en.trim()) return null;
 
   const fallbackChildren = fallback?.children ?? [];
-  const children = Array.isArray(item.children)
+  const rawChildren = Array.isArray(item.children)
     ? item.children
         .map((child, index) =>
           mergeLocalized(child, fallbackChildren[index])
         )
         .filter((child) => child.en.trim())
-    : fallbackChildren.map((child) => asLocalized(child));
+    : [];
+  const children =
+    rawChildren.length > 0
+      ? rawChildren
+      : fallbackChildren.map((child) => asLocalized(child));
 
   return children.length ? { label, children } : { label };
 }
@@ -68,14 +72,18 @@ function normalizeCategory(
 ): ServiceCategory | null {
   if (!raw || typeof raw !== "object") return fallback ?? null;
   const cat = raw as Record<string, unknown>;
-  const items = Array.isArray(cat.items)
+  const rawItems = Array.isArray(cat.items)
     ? cat.items
         .map((item, index) => normalizeItem(item, fallback?.items[index]))
         .filter((item): item is ServiceItem => !!item)
-    : (fallback?.items ?? []).map((item) => ({
-        label: asLocalized(item.label),
-        children: item.children?.map((c) => asLocalized(c)),
-      }));
+    : [];
+  const items =
+    rawItems.length > 0
+      ? rawItems
+      : (fallback?.items ?? []).map((item) => ({
+          label: asLocalized(item.label),
+          children: item.children?.map((c) => asLocalized(c)),
+        }));
 
   return {
     id: String(cat.id ?? fallback?.id ?? "service"),
@@ -103,7 +111,15 @@ function normalizeCategories(raw: unknown): ServiceCategory[] {
     }));
   }
   return raw
-    .map((item, index) => normalizeCategory(item, defaultServices[index]))
+    .map((item, index) => {
+      const id =
+        item && typeof item === "object"
+          ? String((item as { id?: unknown }).id ?? "")
+          : "";
+      const fallback =
+        defaultServices.find((s) => s.id === id) ?? defaultServices[index];
+      return normalizeCategory(item, fallback);
+    })
     .filter((item): item is ServiceCategory => !!item);
 }
 

@@ -45,7 +45,7 @@ export default async function EventsPage() {
               </h3>
               <div className="row">
                 {upcoming.map((event) => (
-                  <div key={event.slug} className="col-md-6 mb-4">
+                  <div key={event.slug} className="col-md-6 col-lg-4 mb-4">
                     <Link href={`/events/${event.slug}`} className="text-decoration-none">
                       <article className="sucita-insight-list-card h-100">
                         <div className="sucita-insight-list-media">
@@ -82,7 +82,7 @@ export default async function EventsPage() {
               </h3>
               <div className="row">
                 {past.map((event) => (
-                  <div key={event.slug} className="col-md-6 mb-4">
+                  <div key={event.slug} className="col-md-6 col-lg-4 mb-4">
                     <Link href={`/events/${event.slug}`} className="text-decoration-none">
                       <article className="sucita-insight-list-card h-100">
                         <div className="sucita-insight-list-media">

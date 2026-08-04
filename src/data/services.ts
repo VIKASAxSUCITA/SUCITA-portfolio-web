@@ -30,7 +30,16 @@ export const serviceCategories: ServiceCategory[] = [
       "独立的审计与鉴证服务，增强利益相关方信心并满足监管要求。"
     ),
     items: [
-      { label: L("Audit", "សវនកម្ម", "审计") },
+      {
+        label: L("Audit", "សវនកម្ម", "审计"),
+        children: [
+          L(
+            "Statutory Audit Service",
+            "សេវាសវនកម្មតាមច្បាប់",
+            "法定审计服务"
+          ),
+        ],
+      },
       {
         label: L("Assurance", "ការធានា", "鉴证"),
         children: [

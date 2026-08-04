@@ -1,10 +1,10 @@
 export const siteConfig = {
   name: "Sucita & Partners",
   tagline: "Accounting | Tax | Audit",
-  email: "info@sucita-partners.com",
-  phone: "+855 XX XXX XXXX",
-  whatsapp: "https://wa.me/855XXXXXXXX",
-  telegram: "https://t.me/sucitapartners",
+  email: "sucitacontact@gmail.com",
+  phone: "096 645 4828",
+  whatsapp: "https://wa.me/855966454828",
+  telegram: "https://t.me/sucitacontact",
   officeHours: "Mon – Fri: 8:00 AM – 5:00 PM",
   address: "Phnom Penh, Cambodia",
   footerCopy:

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import HomeAbout from "@/components/home/HomeAbout";
+import AboutPeople from "@/components/about/AboutPeople";
 import { getHomeContent } from "@/lib/content/homeStore";
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function AboutPage() {
         subtitle="Built on integrity, independence, and a commitment to client success."
       />
       <HomeAbout content={home.about} />
+      {/* <AboutPeople /> */}
     </>
   );
 }

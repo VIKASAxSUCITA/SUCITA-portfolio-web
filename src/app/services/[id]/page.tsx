@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import RichHtml from "@/components/template/RichHtml";
+import PlayIcon from "@/components/icons/PlayIcon";
 import { countServiceItems } from "@/data/services";
 import { resolveBodyHtml } from "@/lib/content/richText";
 import { getServiceCategories } from "@/lib/content/servicesStore";
@@ -113,13 +114,6 @@ export default async function ServiceDetailPage({ params }: Props) {
             </p>
           </div>
 
-          {hasBody ? (
-            <RichHtml
-              className="sucita-article-body sucita-service-detail-content mb-5"
-              html={bodyHtml}
-            />
-          ) : null}
-
           {itemCount > 0 ? (
             <ul className="list-unstyled sucita-service-detail-grid">
               {service.items.map((item) => {
@@ -143,7 +137,7 @@ export default async function ServiceDetailPage({ params }: Props) {
                                   className="sucita-service-submark"
                                   aria-hidden="true"
                                 >
-                                  –
+                                  <PlayIcon className="sucita-service-play-icon" />
                                 </span>
                                 {childLabel}
                               </li>
@@ -156,6 +150,11 @@ export default async function ServiceDetailPage({ params }: Props) {
                 );
               })}
             </ul>
+          ) : hasBody ? (
+            <RichHtml
+              className="sucita-article-body sucita-service-detail-content mb-5"
+              html={bodyHtml}
+            />
           ) : null}
 
           {others.length > 0 ? (
@@ -187,7 +186,7 @@ export default async function ServiceDetailPage({ params }: Props) {
                         {pickLocalized(cat.description, locale)}
                       </p>
                     </header>
-                    <footer className="sucita-service-card-footer">
+                    <footer className="sucita-service-card-footer d-flex align-items-center justify-content-between gap-3 flex-wrap">
                       <span>{countServiceItems(cat)} services</span>
                       <span className="sucita-service-detail-other-cta">
                         View details →

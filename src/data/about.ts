@@ -44,3 +44,22 @@ export const coreValues = [
       "We serve as stewards of client trust by ensuring financial integrity and regulatory compliance, safeguarding client reputations and sustainable growth.",
   },
 ];
+
+export type Person = {
+  name: string;
+  position: string;
+  message: string;
+  /** Public path under /public, e.g. /images/team/director.jpg */
+  image?: string;
+};
+
+/** Leadership / team — Director first for the Director Message section */
+export const people: Person[] = [
+  {
+    name: "TANG EKPHEARUM",
+    position: "Managing Director",
+    message:
+      "At Sucita & Partners, we believe clarity builds confidence. Our role is to simplify financial complexity and protect what our clients have built — with integrity in every engagement.",
+    // Add a photo at public/images/team/director.jpg then set: image: "/images/team/director.jpg"
+  },
+];

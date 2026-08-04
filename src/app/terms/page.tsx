@@ -17,7 +17,7 @@ export default function TermsPage() {
               <h3>2. Use of Website</h3>
               <p>This website is provided for informational purposes about Sucita & Partners and our services.</p>
               <h3>3. Contact</h3>
-              <p>Questions? Email <a href="mailto:info@sucita-partners.com">info@sucita-partners.com</a></p>
+              <p>Questions? Email <a href="mailto:sucitacontact@gmail.com">sucitacontact@gmail.com</a></p>
             </div>
           </div>
         </div>

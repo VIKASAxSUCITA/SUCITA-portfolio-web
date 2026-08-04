@@ -4,6 +4,7 @@ import Link from "next/link";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import EditableText from "@/components/admin/EditableText";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
+import PlayIcon from "@/components/icons/PlayIcon";
 import {
   countServiceItems,
   type ServiceCategory,
@@ -202,7 +203,7 @@ export default function HomeServices({
                           {item.children.map((child, childIndex) => (
                             <li key={`${child}-${childIndex}`}>
                               <span className="sucita-service-submark" aria-hidden="true">
-                                –
+                                <PlayIcon className="sucita-service-play-icon" />
                               </span>
                               {edit ? (
                                 <EditableText

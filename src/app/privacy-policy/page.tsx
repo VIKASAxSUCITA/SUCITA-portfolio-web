@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
               <h3>2. How We Use Your Information</h3>
               <p>We use information to respond to inquiries and provide our services. We do not sell your data.</p>
               <h3>3. Contact</h3>
-              <p>Questions? Email <a href="mailto:info@sucita-partners.com">info@sucita-partners.com</a></p>
+              <p>Questions? Email <a href="mailto:sucitacontact@gmail.com">sucitacontact@gmail.com</a></p>
             </div>
           </div>
         </div>
