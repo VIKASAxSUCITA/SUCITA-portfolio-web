@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ScrollReveal from "@/components/template/ScrollReveal";
 import MoveRightIcon from "@/components/icons/MoveRightIcon";
-import type { EventItem } from "@/data/events";
+import { eventTypeLabel, type EventItem } from "@/data/events";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { sortEventsByProximity } from "@/lib/content/eventSort";
 
@@ -69,7 +69,7 @@ export default function HomeEvents({
                   <div className="sucita-event-content">
                     <div className="sucita-event-meta">
                       <span className="sucita-event-type">
-                        {event.type === "announcement" ? "Announcement" : "Event"}
+                        {eventTypeLabel(event.type)}
                       </span>
                       {event.isUpcoming ? (
                         <span className="sucita-event-status is-upcoming">Upcoming</span>

@@ -8,7 +8,7 @@ export default function AdminNewEventPage() {
       mode="create"
       initial={{
         slug: "",
-        type: "event",
+        type: "",
         title: "",
         excerpt: "",
         description: [],
@@ -17,7 +17,7 @@ export default function AdminNewEventPage() {
         time: "",
         location: "",
         isUpcoming: true,
-        coverImage: "/assets/img/events/tax-workshop.png",
+        coverImage: "",
       }}
     />
   );

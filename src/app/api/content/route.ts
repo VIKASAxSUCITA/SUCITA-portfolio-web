@@ -2,10 +2,9 @@ import { NextResponse } from "next/server";
 import { readContentJson } from "@/lib/content/blobJson";
 import { defaultHomeContent } from "@/lib/content/homeDefaults";
 import { siteConfig } from "@/data/site";
-import { events as defaultEvents } from "@/data/events";
-import type { CmsEvent } from "@/lib/content/types";
 import { getServiceCategories } from "@/lib/content/servicesStore";
 import { listInsights } from "@/lib/content/insightsStore";
+import { listEvents } from "@/lib/content/eventsStore";
 import { readLogoGroup } from "@/lib/content/logosStore";
 
 export const runtime = "nodejs";
@@ -59,12 +58,8 @@ export async function GET(request: Request) {
       ]);
       return NextResponse.json({ partners, clients });
     }
-    const data = await readContentJson<CmsEvent[]>(PATHS.events);
-    return NextResponse.json(
-      Array.isArray(data) && data.length
-        ? data
-        : defaultEvents.map((item) => ({ ...item, id: item.slug }))
-    );
+    // Events live in Firestore (pages/events); falls back internally.
+    return NextResponse.json(await listEvents());
   } catch (error) {
     console.error(error);
     return NextResponse.json(

@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
-import { listEvents } from "@/lib/content/eventsStore";
+import { listEvents, seedEventsIfEmpty } from "@/lib/content/eventsStore";
+import { eventTypeLabel } from "@/data/events";
 import type { CmsEvent } from "@/lib/content/types";
 import { pickLocalized } from "@/lib/i18n/config";
 import { isEventUpcoming } from "@/lib/content/eventSort";
@@ -49,7 +50,7 @@ function EventCards({
                     className="sucita-insight-list-img"
                   />
                   <span className="sucita-insight-type sucita-insight-type--overlay is-project">
-                    {event.type === "event" ? "Event" : "Announcement"}
+                    {eventTypeLabel(event.type)}
                   </span>
                 </div>
                 <div className="sucita-insight-list-body">
@@ -81,6 +82,8 @@ export default function AdminEventsListPage() {
     let active = true;
     (async () => {
       try {
+        // Migrate legacy/code events into Firestore on first visit.
+        await seedEventsIfEmpty().catch(() => false);
         const data = await listEvents();
         if (active) setItems(data);
       } finally {
@@ -99,17 +102,6 @@ export default function AdminEventsListPage() {
     <AdminGuard>
       <AdminShell pageTitle="Events">
         <div className="admin-site admin-collection-page">
-          <header className="admin-collection-hero">
-            <div className="container">
-              <p className="admin-collection-kicker">Admin</p>
-              <h1 className="admin-collection-title">Events &amp; Announcements</h1>
-              <p className="admin-collection-sub mb-0">
-                Same layout as the public events page — click a card to edit, or
-                create a new one.
-              </p>
-            </div>
-          </header>
-
           <section className="ptb-100">
             <div className="container">
               {loading ? (

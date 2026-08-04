@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
@@ -10,13 +10,14 @@ import AutoTranslateButton from "@/components/admin/AutoTranslateButton";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import { deleteEvent, saveEvent } from "@/lib/content/eventsStore";
 import { slugify } from "@/lib/content/slug";
+import { adminDeleteBlobUrls } from "@/lib/content/adminClient";
+import { extractImageUrls } from "@/lib/content/richText";
 import {
   asLocalized,
   pickLocalized,
   type Locale,
   type LocalizedString,
 } from "@/lib/i18n/config";
-import type { EventType } from "@/data/events";
 import type { CmsEvent } from "@/lib/content/types";
 
 export type EventFormState = Omit<CmsEvent, "id"> & { id?: string };
@@ -63,6 +64,8 @@ export default function AdminEventEditor({ initial, mode }: Props) {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  /** Blob files replaced/removed in this session — deleted after a save. */
+  const removedUrls = useRef<string[]>([]);
 
   const title = pickLocalized(form.title, editLocale);
   const excerpt = pickLocalized(form.excerpt, editLocale);
@@ -102,7 +105,7 @@ export default function AdminEventEditor({ initial, mode }: Props) {
     setMessage("");
     try {
       const titleEn = pickLocalized(form.title, "en");
-      const id = await saveEvent({
+      await saveEvent({
         ...form,
         slug: form.slug || slugify(titleEn),
         title: asLocalized(form.title),
@@ -110,10 +113,10 @@ export default function AdminEventEditor({ initial, mode }: Props) {
         bodyHtml: asLocalized(form.bodyHtml, "<p></p>"),
       });
       setDirty(false);
-      setMessage("Saved.");
-      if (mode === "create") {
-        router.replace(`/admin/events/${id}/edit`);
-      }
+      // Clean up Blob files that were replaced or removed in this session.
+      await adminDeleteBlobUrls(removedUrls.current).catch(() => {});
+      removedUrls.current = [];
+      router.push("/admin/events");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Save failed.");
     } finally {
@@ -127,6 +130,12 @@ export default function AdminEventEditor({ initial, mode }: Props) {
     setSaving(true);
     try {
       await deleteEvent(form.id);
+      // Remove every Blob file this event owned.
+      await adminDeleteBlobUrls([
+        ...removedUrls.current,
+        form.coverImage,
+        ...extractImageUrls(form.bodyHtml),
+      ]).catch(() => {});
       router.push("/admin/events");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Delete failed.");
@@ -218,27 +227,25 @@ export default function AdminEventEditor({ initial, mode }: Props) {
                   label=""
                   folder="event"
                   value={form.coverImage}
-                  onChange={(coverImage) =>
-                    patch((prev) => ({ ...prev, coverImage }))
-                  }
+                  onChange={(coverImage) => {
+                    if (form.coverImage && form.coverImage !== coverImage) {
+                      removedUrls.current.push(form.coverImage);
+                    }
+                    patch((prev) => ({ ...prev, coverImage }));
+                  }}
                 />
               </div>
 
               <div className="admin-composer-meta-grid">
                 <label className="admin-field">
                   <span>Type</span>
-                  <select
+                  <input
                     value={form.type}
+                    placeholder="Event, Announcement, Workshop…"
                     onChange={(e) =>
-                      patch((prev) => ({
-                        ...prev,
-                        type: e.target.value as EventType,
-                      }))
+                      patch((prev) => ({ ...prev, type: e.target.value }))
                     }
-                  >
-                    <option value="event">Event</option>
-                    <option value="announcement">Announcement</option>
-                  </select>
+                  />
                 </label>
                 <label className="admin-field">
                   <span>Date</span>

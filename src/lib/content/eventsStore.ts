@@ -1,18 +1,25 @@
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { events as defaultEvents, type EventItem, type EventType } from "@/data/events";
 import { slugify } from "./slug";
 import type { CmsEvent } from "./types";
 import { readContentJson } from "./blobJson";
-import { adminPutContent, fetchContentJson } from "./adminClient";
-import { htmlToParagraphs } from "./richText";
+import { fetchContentJson } from "./adminClient";
+import { htmlToParagraphs, paragraphsToHtml } from "./richText";
 import { asLocalized } from "@/lib/i18n/config";
+import { getFirebaseDb } from "@/lib/firebase/client";
 import { isEventUpcoming, sortEventsByProximity } from "./eventSort";
 
-const PATH = "sucita/content/events.json";
+/** Legacy Blob JSON path — read-only fallback for content saved before Firestore. */
+const LEGACY_BLOB_PATH = "sucita/content/events.json";
+
+function eventsDoc() {
+  return doc(getFirebaseDb(), "pages", "events");
+}
 
 function normalize(raw: Record<string, unknown>, id: string): CmsEvent {
   const title = String(raw.title ?? "Untitled");
   const slug = String(raw.slug || slugify(title) || id);
-  const type: EventType = raw.type === "announcement" ? "announcement" : "event";
+  const type: EventType = String(raw.type ?? "").trim() || "event";
   const description = Array.isArray(raw.description)
     ? raw.description.map(String).filter(Boolean)
     : typeof raw.description === "string"
@@ -22,6 +29,19 @@ function normalize(raw: Record<string, unknown>, id: string): CmsEvent {
           .filter(Boolean)
       : [];
 
+  // Legacy events only have plain `description` paragraphs — build the rich
+  // text body from them so the editor doesn't open empty.
+  const bodyHtmlRaw = raw.bodyHtml
+    ? asLocalized(raw.bodyHtml as string | Record<string, string>, "<p></p>")
+    : undefined;
+  const hasBodyHtml =
+    !!bodyHtmlRaw && !!bodyHtmlRaw.en.replace(/<[^>]+>/g, "").trim();
+  const bodyHtml = hasBodyHtml
+    ? bodyHtmlRaw
+    : description.length
+      ? asLocalized(paragraphsToHtml(description), "<p></p>")
+      : undefined;
+
   return {
     id,
     slug,
@@ -29,16 +49,15 @@ function normalize(raw: Record<string, unknown>, id: string): CmsEvent {
     title: asLocalized(raw.title as string | undefined, title),
     excerpt: asLocalized(raw.excerpt as string | undefined, String(raw.excerpt ?? "")),
     description,
-    bodyHtml: raw.bodyHtml
-      ? asLocalized(raw.bodyHtml as string | Record<string, string>, "<p></p>")
-      : undefined,
+    bodyHtml,
     date: String(raw.date ?? new Date().toISOString().slice(0, 10)),
     time: raw.time ? String(raw.time) : undefined,
     location: raw.location ? String(raw.location) : undefined,
     isUpcoming: isEventUpcoming(
       String(raw.date ?? new Date().toISOString().slice(0, 10))
     ),
-    coverImage: String(raw.coverImage ?? "/assets/img/events/tax-workshop.png"),
+    // `||` (not ??) so an empty string also falls back to the default image
+    coverImage: String(raw.coverImage || "/assets/img/events/tax-workshop.png"),
   };
 }
 
@@ -67,11 +86,62 @@ function normalizeList(raw: unknown): CmsEvent[] {
   return sortEventsByProximity(normalized);
 }
 
+/** Firestore rejects `undefined` field values — emit plain objects only. */
+function toFirestoreItems(items: CmsEvent[]) {
+  return items.map((item) => {
+    const row: Record<string, unknown> = {
+      id: item.id,
+      slug: item.slug,
+      type: item.type,
+      title: asLocalized(item.title),
+      excerpt: asLocalized(item.excerpt),
+      description: item.description ?? [],
+      date: item.date,
+      isUpcoming: item.isUpcoming,
+      coverImage: item.coverImage,
+    };
+    if (item.bodyHtml) row.bodyHtml = asLocalized(item.bodyHtml, "<p></p>");
+    if (item.time) row.time = item.time;
+    if (item.location) row.location = item.location;
+    return row;
+  });
+}
+
+async function writeList(items: CmsEvent[]) {
+  await setDoc(
+    eventsDoc(),
+    {
+      items: toFirestoreItems(items),
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
+}
+
 async function readList(): Promise<CmsEvent[]> {
-  if (typeof window === "undefined") {
-    return normalizeList(await readContentJson<unknown>(PATH));
+  try {
+    const snap = await getDoc(eventsDoc());
+    if (snap.exists()) {
+      const data = snap.data() as { items?: unknown[] };
+      // An existing doc with an empty list means the admin deleted every
+      // event on purpose — don't fall back to defaults.
+      if (Array.isArray(data.items)) {
+        return data.items.length ? normalizeList(data.items) : [];
+      }
+    }
+  } catch (error) {
+    console.error("Firestore read failed for events", error);
   }
-  return normalizeList(await fetchContentJson<unknown>("events"));
+
+  // Legacy fallback: content saved to Blob JSON before the Firestore migration
+  if (typeof window === "undefined") {
+    try {
+      return normalizeList(await readContentJson<unknown>(LEGACY_BLOB_PATH));
+    } catch {
+      return defaults();
+    }
+  }
+  return defaults();
 }
 
 export async function listEvents(): Promise<CmsEvent[]> {
@@ -123,22 +193,38 @@ export async function saveEvent(
   );
   const current = await listEvents();
   const without = current.filter((item) => item.id !== id);
-  await adminPutContent("events", [nextItem, ...without]);
+  await writeList([nextItem, ...without]);
   return id;
 }
 
 export async function deleteEvent(id: string) {
   const current = await listEvents();
-  await adminPutContent(
-    "events",
-    current.filter((item) => item.id !== id)
-  );
+  await writeList(current.filter((item) => item.id !== id));
 }
 
-export async function seedEventsIfEmpty() {
-  if (typeof window === "undefined") return false;
-  const existing = await fetchContentJson<unknown>("events");
-  if (Array.isArray(existing) && existing.length > 0) return false;
-  await adminPutContent("events", defaults());
+/**
+ * One-time migration: copy the current events (legacy Blob JSON or the
+ * hardcoded defaults) into Firestore if the `pages/events` document has never
+ * been written. Safe to call repeatedly.
+ */
+export async function seedEventsIfEmpty(): Promise<boolean> {
+  try {
+    const snap = await getDoc(eventsDoc());
+    if (snap.exists()) {
+      const data = snap.data() as { items?: unknown[] };
+      // Any items field (even an empty list) means Firestore is already the
+      // source of truth — never overwrite it.
+      if (Array.isArray(data.items)) return false;
+    }
+  } catch {
+    return false;
+  }
+  // In the browser we can't read the legacy Blob JSON directly, so ask the
+  // server (which still falls back to Blob, then code defaults) for the list.
+  const current =
+    typeof window === "undefined"
+      ? await listEvents()
+      : normalizeList(await fetchContentJson<unknown>("events"));
+  await writeList(current);
   return true;
 }

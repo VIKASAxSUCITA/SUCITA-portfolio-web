@@ -48,6 +48,22 @@ export function resolveBodyHtml(
   return paragraphsToHtml(paragraphs);
 }
 
+/** Collect every <img> src used in a (localized) rich text body. */
+export function extractImageUrls(
+  bodyHtml: string | LocalizedString | undefined
+): string[] {
+  if (!bodyHtml) return [];
+  const htmls =
+    typeof bodyHtml === "string" ? [bodyHtml] : Object.values(bodyHtml);
+  const urls: string[] = [];
+  for (const html of htmls) {
+    for (const match of html.matchAll(/<img[^>]+src="([^"]+)"/gi)) {
+      urls.push(match[1]);
+    }
+  }
+  return [...new Set(urls)];
+}
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")

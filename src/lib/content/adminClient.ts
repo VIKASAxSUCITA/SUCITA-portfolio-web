@@ -66,8 +66,22 @@ export async function adminUploadFile(
   return payload.url;
 }
 
+export function isVercelBlobUrl(url: string): boolean {
+  try {
+    return new URL(url).hostname.endsWith(".blob.vercel-storage.com");
+  } catch {
+    return false;
+  }
+}
+
 export async function adminDeleteBlobUrls(urls: string[]): Promise<void> {
-  const unique = [...new Set(urls.map((url) => url.trim()).filter(Boolean))];
+  const unique = [
+    ...new Set(
+      urls
+        .map((url) => url.trim())
+        .filter((url) => url && isVercelBlobUrl(url))
+    ),
+  ];
   if (unique.length === 0) return;
 
   const { getFirebaseAuth } = await import("@/lib/firebase/client");

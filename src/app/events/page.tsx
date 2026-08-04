@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import KohostPageHeader from "@/components/template/KohostPageHeader";
 import { getPublicEvents } from "@/lib/content/eventsStore";
+import { eventTypeLabel } from "@/data/events";
 import { getRequestLocale } from "@/lib/i18n/server";
 import { pickLocalized } from "@/lib/i18n/config";
 import { isEventUpcoming, sortEventsByProximity } from "@/lib/content/eventSort";
@@ -56,7 +57,7 @@ export default async function EventsPage() {
                             className="sucita-insight-list-img"
                           />
                           <span className="sucita-insight-type sucita-insight-type--overlay is-project">
-                            {event.type === "event" ? "Event" : "Announcement"}
+                            {eventTypeLabel(event.type)}
                           </span>
                         </div>
                         <div className="sucita-insight-list-body">
@@ -93,7 +94,7 @@ export default async function EventsPage() {
                             className="sucita-insight-list-img"
                           />
                           <span className="sucita-insight-type sucita-insight-type--overlay is-article">
-                            {event.type === "event" ? "Event" : "Announcement"}
+                            {eventTypeLabel(event.type)}
                           </span>
                         </div>
                         <div className="sucita-insight-list-body">

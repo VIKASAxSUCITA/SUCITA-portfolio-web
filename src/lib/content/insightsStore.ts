@@ -63,7 +63,8 @@ function normalize(raw: Record<string, unknown>, id: string): CmsInsight {
     bodyHtml,
     category,
     publishedAt: String(raw.publishedAt ?? new Date().toISOString().slice(0, 10)),
-    coverImage: String(raw.coverImage ?? "/assets/img/insights/vat-refund-cover.png"),
+    // `||` (not ??) so an empty string also falls back to the default image
+    coverImage: String(raw.coverImage || "/assets/img/insights/vat-refund-cover.png"),
     galleryImages,
     client: raw.client ? String(raw.client) : undefined,
     service: raw.service ? String(raw.service) : undefined,

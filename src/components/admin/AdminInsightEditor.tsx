@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminGuard from "@/components/admin/AdminGuard";
 import AdminShell from "@/components/admin/AdminShell";
@@ -14,6 +14,8 @@ import {
   saveInsight,
 } from "@/lib/content/insightsStore";
 import { slugify } from "@/lib/content/slug";
+import { adminDeleteBlobUrls } from "@/lib/content/adminClient";
+import { extractImageUrls } from "@/lib/content/richText";
 import {
   asLocalized,
   pickLocalized,
@@ -70,6 +72,8 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  /** Blob files replaced/removed in this session — deleted after a save. */
+  const removedUrls = useRef<string[]>([]);
 
   const title = pickLocalized(form.title, editLocale);
   const excerpt = pickLocalized(form.excerpt, editLocale);
@@ -122,6 +126,9 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
         bodyHtml: asLocalized(form.bodyHtml, "<p></p>"),
       });
       setDirty(false);
+      // Clean up Blob files that were replaced or removed in this session.
+      await adminDeleteBlobUrls(removedUrls.current).catch(() => {});
+      removedUrls.current = [];
       router.push("/admin/insights");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Save failed.");
@@ -136,6 +143,13 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
     setSaving(true);
     try {
       await deleteInsight(form.id);
+      // Remove every Blob file this insight owned.
+      await adminDeleteBlobUrls([
+        ...removedUrls.current,
+        form.coverImage,
+        ...(form.galleryImages ?? []),
+        ...extractImageUrls(form.bodyHtml),
+      ]).catch(() => {});
       router.push("/admin/insights");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Delete failed.");
@@ -237,12 +251,18 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
                 <ComposerCoverImage
                   folder="insight"
                   src={form.coverImage}
-                  onChange={(coverImage) =>
-                    patch((prev) => ({ ...prev, coverImage }))
-                  }
-                  onRemove={() =>
-                    patch((prev) => ({ ...prev, coverImage: "" }))
-                  }
+                  onChange={(coverImage) => {
+                    if (form.coverImage && form.coverImage !== coverImage) {
+                      removedUrls.current.push(form.coverImage);
+                    }
+                    patch((prev) => ({ ...prev, coverImage }));
+                  }}
+                  onRemove={() => {
+                    if (form.coverImage) {
+                      removedUrls.current.push(form.coverImage);
+                    }
+                    patch((prev) => ({ ...prev, coverImage: "" }));
+                  }}
                 />
               </div>
 
@@ -322,9 +342,13 @@ export default function AdminInsightEditor({ initial, mode }: Props) {
                 <ComposerGalleryImages
                   folder="insight"
                   images={form.galleryImages ?? []}
-                  onChange={(galleryImages) =>
-                    patch((prev) => ({ ...prev, galleryImages }))
-                  }
+                  onChange={(galleryImages) => {
+                    const dropped = (form.galleryImages ?? []).filter(
+                      (url) => !galleryImages.includes(url)
+                    );
+                    removedUrls.current.push(...dropped);
+                    patch((prev) => ({ ...prev, galleryImages }));
+                  }}
                 />
               </div>
             </article>

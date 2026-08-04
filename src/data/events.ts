@@ -1,4 +1,12 @@
-export type EventType = "event" | "announcement";
+/** Free-form label, e.g. "event", "announcement", "workshop"… */
+export type EventType = string;
+
+/** Display label for an event type (capitalizes legacy lowercase values). */
+export function eventTypeLabel(type: string | undefined): string {
+  const value = (type ?? "").trim();
+  if (!value) return "Event";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
 
 import type { LocalizedString } from "@/lib/i18n/config";
 
